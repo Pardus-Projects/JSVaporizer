@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSVaporizer.NET.8", "JSVaporizer.NET.8\JSVaporizer.NET.8.csproj", "{A8F80DBC-7829-297E-1467-273C9E06E58D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPageJSVaporizer", "RazorPagesJSVaporizer\RazorPageJSVaporizer.csproj", "{FEB3D45C-76CA-C0DD-74DC-BE460043365F}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MyTransformerLibrary", "MyTransformerLibrary\MyTransformerLibrary.shproj", "{7AD68D24-9A29-45E1-9181-1FF3DC0C5DCC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8F80DBC-7829-297E-1467-273C9E06E58D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8F80DBC-7829-297E-1467-273C9E06E58D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8F80DBC-7829-297E-1467-273C9E06E58D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8F80DBC-7829-297E-1467-273C9E06E58D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEB3D45C-76CA-C0DD-74DC-BE460043365F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEB3D45C-76CA-C0DD-74DC-BE460043365F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEB3D45C-76CA-C0DD-74DC-BE460043365F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEB3D45C-76CA-C0DD-74DC-BE460043365F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A8B99ED7-7684-492E-9848-A9E8685BB614}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		MyTransformerLibrary\MyTransformerLibrary.projitems*{7ad68d24-9a29-45e1-9181-1ff3dc0c5dcc}*SharedItemsImports = 13
+		MyTransformerLibrary\MyTransformerLibrary.projitems*{a8f80dbc-7829-297e-1467-273c9e06e58d}*SharedItemsImports = 5
+	EndGlobalSection
+EndGlobal

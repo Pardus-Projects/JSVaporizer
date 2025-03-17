@@ -1,0 +1,12 @@
+﻿div {
+    display: block;
+    margin: auto;
+    margin-top: 1em;
+    width: 50%;
+    border: 3px solid green;
+    padding: 10px;
+}
+
+label {
+    margin: 1em;
+}
