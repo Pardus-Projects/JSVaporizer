@@ -91,14 +91,3 @@ You can still do AJAX from minimal JS or adopt a more advanced persistent connec
 - Developers who want a full Blazor experience (component model, two-way binding, etc.).  
 - Teams comfortable with polyglot front ends who don’t mind more JavaScript.
 
----
-
-## Try It Out or Contribute
-- Open Source: We welcome pull requests, issues, and suggestions on GitHub.  
-- Lightweight: It’s just a small set of source files. Integrate it into your ASP.NET Core project or play around in a toy app.  
-- Compatible: As long as you’re targeting **.NET 8** and run in a browser environment (WASM), you can use JSVaporizer!
-
-> **Ready to dive in?**  
-> 1. Clone the repo.  
-> 2. Check out the examples folder for a quick start.  
-> 3. Submit your issues or pull requests—we’d love your feedback and contributions!
