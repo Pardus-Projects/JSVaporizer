@@ -1,21 +1,53 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<Nullable>enable</Nullable>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <Optimize>False</Optimize>
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <Optimize>True</Optimize>
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
-  <Import Project="..\MyTransformerLibrary\MyTransformerLibrary.projitems" Label="Shared" />
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Nullable>enable</Nullable>
+		<OutputType>Library</OutputType>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Title>JSVaporizer</Title>
+		<Description>
+			Cut down on JavaScript. Write more C#.
+			A minimalistic .NET 8 WebAssembly library that lets you unify front-end and back-end logic without committing to a full framework like Blazor.
+
+		</Description>
+
+		<IsPackable>true</IsPackable>
+
+		<PackageProjectUrl>https://github.com/PardusLabs/JSVaporizer</PackageProjectUrl>
+		<PackageIcon>img.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/PardusLabs/JSVaporizer</RepositoryUrl>
+		<PackageTags>.NET 8, WebAssembly, C#, NuGet, ASP.NET Core, Front-end, Back-end, Minimalistic, JavaScript Interop, DOM Manipulation, Blazor Alternative, DTO, Transformer</PackageTags>
+		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+		<IncludeSymbols>True</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+		<Optimize>False</Optimize>
+		<DebugType>portable</DebugType>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+		<Optimize>True</Optimize>
+		<DebugType>portable</DebugType>
+	</PropertyGroup>
+	<Import Project="..\MyTransformerLibrary\MyTransformerLibrary.projitems" Label="Shared" />
+	<ItemGroup>
+		<None Include="..\..\JSVaporizer-Pardus\LICENSE.txt">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\img.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
 
 </Project>
