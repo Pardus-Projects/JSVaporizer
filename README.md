@@ -91,3 +91,6 @@ You can still do AJAX from minimal JS or adopt a more advanced persistent connec
 - Developers who want a full Blazor experience (component model, two-way binding, etc.).  
 - Teams comfortable with polyglot front ends who don’t mind more JavaScript.
 
+---
+
+2025
