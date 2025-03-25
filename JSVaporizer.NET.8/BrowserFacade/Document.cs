@@ -11,7 +11,7 @@ namespace JSVaporizer;
 public static partial class JSVapor
 {
     [SupportedOSPlatform("browser")]
-    internal static bool DisposeIfConnectedToDOM(JSObject jSObject)
+    public static bool DisposeIfConnectedToDOM(JSObject jSObject)
     {
         if (jSObject.GetPropertyAsBoolean("isConnected"))
         {

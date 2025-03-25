@@ -25,7 +25,7 @@ public delegate int EventHandlerCalledFromJS(JSObject elem, string eventType, JS
 
 public static partial class JSVapor
 {
-    private protected static class WasmJSVEventHandlerPool
+    internal static class WasmJSVEventHandlerPool
     {
         private static readonly object _mutexJSVEventHandlerPool = new();
         private static Dictionary<string, EventHandlerCalledFromJS> _jsvEventHandlerPool = new();

@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Versioning;
-using static JSVaporizer.JSVapor;
 
 namespace JSVaporizer;
 
 [SupportedOSPlatform("browser")]
-public static partial class JSVaporConvenience
+public static partial class JSVapor
 {
     public static readonly HashSet<string> WhitelistedFormElements = new HashSet<string>
     {

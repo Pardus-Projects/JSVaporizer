@@ -1,30 +1,6 @@
 ﻿using System.Runtime.Versioning;
-using static JSVaporizer.JSVapor;
 
-namespace JSVaporizer;
-
-[SupportedOSPlatform("browser")]
-public static partial class TransformerRegistry
-{
-    public static ITransformer Get(string xFormerRegistryKey)
-    {
-        var xFormerCreator = typeof(TransformerRegistry).GetMethod(xFormerRegistryKey);
-        if (xFormerCreator != null)
-        {
-            ITransformer? xFormer = (ITransformer?)xFormerCreator.Invoke(null, null);
-            if (xFormer == null)
-            {
-                throw new JSVException($"ITransformer for xFormerName = \"{xFormerRegistryKey}\" is null.");
-            }
-            xFormer.SetRegistryKey(xFormerRegistryKey);
-            return xFormer;
-        }
-        else
-        {
-            throw new JSVException($"xFormerRegistryKey = \"{xFormerRegistryKey}\" does not exist in TransformerRegistry.");
-        }
-    }
-}
+namespace JSVTransformer;
 
 public interface ITransformer
 {

@@ -5,13 +5,14 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using JSVaporizer;
 using static JSVaporizer.JSVapor;
 using static JSVaporizer.JSVapor.JSVGenericFunctionPool;
 
-namespace JSVaporizer;
+namespace JSVTransformer;
 
 [JsonSerializable(typeof(MyCoolTransformerDto))]
-internal partial class MyCoolTransformerDtoContext : JsonSerializerContext { }
+public partial class MyCoolTransformerDtoContext : JsonSerializerContext { }
 public class MyCoolTransformerDto : TransformerDto
 {
     public string? Name { get; set; }

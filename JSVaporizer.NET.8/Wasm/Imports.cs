@@ -12,7 +12,7 @@ namespace JSVaporizer;
 public static partial class JSVapor
 {
     [SupportedOSPlatform("browser")]
-    private protected static partial class WasmElement
+    internal partial class WasmElement
     {
         // Properties
 
@@ -54,7 +54,7 @@ public static partial class JSVapor
     }
 
     [SupportedOSPlatform("browser")]
-    private protected static partial class WasmDocument
+    internal static partial class WasmDocument
     {
         [JSImport("createJSVaporizerElement", "document")]
         internal static partial JSObject CreateJSVaporizerElement(string id, string tagName, string createdByJSVaporizerAttributeName);
@@ -70,7 +70,7 @@ public static partial class JSVapor
     }
 
     [SupportedOSPlatform("browser")]
-    private protected static partial class WasmWindow
+    internal static partial class WasmWindow
     {
         [JSImport("alert", "window")]
         internal static partial string Alert(string text);
@@ -92,7 +92,7 @@ public static partial class JSVapor
     }
 
     [SupportedOSPlatform("browser")]
-    private protected static partial class WasmJSFunctionPool
+    internal static partial class WasmJSFunctionPool
     {
         [JSImport("callJSFunction", "jsFunctionPool")]
         [return: JSMarshalAs<JSType.Any>]
@@ -100,17 +100,17 @@ public static partial class JSVapor
     }
 
     [SupportedOSPlatform("browser")]
-    private protected static partial class WasmJSVGenericFuncPool
+    internal static partial class WasmJSVGenericFuncPool
     {
         [JSImport("registerJSVGenericFunction", "jsvGenericFunctionPool")]
-        internal static partial bool RegisterJSVGenericFunction(string funcKey);
+        public static partial bool RegisterJSVGenericFunction(string funcKey);
     }
 
     [SupportedOSPlatform("browser")]
-    private protected static partial class WasmJSVGenericFuncPool
+    internal static partial class WasmJSVGenericFuncPool
     {
         [JSImport("unregisterJSVGenericFunction", "jsvGenericFunctionPool")]
-        internal static partial bool UnregisterJSVGenericFunction(string funcKey);
+        public static partial bool UnregisterJSVGenericFunction(string funcKey);
     }
 }
 

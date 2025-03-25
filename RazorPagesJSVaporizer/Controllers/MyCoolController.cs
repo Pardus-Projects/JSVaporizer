@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using JSVaporizer;
+using JSVTransformer;
 
 namespace RazorPagesJSVaporizer
 {

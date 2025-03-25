@@ -5,9 +5,9 @@ VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSVaporizer.NET.8", "JSVaporizer.NET.8\JSVaporizer.NET.8.csproj", "{A8F80DBC-7829-297E-1467-273C9E06E58D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPageJSVaporizer", "RazorPagesJSVaporizer\RazorPageJSVaporizer.csproj", "{FEB3D45C-76CA-C0DD-74DC-BE460043365F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSVTransformer", "JSVTransformer\JSVTransformer.csproj", "{C32A5E19-3E51-6775-B443-C541CAB3C602}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MyTransformerLibrary", "MyTransformerLibrary\MyTransformerLibrary.shproj", "{7AD68D24-9A29-45E1-9181-1FF3DC0C5DCC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPagesJSVaporizer", "RazorPagesJSVaporizer\RazorPagesJSVaporizer.csproj", "{45BF4DA8-91FD-0D61-0330-6D9FFFEE2C71}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +19,14 @@ Global
 		{A8F80DBC-7829-297E-1467-273C9E06E58D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8F80DBC-7829-297E-1467-273C9E06E58D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8F80DBC-7829-297E-1467-273C9E06E58D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FEB3D45C-76CA-C0DD-74DC-BE460043365F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FEB3D45C-76CA-C0DD-74DC-BE460043365F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FEB3D45C-76CA-C0DD-74DC-BE460043365F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FEB3D45C-76CA-C0DD-74DC-BE460043365F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C32A5E19-3E51-6775-B443-C541CAB3C602}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C32A5E19-3E51-6775-B443-C541CAB3C602}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C32A5E19-3E51-6775-B443-C541CAB3C602}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C32A5E19-3E51-6775-B443-C541CAB3C602}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45BF4DA8-91FD-0D61-0330-6D9FFFEE2C71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45BF4DA8-91FD-0D61-0330-6D9FFFEE2C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45BF4DA8-91FD-0D61-0330-6D9FFFEE2C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45BF4DA8-91FD-0D61-0330-6D9FFFEE2C71}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -31,7 +35,6 @@ Global
 		SolutionGuid = {A8B99ED7-7684-492E-9848-A9E8685BB614}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		MyTransformerLibrary\MyTransformerLibrary.projitems*{7ad68d24-9a29-45e1-9181-1ff3dc0c5dcc}*SharedItemsImports = 13
-		MyTransformerLibrary\MyTransformerLibrary.projitems*{a8f80dbc-7829-297e-1467-273c9e06e58d}*SharedItemsImports = 5
+		JSVTransformerLib\JSVTransformerLib.projitems*{a8f80dbc-7829-297e-1467-273c9e06e58d}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

@@ -1,4 +1,4 @@
-﻿namespace JSVaporizer;
+﻿namespace JSVTransformer;
 
 public static partial class TransformerRegistry
 {

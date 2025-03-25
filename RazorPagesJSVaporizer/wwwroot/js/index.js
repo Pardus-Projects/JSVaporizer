@@ -1,21 +1,24 @@
 ﻿"use strict";
 
+let jsvExportConfig;
 let jsvExports;
 let jsvRegisterCustomImports;
 let jsvRegisterJSFunction;
-let callJSVGenericFunction;
+let jsvCallJSVGenericFunction;
+let jsvGetExportedAssembly;
 
 import("../jsvwasm/jsvwasm.js").then((jsvWasm) => {
-    jsvExports = jsvWasm.jsvExports;
+    jsvExportConfig = jsvWasm.jsvExportConfig;
     jsvRegisterCustomImports = jsvWasm.jsvRegisterCustomImports;
     jsvRegisterJSFunction = jsvWasm.jsvRegisterJSFunction;
-    callJSVGenericFunction = jsvWasm.callJSVGenericFunction;
+    jsvCallJSVGenericFunction = jsvWasm.callJSVGenericFunction;
+    jsvGetExportedAssembly = jsvWasm.GetExportedAssembly;
 
     // Launch your front end here
     doCoolThings();
 });
 
-function doCoolThings() {
+async function doCoolThings() {
 
     // Register any (hopefully small!) one-off JS functions you need to.
     // Maybe you need to do this for a quick fix.
@@ -27,7 +30,9 @@ function doCoolThings() {
 
     let dtoJSON = $("#hfDtoJSON").val();
 
-    let resStr = jsvExports.TransformerInvoker.Invoke("MyCoolTransformerV1", dtoJSON);
+    jsvExports = await jsvGetExportedAssembly("JSVTransformer");
+
+    let resStr = jsvExports.JSVTransformer.TransformerInvoker.Invoke("MyCoolTransformerV1", dtoJSON);
 
     alert(resStr);
 }
@@ -43,10 +48,10 @@ function AjaxPOST(url, dtoJSON, successFuncKey, errorFuncKey) {
         processData: false,
         data: payload,
         success: function (result) {
-            callJSVGenericFunction(successFuncKey, result);
+            jsvCallJSVGenericFunction(successFuncKey, result);
         },
         error: function (err) {
-            callJSVGenericFunction(errorFuncKey, err);
+            jsvCallJSVGenericFunction(errorFuncKey, err);
         }
     });
 }

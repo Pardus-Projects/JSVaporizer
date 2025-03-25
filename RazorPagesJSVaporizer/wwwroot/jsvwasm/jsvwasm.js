@@ -1,6 +1,7 @@
 "use strict";
 
-export let jsvExports;
+export let jsvExportConfig;
+export let exports;
 
 import { dotnet } from '../_framework/dotnet.js'
 import * as ImportsForDotNet from './for_dotnet/_for_dotnet.js';
@@ -11,14 +12,14 @@ const { setModuleImports, getAssemblyExports, getConfig } = await dotnet
     .withApplicationArgumentsFromQuery()
     .create();
 
-// Get this stuff from C#
-const config = getConfig();
-const exports = await getAssemblyExports(config.mainAssemblyName);
+// Give this to JavaScript.
+jsvExportConfig = getConfig();
 
-jsvExports = exports.JSVaporizer;
+// Get this stuff from C#
+let jsvExports = await getAssemblyExports("JSVaporizer.NET.8");
 
 // Give this stuff to C#
-let forDotnet = ImportsForDotNet.getForDotNet(jsvExports.JSVapor.WasmExports);
+let forDotnet = ImportsForDotNet.getForDotNet(jsvExports.JSVaporizer.JSVapor.WasmExports);
 setModuleImports('element', forDotnet.element);
 setModuleImports('document', forDotnet.document);
 setModuleImports('window', forDotnet.window);
@@ -34,5 +35,10 @@ export function jsvRegisterJSFunction(funcKey, func) {
 
 export function callJSVGenericFunction(funcKey, ...args) {
     jsvExports.JSVapor.WasmExports.CallJSVGenericFunction(funcKey, args);
+}
+
+export async function GetExportedAssembly(name) {
+    let assm = await getAssemblyExports(name);
+    return assm;
 }
 

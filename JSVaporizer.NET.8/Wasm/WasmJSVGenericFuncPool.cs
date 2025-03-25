@@ -13,7 +13,7 @@ public delegate object? JSVGenericFunction(object[] args);
 
 public static partial class JSVapor
 {
-    private protected static partial class WasmJSVGenericFuncPool
+    internal static partial class WasmJSVGenericFuncPool
     {
         private static readonly object _mutexJSVFunctionPool = new();
         private static Dictionary<string, JSVGenericFunction> _jsvFunctionPool = new();

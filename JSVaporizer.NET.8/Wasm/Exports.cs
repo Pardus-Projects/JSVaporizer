@@ -12,7 +12,7 @@ namespace JSVaporizer;
 public static partial class JSVapor
 {
     [SupportedOSPlatform("browser")]
-    private protected static partial class WasmExports
+    internal partial class WasmExports
     {
         [JSExport]
         internal static int CallJSVEventHandler(string funcKey, JSObject elem, string eventType, JSObject evnt)
