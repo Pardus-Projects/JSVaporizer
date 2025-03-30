@@ -24,7 +24,7 @@ public class MyCoolTransformerDto : TransformerDto
 
 public class MyCoolTransformer : Transformer
 {
-    public override MyCoolTransformerDto JsonToDto(string dtoJson)
+    public override MyCoolTransformerDto JsonToDto(string dtoJson,string? userInfoJson = null)
     {
         MyCoolTransformerDto? dto =  JsonSerializer.Deserialize(dtoJson, MyCoolTransformerDtoContext.Default.MyCoolTransformerDto);
         if (dto == null)

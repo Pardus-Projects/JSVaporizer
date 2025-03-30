@@ -18,4 +18,10 @@
     <ProjectReference Include="..\JSVTransformer\JSVTransformer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="JSVaporizer.NET.8">
+      <HintPath>..\JSVaporizer.NET.8\bin\Debug\net8.0\JSVaporizer.NET.8.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

@@ -2,7 +2,7 @@
 
 public static partial class TransformerRegistry
 {
-    public static ITransformer MyCoolTransformerV1()
+    public static Transformer MyCoolTransformerV1()
     {
         return new MyCoolTransformer();
     }

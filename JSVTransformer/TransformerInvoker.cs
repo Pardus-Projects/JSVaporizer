@@ -7,12 +7,12 @@ namespace JSVTransformer;
 [SupportedOSPlatform("browser")]
 public static partial class TransformerRegistry
 {
-    public static ITransformer Get(string xFormerRegistryKey)
+    public static Transformer Get(string xFormerRegistryKey)
     {
         var xFormerCreator = typeof(TransformerRegistry).GetMethod(xFormerRegistryKey);
         if (xFormerCreator != null)
         {
-            ITransformer? xFormer = (ITransformer?)xFormerCreator.Invoke(null, null);
+            Transformer? xFormer = (Transformer?)xFormerCreator.Invoke(null, null);
             if (xFormer == null)
             {
                 throw new System.Exception($"ITransformer for xFormerName = \"{xFormerRegistryKey}\" is null.");
@@ -32,7 +32,7 @@ public static partial class TransformerInvoker
     [JSExport]
     public static string Invoke(string xFormerName, string dtoJson)
     {
-        ITransformer xFormer = TransformerRegistry.Get(xFormerName);
+        Transformer xFormer = TransformerRegistry.Get(xFormerName);
         string xFromRes = xFormer.DtoToView(dtoJson);
         return xFromRes;
     }
