@@ -10,12 +10,12 @@ public abstract class Transformer
 
     public Transformer() { }
 
-    public abstract TransformerDto JsonToDto(string dtoJson, string? userInfoJson=null);
+    public abstract TransformerDto JsonToDto(string dtoJson);
 
     public abstract string DtoToJson(TransformerDto dto);
 
     [SupportedOSPlatform("browser")]
-    public abstract string DtoToView(string dtoJson);
+    public abstract string DtoToView(string dtoJson, string? userInfoJson = null);
 
     [SupportedOSPlatform("browser")]
     public abstract TransformerDto ViewToDto();
