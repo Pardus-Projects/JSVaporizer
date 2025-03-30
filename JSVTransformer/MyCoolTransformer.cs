@@ -24,7 +24,7 @@ public class MyCoolTransformerDto : TransformerDto
 
 public class MyCoolTransformer : Transformer
 {
-    public override MyCoolTransformerDto JsonToDto(string dtoJson,string? userInfoJson = null)
+    public override MyCoolTransformerDto JsonToDto(string dtoJson)
     {
         MyCoolTransformerDto? dto =  JsonSerializer.Deserialize(dtoJson, MyCoolTransformerDtoContext.Default.MyCoolTransformerDto);
         if (dto == null)
@@ -40,7 +40,7 @@ public class MyCoolTransformer : Transformer
     }
 
     [SupportedOSPlatform("browser")]
-    public override string DtoToView(string dtoJson)
+    public override string DtoToView(string dtoJson, string? userInfoJson = null)
     {
         MyCoolTransformerDto dto = JsonToDto(dtoJson);
 
