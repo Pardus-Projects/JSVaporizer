@@ -18,9 +18,7 @@
 		<DebugType>portable</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
-	  <Reference Include="JSVaporizer.NET.8">
-	    <HintPath>..\JSVaporizer.NET.8\bin\Debug\net8.0\JSVaporizer.NET.8.dll</HintPath>
-	  </Reference>
+	  <PackageReference Include="PardusLabs.JSVaporizer.NET.8" Version="1.0.8.1" />
 	</ItemGroup>
 
 </Project>
