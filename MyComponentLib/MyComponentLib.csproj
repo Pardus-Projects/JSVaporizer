@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <Reference Include="JSVaporizer.NET.8">
-      <HintPath>..\..\JSVaporizer-dev\JSVaporizer.NET.8\bin\Debug\net8.0\JSVaporizer.NET.8.dll</HintPath>
+      <HintPath>..\JSVaporizer.NET.8\bin\Debug\net8.0\JSVaporizer.NET.8.dll</HintPath>
     </Reference>
   </ItemGroup>
 

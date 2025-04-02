@@ -11,7 +11,7 @@
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>JS Vaporizer</Title>
-		<Version>1.0.8.6</Version>
+		<Version>1.0.8.7</Version>
 		<PackageProjectUrl>https://github.com/PardusLabs/JSVaporizer</PackageProjectUrl>
 		<Description>A minimalistic .NET 8 WebAssembly library that lets you unify front-end and back-end logic without committing to a full framework like Blazor.</Description>
 		<Company>Pardus Labs</Company>
