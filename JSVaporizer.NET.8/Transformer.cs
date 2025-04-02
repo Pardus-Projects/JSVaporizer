@@ -15,13 +15,12 @@ public abstract class Transformer
 
     public abstract TransformerDto JsonToDto(string dtoJson);
 
-    public abstract string DtoToJson(TransformerDto dto);
-
     [SupportedOSPlatform("browser")]
     public abstract string DtoToView(string dtoJson, string? userInfoJson = null);
 
     [SupportedOSPlatform("browser")]
     public abstract TransformerDto ViewToDto();
+    public abstract string DtoToJson(TransformerDto dto);
 
     public void SetRegistryKey(string registryKey)
     {
@@ -61,10 +60,10 @@ public class TransformerRegistry
 public static partial class TransformerInvoker
 {
     [SupportedOSPlatform("browser")]
-    public static string Invoke(TransformerRegistry transformerRegistry, string xFormerName, string dtoJson)
+    public static string Invoke(TransformerRegistry transformerRegistry, string xFormerName, string dtoJson, string? userInfoJson = null)
     {
         Transformer xFormer = transformerRegistry.Get(xFormerName);
-        string xFromRes = xFormer.DtoToView(dtoJson);
+        string xFromRes = xFormer.DtoToView(dtoJson, userInfoJson);
         return xFromRes;
     }
 }
