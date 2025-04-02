@@ -28,7 +28,7 @@ app.UseAuthorization();
 app.MapRazorPages();
 app.MapControllers();
 
-// BEGIN Serving WASM aassemblies ========================================================================
+// BEGIN Serving WASM assemblies ========================================================================
 
 // Required to serve WASM assembly to client.
 app.UseStaticFiles(new StaticFileOptions
@@ -36,6 +36,7 @@ app.UseStaticFiles(new StaticFileOptions
     ServeUnknownFileTypes = true
 });
 
+// Extract embedded jsvwasm JavaScript files from JSVaporizer.NET.8 assembly.
 Assembly ass = typeof(JSVapor).GetTypeInfo().Assembly;
 EmbeddedFileProvider embProv = new EmbeddedFileProvider(ass, "JSVaporizer.NET.8.jsvwasm");
 //var verifyFiles = embProv.GetDirectoryContents(""); // For debugging breakpoint
@@ -44,6 +45,6 @@ app.UseStaticFiles(new StaticFileOptions()
     FileProvider = embProv
 });
 
-// END Serving WASM aassemblies ========================================================================
+// END Serving WASM assemblies ========================================================================
 
 app.Run();

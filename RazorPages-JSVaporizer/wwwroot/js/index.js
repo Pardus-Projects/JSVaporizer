@@ -32,7 +32,7 @@ async function doCoolThings() {
 
     jsvExports = await jsvGetExportedAssembly("MyTransformerLib");
 
-    let resStr = jsvExports.MyTransformerLib.TransformerInvoker.Invoke("MyCoolTransformerV1", dtoJSON);
+    let resStr = jsvExports.MyTransformerLib.MyTransformerRegistry.Invoke("MyCoolTransformerV1", dtoJSON);
 
     alert(resStr);
 }

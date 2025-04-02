@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 
 namespace JSVaporizer;
@@ -33,7 +34,6 @@ public abstract class Transformer
     }
 }
 
-[SupportedOSPlatform("browser")]
 public class TransformerRegistry
 {
     private Dictionary<string, Transformer> _registry = new();
@@ -55,7 +55,18 @@ public class TransformerRegistry
         {
             throw new Exception($"xFormerRegistryKey = \"{xFormerRegistryKey}\" does not exist in transformer registry.");
         }
-
     }
 }
+
+public static partial class TransformerInvoker
+{
+    [SupportedOSPlatform("browser")]
+    public static string Invoke(TransformerRegistry transformerRegistry, string xFormerName, string dtoJson)
+    {
+        Transformer xFormer = transformerRegistry.Get(xFormerName);
+        string xFromRes = xFormer.DtoToView(dtoJson);
+        return xFromRes;
+    }
+}
+
 
