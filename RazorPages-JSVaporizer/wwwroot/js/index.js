@@ -20,21 +20,21 @@ import("../jsvwasm.js").then((jsvWasm) => {
 
 async function doCoolThings() {
 
-    // Register any (hopefully small!) one-off JS functions you need to.
-    // Maybe you need to do this for a quick fix.
-    // Don't forget: Quick fixes have a strange way of becoming permanent spaghetti code.
-    //
-    // Remember: The goal is to REDUCE the amount of BS JS.
-
+    // Register any JS functions you want C# to see.
     jsvRegisterJSFunction("AjaxPOST", AjaxPOST);
 
-    let dtoJSON = $("#hfDtoJSON").val();
-
+    // Get exports from any web assemblies exported.
     jsvExports = await jsvGetExportedAssembly("MyTransformerLib");
 
-    let resStr = jsvExports.MyTransformerLib.MyTransformerRegistry.Invoke("MyCoolTransformerV1", dtoJSON);
+    let coolTransformerDtoJSON = $("#hfDtoJSON").val();
+    let resStr = jsvExports.MyTransformerLib.MyTransformerRegistry.Invoke("MyCoolTransformerV1", coolTransformerDtoJSON);
+    alert("MyCoolTransformerV1 says: " + resStr);
 
-    alert(resStr);
+
+    let exampleComponentDtoJson = $("#hfExampleComp_DtoJson").val();
+    let compInfoJson = $("#hfExampleComp_CompInfoJson").val();
+    resStr = jsvExports.MyTransformerLib.MyTransformerRegistry.Invoke("MyExampleCompTransformer", exampleComponentDtoJson, compInfoJson);
+    alert("MyExampleCompTransformer says: " + resStr);
 }
 
 function AjaxPOST(url, dtoJSON, successFuncKey, errorFuncKey) {

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTransformerLib", "MyTrans
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPages-JSVaporizer", "RazorPages-JSVaporizer\RazorPages-JSVaporizer.csproj", "{3DDFCF76-CBFF-2627-1422-C242C2EF608F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyComponentLib", "MyComponentLib\MyComponentLib.csproj", "{15DD9EF4-C01E-485C-7615-F56F3A8CF197}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{3DDFCF76-CBFF-2627-1422-C242C2EF608F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DDFCF76-CBFF-2627-1422-C242C2EF608F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DDFCF76-CBFF-2627-1422-C242C2EF608F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15DD9EF4-C01E-485C-7615-F56F3A8CF197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15DD9EF4-C01E-485C-7615-F56F3A8CF197}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15DD9EF4-C01E-485C-7615-F56F3A8CF197}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15DD9EF4-C01E-485C-7615-F56F3A8CF197}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

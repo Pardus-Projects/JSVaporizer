@@ -9,14 +9,15 @@ namespace MyTransformerLib;
 public static partial class MyTransformerRegistry
 {
     private static TransformerRegistry _myTransformerReg = new(new Dictionary<string, Transformer> {
+        { "MyExampleCompTransformer", new MyExampleCompTransformer() },
         { "MyCoolTransformerV1", new MyCoolTransformer() }
     });
 
     [JSExport]
     [SupportedOSPlatform("browser")]
-    public static string Invoke(string xFormerName, string dtoJson)
+    public static string Invoke(string xFormerName, string dtoJson, string? userInfoJson = null)
     {
-        return TransformerInvoker.Invoke(_myTransformerReg, xFormerName, dtoJson);
+        return TransformerInvoker.Invoke(_myTransformerReg, xFormerName, dtoJson, userInfoJson);
     }
 }
 
