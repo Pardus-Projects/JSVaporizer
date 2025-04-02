@@ -111,7 +111,7 @@ public class Component
         PropertyInfo[] properties = GetType().GetProperties();
         foreach (PropertyInfo propInfo in properties)
         {
-            compProps.List.Add(new() { Name = propInfo.Name, Value = propInfo.GetValue(this) });
+            compProps.List.Add(new(propInfo.Name, propInfo.GetValue(this)));
         }
 
         return JsonSerializer.Serialize(compProps, CompPropertiesContext.Default.CompProperties);
@@ -126,12 +126,29 @@ public class CompProperties
 {
     public List<CompProperty> List {get; set;} = new();
     public CompProperties() { }
+
+    public Dictionary<string, object?> ToDictionary()
+    {
+        Dictionary<string, object?> dict = new();
+        foreach (CompProperty prop in List)
+        {
+            dict[prop.Name] = prop.Value;
+        }
+
+        return dict;
+    }
 }
 
 public class CompProperty
 {
-    public string? Name { get; set; }
+    public string Name { get; set; }
     public object? Value { get; set; }
+
+    public CompProperty(string name, object? value)
+    {
+        Name = name;
+        Value = value;
+    }
 }
 
 
