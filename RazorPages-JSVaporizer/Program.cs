@@ -38,9 +38,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 Assembly ass = typeof(JSVapor).GetTypeInfo().Assembly;
 EmbeddedFileProvider embProv = new EmbeddedFileProvider(ass, "JSVaporizer.NET.8.jsvwasm");
-
-//var verifyFiles = embProv.GetDirectoryContents(""); // Put breakpoint here to debug
-
+//var verifyFiles = embProv.GetDirectoryContents(""); // For debugging breakpoint
 app.UseStaticFiles(new StaticFileOptions()
 {
     FileProvider = embProv
