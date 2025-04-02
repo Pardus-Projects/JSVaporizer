@@ -8,18 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="wwwroot\wasm\**" />
-    <Content Remove="wwwroot\wasm\**" />
-    <EmbeddedResource Remove="wwwroot\wasm\**" />
-    <None Remove="wwwroot\wasm\**" />
+    <ProjectReference Include="..\MyTransformerLib\MyTransformerLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="PardusLabs.JSVaporizer.NET.8" Version="1.0.8.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\JSVTransformer\JSVTransformer.csproj" />
+    <Reference Include="JSVaporizer.NET.8">
+      <HintPath>..\JSVaporizer.NET.8\bin\Debug\net8.0\JSVaporizer.NET.8.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

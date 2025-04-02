@@ -5,7 +5,7 @@ VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSVaporizer.NET.8", "JSVaporizer.NET.8\JSVaporizer.NET.8.csproj", "{A8F80DBC-7829-297E-1467-273C9E06E58D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSVTransformer", "JSVTransformer\JSVTransformer.csproj", "{C32A5E19-3E51-6775-B443-C541CAB3C602}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTransformerLib", "MyTransformerLib\MyTransformerLib.csproj", "{C32A5E19-3E51-6775-B443-C541CAB3C602}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPages-JSVaporizer", "RazorPages-JSVaporizer\RazorPages-JSVaporizer.csproj", "{3DDFCF76-CBFF-2627-1422-C242C2EF608F}"
 EndProject
@@ -33,8 +33,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A8B99ED7-7684-492E-9848-A9E8685BB614}
-	EndGlobalSection
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		JSVTransformerLib\JSVTransformerLib.projitems*{a8f80dbc-7829-297e-1467-273c9e06e58d}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

@@ -9,7 +9,7 @@ using JSVaporizer;
 using static JSVaporizer.JSVapor;
 using static JSVaporizer.JSVapor.JSVGenericFunctionPool;
 
-namespace JSVTransformer;
+namespace MyTransformerLib;
 
 [JsonSerializable(typeof(MyCoolTransformerDto))]
 public partial class MyCoolTransformerDtoContext : JsonSerializerContext { }

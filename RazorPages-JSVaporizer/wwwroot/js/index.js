@@ -7,7 +7,7 @@ let jsvRegisterJSFunction;
 let jsvCallJSVGenericFunction;
 let jsvGetExportedAssembly;
 
-import("../jsvwasm/jsvwasm.js").then((jsvWasm) => {
+import("../jsvwasm.js").then((jsvWasm) => {
     jsvExportConfig = jsvWasm.jsvExportConfig;
     jsvRegisterCustomImports = jsvWasm.jsvRegisterCustomImports;
     jsvRegisterJSFunction = jsvWasm.jsvRegisterJSFunction;
@@ -30,9 +30,9 @@ async function doCoolThings() {
 
     let dtoJSON = $("#hfDtoJSON").val();
 
-    jsvExports = await jsvGetExportedAssembly("JSVTransformer");
+    jsvExports = await jsvGetExportedAssembly("MyTransformerLib");
 
-    let resStr = jsvExports.JSVTransformer.TransformerInvoker.Invoke("MyCoolTransformerV1", dtoJSON);
+    let resStr = jsvExports.MyTransformerLib.TransformerInvoker.Invoke("MyCoolTransformerV1", dtoJSON);
 
     alert(resStr);
 }

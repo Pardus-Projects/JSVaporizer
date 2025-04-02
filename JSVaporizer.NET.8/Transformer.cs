@@ -1,6 +1,8 @@
-﻿using System.Runtime.Versioning;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Versioning;
 
-namespace JSVTransformer;
+namespace JSVaporizer;
 
 public class TransformerDto;
 
@@ -30,3 +32,30 @@ public abstract class Transformer
         return _registryKey;
     }
 }
+
+[SupportedOSPlatform("browser")]
+public class TransformerRegistry
+{
+    private Dictionary<string, Transformer> _registry = new();
+
+    public TransformerRegistry(Dictionary<string, Transformer> registry)
+    {
+        _registry = registry;
+    }
+
+    public Transformer Get(string xFormerRegistryKey)
+    {
+        if (_registry.ContainsKey(xFormerRegistryKey))
+        {
+            Transformer xFormer = _registry[xFormerRegistryKey];
+            xFormer.SetRegistryKey(xFormerRegistryKey);
+            return xFormer;
+        }
+        else
+        {
+            throw new Exception($"xFormerRegistryKey = \"{xFormerRegistryKey}\" does not exist in transformer registry.");
+        }
+
+    }
+}
+

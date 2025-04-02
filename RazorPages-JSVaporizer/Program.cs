@@ -1,3 +1,7 @@
+using JSVaporizer;
+using Microsoft.Extensions.FileProviders;
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -26,12 +30,20 @@ app.MapControllers();
 
 // BEGIN Serving WASM aassemblies ========================================================================
 
-//app.UseStaticFiles(); // Not good enough to serve WASM assemblies
-
 // Required to serve WASM assembly to client.
 app.UseStaticFiles(new StaticFileOptions
 {
     ServeUnknownFileTypes = true
+});
+
+Assembly ass = typeof(JSVapor).GetTypeInfo().Assembly;
+EmbeddedFileProvider embProv = new EmbeddedFileProvider(ass, "JSVaporizer.NET.8.jsvwasm");
+
+//var verifyFiles = embProv.GetDirectoryContents(""); // Put breakpoint here to debug
+
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = embProv
 });
 
 // END Serving WASM aassemblies ========================================================================
