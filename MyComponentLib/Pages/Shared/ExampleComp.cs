@@ -10,8 +10,8 @@ public class ExampleComp : Component
 
     public ExampleComp(string unqPrefix) : base(unqPrefix)
     {
-        HeaderId = PrependUnqPrefix("HeaderId");
-        ContentId = PrependUnqPrefix("ContentId");
+        HeaderId = MakeSubComponentUnqPrefix("HeaderId");
+        ContentId = MakeSubComponentUnqPrefix("ContentId");
     }
 
     protected override async Task RenderBody(IHtmlHelper Html, HtmlContentBuilder htmlCB)

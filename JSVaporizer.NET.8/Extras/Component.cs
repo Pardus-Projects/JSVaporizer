@@ -29,10 +29,9 @@ public class SubCompDefinition
 
 public class Component
 {
-    public static bool DebugMode { get; set; } = false;
-
     public string UnqPrefix { get; }
     public string CompId { get; }
+    public string DebugInfoId { get; }
 
     public List<SubCompDefinition> NamedSubComponents { get; set; }
 
@@ -40,12 +39,18 @@ public class Component
     {
         UnqPrefix = unqPrefix;
         CompId = unqPrefix;
+        DebugInfoId = AppendElementSuffix("DebugInfo");
         NamedSubComponents = new();
     }
 
-    protected string PrependUnqPrefix(string subPrefix)
+    protected string MakeSubComponentUnqPrefix(string subPrefix)
     {
         return UnqPrefix + "_-_" + subPrefix;
+    }
+
+    protected string AppendElementSuffix(string suffix)
+    {
+        return UnqPrefix + "_" + suffix;
     }
 
     private void RenderOpen(HtmlContentBuilder htmlCB)
@@ -53,10 +58,7 @@ public class Component
         string compStart = Environment.NewLine + $"<div id=\"{CompId}\">";
         htmlCB.AppendHtml(compStart);
 
-        if (DebugMode)
-        {
-            htmlCB.AppendHtml(Environment.NewLine + $"CompId=\"{CompId}\"");
-        }
+        htmlCB.AppendHtml(Environment.NewLine + $"<div id=\"{DebugInfoId}\">{DebugInfoId}</div>");
     }
 
     private void RenderClose(HtmlContentBuilder htmlCB)
@@ -74,7 +76,7 @@ public class Component
     {
         foreach (SubCompDefinition subCompDef in NamedSubComponents)
         {
-            string subCompPrefStr = PrependUnqPrefix(subCompDef.SubPrefix);
+            string subCompPrefStr = MakeSubComponentUnqPrefix(subCompDef.SubPrefix);
 
             Type? compType = Type.GetType(subCompDef.CompType);
             if (compType == null)
@@ -82,7 +84,7 @@ public class Component
                 throw new ArgumentException($"subCompDef.CompType = \"{subCompDef.CompType}\" was not found.");
             }
 
-            Component? subComp = (Component?)Activator.CreateInstance(compType, new object[] { PrependUnqPrefix(subCompPrefStr) });
+            Component? subComp = (Component?)Activator.CreateInstance(compType, new object[] { subCompPrefStr });
             if (subComp == null)
             {
                 throw new ArgumentException($"CreateInstance() failed for: compNameStr = \"{subCompPrefStr}\", compType = \"{compType}\"");
@@ -121,6 +123,11 @@ public class Component
 [JsonSerializable(typeof(CompProperties))]
 [JsonSerializable(typeof(SubCompDefinition))]
 [JsonSerializable(typeof(List<SubCompDefinition>))]
+[JsonSerializable(typeof(bool))]
+[JsonSerializable(typeof(string))]
+[JsonSerializable(typeof(int))]
+[JsonSerializable(typeof(double))]
+[JsonSerializable(typeof(decimal))]
 public partial class CompPropertiesContext : JsonSerializerContext { }
 public class CompProperties
 {

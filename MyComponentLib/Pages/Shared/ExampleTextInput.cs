@@ -5,11 +5,15 @@ namespace JSVComponent;
 
 public class ExampleTextInput : Component
 {
-    public ExampleTextInput(string unqPrefix) : base(unqPrefix) {  }
+    public string InputId { get; set; }
+    public ExampleTextInput(string unqPrefix) : base(unqPrefix)
+    {
+        InputId = AppendElementSuffix("InputId");
+    }
 
     protected override Task RenderBody(IHtmlHelper Html, HtmlContentBuilder htmlCB)
     {
-        string htmlStr = Environment.NewLine + $"<input id=\"{CompId}\" type=\"text\"/>";
+        string htmlStr = Environment.NewLine + $"<input id=\"{InputId}\" type=\"text\"/>";
 
         htmlCB.AppendHtml(htmlStr);
 

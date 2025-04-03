@@ -8,20 +8,16 @@
 
 <a href="BarberAppointment">Barber Appointment</a>
 
-<div class="text-center">
-    <h1 class="display-4">Test</h1>
+<h1>Components Test</h1>
 
-    @await Model.myExampleComp.RenderAsync(Html)
+@await Model.MyTextInput.RenderAsync(Html)
 
-    @await Model.myTextInput.RenderAsync(Html)
+@await Model.MyNested.RenderAsync(Html)
 
-    @await Model.testNested.RenderAsync(Html)
+<input id="hfExampleComp_DtoJson" type="hidden" value="@Model.TheExampleComp_DtoJson" />
+<input id="hfExampleComp_CompInfoJson" type="hidden" value="@Model.TheExampleComp_CompInfoJson" />
+@await Model.TheExampleComp.RenderAsync(Html)
 
-    <input id="hfExampleComp_DtoJson" type="hidden" value="@Model.TheExampleComp_DtoJson" />
-    <input id="hfExampleComp_CompInfoJson" type="hidden" value="@Model.TheExampleComp_CompInfoJson" />
-    @await Model.TheExampleComp.RenderAsync(Html)
-
-</div>
 
 
 

@@ -7,9 +7,8 @@ namespace MyExampleApplication.Pages
 {
     public class IndexModel : PageModel
     {
-        public ExampleComp myExampleComp = new("myExampleComp");
-        public ExampleTextInput myTextInput = new("myTextInput");
-        public ExampleNested testNested = new("testNested");
+        public ExampleTextInput MyTextInput = new("myTextInput");
+        public ExampleNested MyNested = new("myNested");
 
         public ExampleComp TheExampleComp = new("theExampleComp");
         public string TheExampleComp_DtoJson = "";
