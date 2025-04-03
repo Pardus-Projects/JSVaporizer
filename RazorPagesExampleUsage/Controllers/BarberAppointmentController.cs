@@ -5,15 +5,15 @@ namespace MyExampleApplication.Controllers
 {
 
     [ApiController]
-    [Route("MyCoolController")]
-    public class MyCoolController : Controller
+    [Route("BarberAppointmentController")]
+    public class BarberAppointmentController : Controller
     {
 
         [HttpPost("MyRequestHandler")]
         public ActionResult<string> MyRequestHandler([FromForm] string dtoJSON)
         {
 
-            MyCoolTransformer xformer = new();
+            BarberAppointmentTransformer xformer = new();
             MyCoolTransformerDto dto = xformer.JsonToDto(dtoJSON);
 
             bool valid = xformer.ValidateDto(dto, out string errMessage);

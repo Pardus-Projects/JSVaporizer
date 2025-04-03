@@ -6,12 +6,14 @@
 
 <script src="~/js/index.js" asp-append-version="true"></script>
 
+<a href="BarberAppointment">Barber Appointment</a>
+
 <div class="text-center">
     <h1 class="display-4">Test</h1>
 
-    @*     @await Model.myBaseComp.RenderAsync(Html)
+    @await Model.myExampleComp.RenderAsync(Html)
 
-    @await Model.myTextInput.RenderAsync(Html) *@
+    @await Model.myTextInput.RenderAsync(Html)
 
     @await Model.testNested.RenderAsync(Html)
 
@@ -19,65 +21,7 @@
     <input id="hfExampleComp_CompInfoJson" type="hidden" value="@Model.TheExampleComp_CompInfoJson" />
     @await Model.TheExampleComp.RenderAsync(Html)
 
-
 </div>
 
-<hr />
 
-<form id="myform">
-
-    <input id="hfDtoJSON" type="hidden" value="@Model.XformerDtoJSON" />
-
-    <div>
-        <label id="theLabel" for="txtName">Your name</label>
-        <input type="text" id="txtName" placeholder="Your name" />
-    </div>
-
-    <div>
-        <label for="dlApptDay">Preferred appointment day</label>
-        <select id="dlApptDay">
-            <optgroup label="Choose day">
-                <option value="0"></option>
-                <option value="1">Monday</option>
-                <option value="2">Tuesday</option>
-                <option value="3">Wednesday</option>
-                <option value="4">Thursday</option>
-                <option value="5">Friday</option>
-                <option value="6">Saturday</option>
-                <option value="7">Sunday</option>
-            </optgroup>
-        </select>
-    </div>
-
-    <div>
-        <label for="dlOtherDays">Alternative days</label>
-        <select id="dlOtherDays" multiple>
-            <optgroup label="Choose day">
-                <option value="0"></option>
-                <option value="1">Monday</option>
-                <option value="2">Tuesday</option>
-                <option value="3">Wednesday</option>
-                <option value="4">Thursday</option>
-                <option value="5">Friday</option>
-                <option value="6">Saturday</option>
-                <option value="7">Sunday</option>
-            </optgroup>
-        </select>
-    </div>
-
-    <div>
-        <label for="txtNotes">Notes for the stylist</label>
-        <textarea id="txtNotes" rows="8" cols="40" placeholder="Notes"></textarea>
-    </div>
-
-    <div>
-        <label for="chkParallelPetGrooming">Parallel pet grooming service?</label>
-        <input type="checkbox" id="chkParallelPetGrooming" checked />
-    </div>
-
-    <div>
-        <button id="btnBookNow" class="">Book now</button>
-    </div>
-
-</form>
 

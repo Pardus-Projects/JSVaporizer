@@ -22,7 +22,7 @@ public class MyCoolTransformerDto : TransformerDto
     public bool? ParallelPetGrooming { get; set; }
 }
 
-public class MyCoolTransformer : Transformer
+public class BarberAppointmentTransformer : Transformer
 {
     public override MyCoolTransformerDto JsonToDto(string dtoJson)
     {
@@ -88,7 +88,7 @@ public class MyCoolTransformer : Transformer
             {
                 string dtoJSON = DtoToJson(changedDto);
 
-                string url = "/MyCoolController/MyRequestHandler";
+                string url = "/BarberAppointmentController/MyRequestHandler";
                 JSFunctionPool.CallFunc("AjaxPOST", [url, dtoJSON, "theSuccessCallback", "theErrorCallback"]);
 
                 Window.Alert("Success!");

@@ -7,8 +7,8 @@ namespace MyExampleApplication.Pages
 {
     public class IndexModel : PageModel
     {
-        //public JSVComponent myBaseComp = new("myBaseComp");
-        //public JSVTextInput myTextInput = new("myTextInput");
+        public ExampleComp myExampleComp = new("myExampleComp");
+        public ExampleTextInput myTextInput = new("myTextInput");
         public ExampleNested testNested = new("testNested");
 
         public ExampleComp TheExampleComp = new("theExampleComp");
@@ -26,16 +26,6 @@ namespace MyExampleApplication.Pages
             };
             TheExampleComp_DtoJson = JsonSerializer.Serialize(dto);
             TheExampleComp_CompInfoJson = TheExampleComp.SerializeComponentProperties();
-
-            MyCoolTransformerDto xformerDto = new()
-            {
-                Name = "Bob McBob",
-                Day = 3,
-                Notes = "I need a shave and a haircut.",
-                ParallelPetGrooming = false
-            };
-
-            XformerDtoJSON = JsonSerializer.Serialize(xformerDto);
         }
     }
 }

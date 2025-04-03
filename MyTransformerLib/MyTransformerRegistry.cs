@@ -10,7 +10,7 @@ public static partial class MyTransformerRegistry
 {
     private static TransformerRegistry _myTransformerReg = new(new Dictionary<string, Transformer> {
         { "MyExampleCompTransformer", new MyExampleCompTransformer() },
-        { "MyCoolTransformerV1", new MyCoolTransformer() }
+        { "MyCoolTransformerV1", new BarberAppointmentTransformer() }
     });
 
     [JSExport]

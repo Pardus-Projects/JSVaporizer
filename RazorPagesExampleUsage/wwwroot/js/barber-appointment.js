@@ -12,13 +12,14 @@ import("./site.js").then((module) => {
 async function LaunchApp() {
     let JsvWasm = await site.GetJsvWasm();
 
+    // Register any JS functions you want C# to see.
+    JsvWasm.RegisterJSFunction("AjaxPOST", site.AjaxPOST);
+
     // Get exports from any web assemblies exported.
     let jsvExports = await JsvWasm.GetExportedAssembly("MyTransformerLib");
 
-    let exampleComponentDtoJson = $("#hfExampleComp_DtoJson").val();
-    let compInfoJson = $("#hfExampleComp_CompInfoJson").val();
-    let resStr = jsvExports.MyTransformerLib.MyTransformerRegistry.Invoke("MyExampleCompTransformer", exampleComponentDtoJson, compInfoJson);
-    alert("MyExampleCompTransformer says: " + resStr);
+    let coolTransformerDtoJSON = $("#hfDtoJSON").val();
+    let resStr = jsvExports.MyTransformerLib.MyTransformerRegistry.Invoke("MyCoolTransformerV1", coolTransformerDtoJSON);
+    alert("MyCoolTransformerV1 says: " + resStr);
 }
-
 
