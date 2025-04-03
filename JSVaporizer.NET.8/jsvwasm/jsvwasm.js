@@ -34,7 +34,7 @@ export function jsvRegisterJSFunction(funcKey, func) {
 }
 
 export function callJSVGenericFunction(funcKey, ...args) {
-    jsvExports.JSVapor.WasmExports.CallJSVGenericFunction(funcKey, args);
+    jsvExports.JSVaporizer.JSVapor.WasmExports.CallJSVGenericFunction(funcKey, args);
 }
 
 export async function GetExportedAssembly(name) {
