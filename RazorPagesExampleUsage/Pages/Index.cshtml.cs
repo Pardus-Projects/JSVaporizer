@@ -3,7 +3,7 @@ using JSVComponent;
 using MyTransformerLib;
 using System.Text.Json;
 
-namespace RazorPagesJSVaporizer.Controllers
+namespace MyExampleApplication.Pages
 {
     public class IndexModel : PageModel
     {
@@ -19,7 +19,7 @@ namespace RazorPagesJSVaporizer.Controllers
 
         public void OnGet()
         {
-            MyExampleCompTransformerDto dto = new MyExampleCompTransformerDto
+            MyExampleCompTransformerDto dto = new()
             {
                 HeaderStr = "The Header Info",
                 ContentStr = "The Content Info"
@@ -27,11 +27,14 @@ namespace RazorPagesJSVaporizer.Controllers
             TheExampleComp_DtoJson = JsonSerializer.Serialize(dto);
             TheExampleComp_CompInfoJson = TheExampleComp.SerializeComponentProperties();
 
-            MyCoolTransformerDto xformerDto = new();
-            xformerDto.Name = "Bob McBob";
-            xformerDto.Day = 3;
-            xformerDto.Notes = "I need a shave and a haircut.";
-            xformerDto.ParallelPetGrooming = false;
+            MyCoolTransformerDto xformerDto = new()
+            {
+                Name = "Bob McBob",
+                Day = 3,
+                Notes = "I need a shave and a haircut.",
+                ParallelPetGrooming = false
+            };
+
             XformerDtoJSON = JsonSerializer.Serialize(xformerDto);
         }
     }

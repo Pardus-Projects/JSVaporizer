@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyTransformerLib;
 
-namespace RazorPagesJSVaporizer
+namespace MyExampleApplication.Controllers
 {
 
     [ApiController]
@@ -13,7 +13,7 @@ namespace RazorPagesJSVaporizer
         public ActionResult<string> MyRequestHandler([FromForm] string dtoJSON)
         {
 
-            MyCoolTransformer xformer = new MyCoolTransformer();
+            MyCoolTransformer xformer = new();
             MyCoolTransformerDto dto = xformer.JsonToDto(dtoJSON);
 
             bool valid = xformer.ValidateDto(dto, out string errMessage);
