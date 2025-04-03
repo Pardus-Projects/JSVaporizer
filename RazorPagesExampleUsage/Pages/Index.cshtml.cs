@@ -25,6 +25,8 @@ namespace MyExampleApplication.Pages
             };
             TheExampleComp_DtoJson = JsonSerializer.Serialize(dto);
             TheExampleComp_CompInfoJson = TheExampleComp.SerializeComponentProperties();
+
+            MyNested.DebugInfo = true;
         }
     }
 }

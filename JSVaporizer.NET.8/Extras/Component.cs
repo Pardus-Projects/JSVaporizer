@@ -29,6 +29,7 @@ public class SubCompDefinition
 
 public class Component
 {
+    public bool DebugInfo { get; set; } = false;
     public string UnqPrefix { get; }
     public string CompId { get; }
     public string DebugInfoId { get; }
@@ -58,7 +59,10 @@ public class Component
         string compStart = Environment.NewLine + $"<div id=\"{CompId}\">";
         htmlCB.AppendHtml(compStart);
 
-        htmlCB.AppendHtml(Environment.NewLine + $"<div id=\"{DebugInfoId}\">{DebugInfoId}</div>");
+        if (DebugInfo)
+        {
+            htmlCB.AppendHtml(Environment.NewLine + $"<div id=\"{DebugInfoId}\">{DebugInfoId}</div>");
+        }
     }
 
     private void RenderClose(HtmlContentBuilder htmlCB)
@@ -89,6 +93,10 @@ public class Component
             {
                 throw new ArgumentException($"CreateInstance() failed for: compNameStr = \"{subCompPrefStr}\", compType = \"{compType}\"");
             }
+
+            // Inherit some stuff from parent.
+            subComp.DebugInfo = DebugInfo;
+
             await subComp.RenderAsync(Html, htmlCB);
         }
     }
