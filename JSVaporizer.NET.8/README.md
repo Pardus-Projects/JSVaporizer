@@ -29,34 +29,10 @@ The code in this repository allows you to:
 
 ---
 
-### Project Structure
-
-```csharp
-JSVaporizer/
-|
-├── JSVapor.cs
-|    ├── public static partial class JSVapor
-|    │     ├── internal partial class WasmExports        // [JSExport] methods
-|    │     ├── internal partial class WasmElement        // [JSImport] "element"...
-|    │     ├── internal partial class WasmDocument       // [JSImport] "document"...
-|    │     ├── internal partial class WasmWindow         // [JSImport] "window"...
-|    │     ├── internal partial class WasmJSFunctionPool // [JSImport] "jsFunctionPool"...
-|    │     ├── internal partial class WasmJSVEventHandlerPool
-|    │     ├── internal partial class WasmJSVGenericFuncPool
-|    │     └── (etc.)
-|
-├── Element.cs    // The JSVapor.Element class, a higher-level wrapper for DOM elements
-├── Document.cs   // The JSVapor.Document class, includes the dictionary of known Elements, creation, getById, etc.
-├── Other .cs files for exceptions, shared enumerations, etc.
-|
-└── README.md
-
-```
-
 ## Requirements
 
-- .NET 7 or higher.  
-- WebAssembly-compatible runtime (e.g., Blazor WebAssembly).  
+- .NET 8 or higher.  
+- WebAssembly-compatible runtime (e.g., Sdk.WebAssembly).  
 - A build or project setup that supports C#-to-JS interop using `[JSExport]` and `[JSImport]` (e.g., an ASP.NET Core WebAssembly project referencing `System.Runtime.InteropServices.JavaScript`).  
 
 ---
@@ -148,3 +124,25 @@ JSVapor.JSVGenericFunctionPool.RegisterJSVGenericFunction("myGenericFuncKey", my
 //   const result = Module.jsvGenericFunctionPool.callJSVGenericFunction("myGenericFuncKey", ["any", "args"]);
 ```
 
+### Project Structure
+
+```csharp
+JSVaporizer/
+|
+├── JSVapor.cs
+|    ├── public static partial class JSVapor
+|    │     ├── internal partial class WasmExports        // [JSExport] methods
+|    │     ├── internal partial class WasmElement        // [JSImport] "element"...
+|    │     ├── internal partial class WasmDocument       // [JSImport] "document"...
+|    │     ├── internal partial class WasmWindow         // [JSImport] "window"...
+|    │     ├── internal partial class WasmJSFunctionPool // [JSImport] "jsFunctionPool"...
+|    │     ├── internal partial class WasmJSVEventHandlerPool
+|    │     ├── internal partial class WasmJSVGenericFuncPool
+|    │     └── (etc.)
+|
+├── Element.cs    // The JSVapor.Element class, a higher-level wrapper for DOM elements
+├── Document.cs   // The JSVapor.Document class, includes the dictionary of known Elements, creation, getById, etc.
+├── Other .cs files for exceptions, shared enumerations, etc.
+|
+└── README.md
+```
