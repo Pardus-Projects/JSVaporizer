@@ -17,7 +17,9 @@
 	  <PackageIcon>img.png</PackageIcon>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <RepositoryUrl>https://github.com/PardusLabs/JSVaporizer</RepositoryUrl>
-	  <PackageTags>.NET 8 ; WebAssembly ; C# ; ASP.NET Core; Front-end ; Back-end ; Minimalistic ; JavaScript ; Interop ; DOM Manipulation ; Blazor Alternative; DTO ;Transformer; Component ; Architecture</PackageTags>
+	  <PackageTags>
+		  NuFlexiArch;Transformer;DTO;DynamicUI;JSON;Component;Blazor;WASM;Renderer;DataMapping;Reflection;AOTFriendly;UIArchitecture;Registry
+	  </PackageTags>
 	  <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 	  <IncludeSymbols>True</IncludeSymbols>
 	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
