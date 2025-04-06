@@ -9,7 +9,7 @@
 
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	  <Title>NuFlexiArch</Title>
-	  <Version>1.0.9.1</Version>
+	  <Version>1.0.9.2</Version>
 	  <PackageProjectUrl>https://github.com/PardusLabs/JSVaporizer</PackageProjectUrl>
 	  <Description>Some DTO-centric, flexible and lightweight tools to help organize an application.</Description>
 	  <Company>Pardus Labs</Company>
