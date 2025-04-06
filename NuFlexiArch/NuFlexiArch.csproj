@@ -14,7 +14,7 @@
 	  <Description>Some DTO-centric, flexible and lightweight tools to help organize an application.</Description>
 	  <Company>Pardus Labs</Company>
 	  <PackageIcon>img.png</PackageIcon>
-	  <PackageReadmeFile></PackageReadmeFile>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <RepositoryUrl>https://github.com/PardusLabs/JSVaporizer</RepositoryUrl>
 	  <PackageTags>.NET 8 ; WebAssembly ; C# ; ASP.NET Core; Front-end ; Back-end ; DTO-centric; Minimalistic ; Flexible; Leightweight ; Framework; DTO ;Transformer; Component ; Architecture</PackageTags>
 	  <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
@@ -34,6 +34,13 @@
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
 	</ItemGroup>
 	
 </Project>

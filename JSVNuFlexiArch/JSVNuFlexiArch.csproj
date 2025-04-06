@@ -15,7 +15,7 @@
 	  <Description>A JSVaporizer implementation of NuFlexiArch</Description>
 	  <Company>Pardus Labs</Company>
 	  <PackageIcon>img.png</PackageIcon>
-	  <PackageReadmeFile></PackageReadmeFile>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <RepositoryUrl>https://github.com/PardusLabs/JSVaporizer</RepositoryUrl>
 	  <PackageTags>.NET 8 ; WebAssembly ; C# ; ASP.NET Core; Front-end ; Back-end ; Minimalistic ; JavaScript ; Interop ; DOM Manipulation ; Blazor Alternative; DTO ;Transformer; Component ; Architecture</PackageTags>
 	  <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
@@ -50,6 +50,13 @@
     <Reference Include="JSVaporizer.NET.8">
       <HintPath>..\JSVaporizer.NET.8\bin\Debug\net8.0\JSVaporizer.NET.8.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
