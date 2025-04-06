@@ -13,12 +13,14 @@ async function LaunchApp() {
     let JsvWasm = await site.GetJsvWasm();
 
     // Get exports from any web assemblies exported.
-    let jsvExports = await JsvWasm.GetExportedAssembly("MyTransformerLib");
+    let jsvExports = await JsvWasm.GetExportedAssembly("MyViewLib");
 
-    let exampleComponentDtoJson = $("#hfExampleComp_DtoJson").val();
-    let compInfoJson = $("#hfExampleComp_CompInfoJson").val();
-    let resStr = jsvExports.MyTransformerLib.MyTransformerRegistry.Invoke("MyExampleCompTransformer", exampleComponentDtoJson, compInfoJson);
-    alert("MyExampleCompTransformer says: " + resStr);
+    let myTextInput_MetadataJson = $("#hf_MyTextInput_MetadataJson").val();
+    let myTextInput_StateDtoJson = $("#hf_MyTextInput_StateDtoJson").val();
+
+    let resStr = jsvExports.MyViewLib.JSVComponentInitializer.InitializeFromJson(myTextInput_MetadataJson, myTextInput_StateDtoJson);
+
+    alert("MyTextInput says: " + resStr);
 }
 
 

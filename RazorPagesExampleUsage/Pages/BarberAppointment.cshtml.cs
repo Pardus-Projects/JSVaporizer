@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using JSVComponent;
-using MyTransformerLib;
+using MyViewLib;
 using System.Text.Json;
 
 namespace RazorPagesExampleUsage.Pages.BarberAppointmentModel;

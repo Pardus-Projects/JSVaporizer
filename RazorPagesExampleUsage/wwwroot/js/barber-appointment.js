@@ -16,10 +16,10 @@ async function LaunchApp() {
     JsvWasm.RegisterJSFunction("AjaxPOST", site.AjaxPOST);
 
     // Get exports from any web assemblies exported.
-    let jsvExports = await JsvWasm.GetExportedAssembly("MyTransformerLib");
+    let jsvExports = await JsvWasm.GetExportedAssembly("MyViewLib");
 
     let coolTransformerDtoJSON = $("#hfDtoJSON").val();
-    let resStr = jsvExports.MyTransformerLib.MyTransformerRegistry.Invoke("MyCoolTransformerV1", coolTransformerDtoJSON);
+    let resStr = jsvExports.MyViewLib.MyTransformerRegistry.Invoke("MyCoolTransformerV1", coolTransformerDtoJSON);
     alert("MyCoolTransformerV1 says: " + resStr);
 }
 

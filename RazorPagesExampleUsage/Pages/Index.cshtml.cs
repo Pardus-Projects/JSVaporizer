@@ -1,32 +1,25 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using JSVComponent;
-using MyTransformerLib;
-using System.Text.Json;
+using MyViewLib;
 
 namespace MyExampleApplication.Pages
 {
     public class IndexModel : PageModel
     {
-        public ExampleTextInput MyTextInput = new("myTextInput");
-        public ExampleNested MyNested = new("myNested");
-
-        public ExampleComp TheExampleComp = new("theExampleComp");
-        public string TheExampleComp_DtoJson = "";
-        public string TheExampleComp_CompInfoJson = "";
-
-        public string XformerDtoJSON = "";
+        public JSVTextInput MyTextInput = new("myTextInput", new TextInputRenderer());
+        public string MyTextInput_MetadataJson = "";
+        public string MyTextInput_StateDtoJson = "";
 
         public void OnGet()
         {
-            MyExampleCompTransformerDto dto = new()
+            MyTextInput_MetadataJson = MyTextInput.SerializeMetadata();
+            TextInputStateDto stateDto = new()
             {
-                HeaderStr = "The Header Info",
-                ContentStr = "The Content Info"
+                LabelValue = "MY LABEL VALUE",
+                InputValue = "MY INPUT VALUE"
             };
-            TheExampleComp_DtoJson = JsonSerializer.Serialize(dto);
-            TheExampleComp_CompInfoJson = TheExampleComp.SerializeComponentProperties();
+            MyTextInput_StateDtoJson = MyTextInput.SerializeState(stateDto);
 
-            MyNested.DebugInfo = true;
+            //IJSVComponent.InitializeFromJson(MyTextInput_MetadataJson, MyTextInput_StateDtoJson);
         }
     }
 }

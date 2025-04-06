@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.JavaScript;
+﻿using NuFlexiArch;
 using System.Runtime.Versioning;
 
-namespace JSVaporizer;
+namespace JSVNuFlexiArch;
 
-public class TransformerDto;
-
-public abstract class Transformer
+public abstract class JSVTransformer : ITransformer
 {
     private string? _registryKey;
 
-    public Transformer() { }
+    public JSVTransformer() { }
 
     public abstract TransformerDto JsonToDto(string dtoJson);
 
@@ -33,20 +29,20 @@ public abstract class Transformer
     }
 }
 
-public class TransformerRegistry
+public class TransformerRegistry : ITransformerRegistry
 {
-    private Dictionary<string, Transformer> _registry = new();
+    private Dictionary<string, JSVTransformer> _registry = new();
 
-    public TransformerRegistry(Dictionary<string, Transformer> registry)
+    public TransformerRegistry(Dictionary<string, JSVTransformer> registry)
     {
         _registry = registry;
     }
 
-    public Transformer Get(string xFormerRegistryKey)
+    public ITransformer Get(string xFormerRegistryKey)
     {
         if (_registry.ContainsKey(xFormerRegistryKey))
         {
-            Transformer xFormer = _registry[xFormerRegistryKey];
+            JSVTransformer xFormer = _registry[xFormerRegistryKey];
             xFormer.SetRegistryKey(xFormerRegistryKey);
             return xFormer;
         }
@@ -55,17 +51,15 @@ public class TransformerRegistry
             throw new Exception($"xFormerRegistryKey = \"{xFormerRegistryKey}\" does not exist in transformer registry.");
         }
     }
-}
 
-public static partial class TransformerInvoker
-{
     [SupportedOSPlatform("browser")]
-    public static string Invoke(TransformerRegistry transformerRegistry, string xFormerName, string dtoJson, string? userInfoJson = null)
+    public static string Invoke(ITransformerRegistry transformerRegistry, string xFormerName, string dtoJson, string? userInfoJson = null)
     {
-        Transformer xFormer = transformerRegistry.Get(xFormerName);
+        ITransformer xFormer = transformerRegistry.Get(xFormerName);
         string xFromRes = xFormer.DtoToView(dtoJson, userInfoJson);
         return xFromRes;
     }
 }
+
 
 

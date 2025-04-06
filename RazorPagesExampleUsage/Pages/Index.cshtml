@@ -10,14 +10,17 @@
 
 <h1>Components Test</h1>
 
-@await Model.MyTextInput.RenderAsync(Html)
+<hr />
 
-@await Model.MyNested.RenderAsync(Html)
+<hr />
 
-<input id="hfExampleComp_DtoJson" type="hidden" value="@Model.TheExampleComp_DtoJson" />
-<input id="hfExampleComp_CompInfoJson" type="hidden" value="@Model.TheExampleComp_CompInfoJson" />
-@await Model.TheExampleComp.RenderAsync(Html)
+<h2>Component TextInput</h2>
 
+<input id="hf_MyTextInput_MetadataJson" type="hidden" value="@Model.MyTextInput_MetadataJson" />
+<input id="hf_MyTextInput_StateDtoJson" type="hidden" value="@Model.MyTextInput_StateDtoJson" />
+@await Model.MyTextInput.GetRenderer().RenderAsync(Model.MyTextInput, Html)
+
+<hr />
 
 
 

@@ -8,8 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MyComponentLib\MyComponentLib.csproj" />
-    <ProjectReference Include="..\MyTransformerLib\MyTransformerLib.csproj" />
+    <ProjectReference Include="..\MyViewLib\MyViewLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

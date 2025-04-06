@@ -1,15 +1,17 @@
-﻿using System;
+﻿using JSVaporizer;
+using JSVNuFlexiArch;
+using NuFlexiArch;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using JSVaporizer;
 using static JSVaporizer.JSVapor;
 using static JSVaporizer.JSVapor.JSVGenericFunctionPool;
 
-namespace MyTransformerLib;
+namespace MyViewLib;
 
 [JsonSerializable(typeof(MyCoolTransformerDto))]
 public partial class MyCoolTransformerDtoContext : JsonSerializerContext { }
@@ -22,7 +24,7 @@ public class MyCoolTransformerDto : TransformerDto
     public bool? ParallelPetGrooming { get; set; }
 }
 
-public class BarberAppointmentTransformer : Transformer
+public class BarberAppointmentTransformer : JSVTransformer
 {
     public override MyCoolTransformerDto JsonToDto(string dtoJson)
     {
