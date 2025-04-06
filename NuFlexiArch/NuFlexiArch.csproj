@@ -4,6 +4,36 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+	  <IsPackable>true</IsPackable>
+
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <Title>NuFlexiArch</Title>
+	  <Version>1.0.9.0</Version>
+	  <PackageProjectUrl>https://github.com/PardusLabs/JSVaporizer</PackageProjectUrl>
+	  <Description>Some DTO-centric, flexible and lightweight tools to help organize an application.</Description>
+	  <Company>Pardus Labs</Company>
+	  <PackageIcon>img.png</PackageIcon>
+	  <PackageReadmeFile></PackageReadmeFile>
+	  <RepositoryUrl>https://github.com/PardusLabs/JSVaporizer</RepositoryUrl>
+	  <PackageTags>.NET 8 ; WebAssembly ; C# ; ASP.NET Core; Front-end ; Back-end ; DTO-centric; Minimalistic ; Flexible; Leightweight ; Framework; DTO ;Transformer; Component ; Architecture</PackageTags>
+	  <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+	  <IncludeSymbols>True</IncludeSymbols>
+	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	  <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+	  <PackageId>PardusLabs.$(AssemblyName)</PackageId>
+
   </PropertyGroup>
 
+	<ItemGroup>
+		<None Include="..\img.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\LICENSE.txt">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+	
 </Project>
