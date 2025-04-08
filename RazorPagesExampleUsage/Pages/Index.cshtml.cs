@@ -1,25 +1,67 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using MyViewLib;
+using JSVNuFlexiArch;
+using NuFlexiArch;
 
 namespace MyExampleApplication.Pages
 {
     public class IndexModel : PageModel
     {
-        public JSVTextInput MyTextInput = new("myTextInput", new TextInputRenderer());
-        public string MyTextInput_MetadataJson = "";
-        public string MyTextInput_StateDtoJson = "";
+        public JSVTextDisplay JSVTextDisplay = new("JSVTextDisplay");
+        public string JSVTextDisplay_InstanceJson;
+
+        public JSVTextInput JSVTextInput = new("JSVTextInput");
+        public string JSVTextInput_InstanceJson;
+
+        public JSVTextArea JSVTextArea = new("JSVTextArea");
+        public string JSVTextArea_InstanceJson;
+
+        public JSVCheckbox JSVCheckbox = new("JSVCheckbox");
+        public string JSVCheckbox_InstanceJson;
+
+        public JSVSlider JSVSlider = new("JSVSlider");
+        public string JSVSlider_InstanceJson;
 
         public void OnGet()
         {
-            MyTextInput_MetadataJson = MyTextInput.SerializeMetadata();
-            TextInputStateDto stateDto = new()
+            TextDisplayDto textDisplayDto = new()
             {
-                LabelValue = "MY LABEL VALUE",
-                InputValue = "MY INPUT VALUE"
+                Text = "JSVTextDisplay TEXT"
             };
-            MyTextInput_StateDtoJson = MyTextInput.SerializeState(stateDto);
+            JSVTextDisplay_InstanceJson = JSVTextDisplay.SerializeInstance(textDisplayDto).Serialize();
 
-            //IJSVComponent.InitializeFromJson(MyTextInput_MetadataJson, MyTextInput_StateDtoJson);
+            TextInputStateDto textInputStateDto = new()
+            {
+                Label = "JSVTextInput LABEL",
+                InputValue = "JSVTextInput VALUE"
+            };
+            JSVTextInput_InstanceJson = JSVTextInput.SerializeInstance(textInputStateDto).Serialize();
+
+            TextAreaStateDto textAreaStateDto = new()
+            {
+                Label = "JSVTextArea LABEL",
+                TextValue = "JSVTextArea VALUE",
+                Rows = 4,
+                Cols = 80,
+                MaxLength = 90
+            };
+            JSVTextArea_InstanceJson = JSVTextArea.SerializeInstance(textAreaStateDto).Serialize();
+
+            CheckboxStateDto checkboxStateDto = new()
+            {
+                Label = "JSVCheckbox LABEL",
+                IsChecked = true
+            };
+            JSVCheckbox_InstanceJson = JSVCheckbox.SerializeInstance(checkboxStateDto).Serialize();
+
+            SliderStateDto sliderStateDto = new()
+            {
+                Label = "",
+                Value = 96,
+                MinValue = 7,
+                MaxValue = 107,
+                Step = 0.5
+            };
+            JSVSlider_InstanceJson = JSVSlider.SerializeInstance(sliderStateDto).Serialize();
         }
     }
 }

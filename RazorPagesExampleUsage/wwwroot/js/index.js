@@ -15,12 +15,27 @@ async function LaunchApp() {
     // Get exports from any web assemblies exported.
     let jsvExports = await JsvWasm.GetExportedAssembly("MyViewLib");
 
-    let myTextInput_MetadataJson = $("#hf_MyTextInput_MetadataJson").val();
-    let myTextInput_StateDtoJson = $("#hf_MyTextInput_StateDtoJson").val();
+    let resStr;
 
-    let resStr = jsvExports.MyViewLib.JSVComponentInitializer.InitializeFromJson(myTextInput_MetadataJson, myTextInput_StateDtoJson);
+    let JSVTextDisplay_InstanceJson = $("#hf_JSVTextDisplay_InstanceJson").val();
+    resStr = jsvExports.MyViewLib.JSVComponentInitializer.InstantiateFromJson(JSVTextDisplay_InstanceJson, "JSVTextDisplay_Placeholder");
+    alert("JSVTextDisplay says: " + resStr);
 
-    alert("MyTextInput says: " + resStr);
+    let JSVTextInput_InstanceJson = $("#hf_JSVTextInput_InstanceJson").val();
+    resStr = jsvExports.MyViewLib.JSVComponentInitializer.InstantiateFromJson(JSVTextInput_InstanceJson, "JSVTextInput_Placeholder");
+    alert("JSVTextInput says: " + resStr);
+
+    let JSVTextArea_InstanceJson = $("#hf_JSVTextArea_InstanceJson").val();
+    resStr = jsvExports.MyViewLib.JSVComponentInitializer.InstantiateFromJson(JSVTextArea_InstanceJson, "JSVTextArea_Placeholder");
+    alert("JSVTextArea says: " + resStr);
+
+    let JSVCheckbox_InstanceJson = $("#hf_JSVCheckbox_InstanceJson").val();
+    resStr = jsvExports.MyViewLib.JSVComponentInitializer.InstantiateFromJson(JSVCheckbox_InstanceJson, "JSVCheckbox_Placeholder");
+    alert("JSVCheckbox says: " + resStr);
+
+    let JSVSlider_InstanceJson = $("#hf_JSVSlider_InstanceJson").val();
+    resStr = jsvExports.MyViewLib.JSVComponentInitializer.InstantiateFromJson(JSVSlider_InstanceJson, "JSVSlider_Placeholder");
+    alert("JSVSlider says: " + resStr);
 }
 
 

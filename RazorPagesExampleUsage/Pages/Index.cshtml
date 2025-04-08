@@ -12,13 +12,25 @@
 
 <hr />
 
-<hr />
+<h2>JSVTextDisplay</h2>
+<input id="hf_JSVTextDisplay_InstanceJson" type="hidden" value="@Model.JSVTextDisplay_InstanceJson" />
+<div id="JSVTextDisplay_Placeholder"></div>
 
-<h2>Component TextInput</h2>
+<h2>JSVTextInput</h2>
+<input id="hf_JSVTextInput_InstanceJson" type="hidden" value="@Model.JSVTextInput_InstanceJson" />
+<div id="JSVTextInput_Placeholder"></div>
 
-<input id="hf_MyTextInput_MetadataJson" type="hidden" value="@Model.MyTextInput_MetadataJson" />
-<input id="hf_MyTextInput_StateDtoJson" type="hidden" value="@Model.MyTextInput_StateDtoJson" />
-@await Model.MyTextInput.GetRenderer().RenderAsync(Model.MyTextInput, Html)
+<h2>JSVTextArea</h2>
+<input id="hf_JSVTextArea_InstanceJson" type="hidden" value="@Model.JSVTextArea_InstanceJson" />
+<div id="JSVTextArea_Placeholder"></div>
+
+<h2>JSVCheckbox</h2>
+<input id="hf_JSVCheckbox_InstanceJson" type="hidden" value="@Model.JSVCheckbox_InstanceJson" />
+<div id="JSVCheckbox_Placeholder"></div>
+
+<h2>JSVSlider</h2>
+<input id="hf_JSVSlider_InstanceJson" type="hidden" value="@Model.JSVSlider_InstanceJson" />
+<div id="JSVSlider_Placeholder"></div>
 
 <hr />
 

@@ -6,13 +6,13 @@ public interface IComponent
 }
 public interface IComponentRenderer
 {
-    public Task<object> RenderAsync(AComponent comp, params object[] args);
+    public object Render(AComponent comp, params object[] args);
 }
 
 // In case you need one
 public class BlackHole : IComponentRenderer
 {
-    public Task<object> RenderAsync(AComponent comp, params object[] args)
+    public object Render(AComponent comp, params object[] args)
     {
         var taskSource = new TaskCompletionSource<object>();
         taskSource.SetResult(new());

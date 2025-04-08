@@ -4,6 +4,29 @@ using System.Text.Json.Serialization;
 
 namespace NuFlexiArch;
 
+[JsonSerializable(typeof(ComponentInstanceDto))]
+public partial class ComponentInstanceContext : JsonSerializerContext { }
+public class ComponentInstanceDto
+{
+    public required string MetadataJson { get; set; }
+    public required string StateJson { get; set; }
+
+    public string Serialize()
+    {
+        return JsonSerializer.Serialize(this, ComponentInstanceContext.Default.ComponentInstanceDto);
+    }
+
+    public static ComponentInstanceDto Deserialize(string instanceDtoJson)
+    {
+        ComponentInstanceDto? nCompInstanceDto = JsonSerializer.Deserialize(instanceDtoJson, ComponentInstanceContext.Default.ComponentInstanceDto);
+        if (nCompInstanceDto == null)
+        {
+            throw new ArgumentException($"nCompInstanceDto = null for instanceDtoJson = \"{instanceDtoJson}\"");
+        }
+        ComponentInstanceDto instanceDto = nCompInstanceDto;
+        return instanceDto;
+    }
+}
 
 [JsonSerializable(typeof(ComponentMetadata))]
 [JsonSerializable(typeof(List<CompMetadataItem>))]
@@ -61,6 +84,7 @@ public abstract class AComponent
         CompStateDto stateDto = nStateDto;
         return stateDto;
     }
+
     public string GetAssemblyQualifiedName()
     {
         string? nFqn = GetType().AssemblyQualifiedName;
@@ -74,6 +98,17 @@ public abstract class AComponent
     public string SerializeMetadata()
     {
         return JsonSerializer.Serialize(Metadata, MetadataContext.Default.ComponentMetadata);
+    }
+
+    public ComponentInstanceDto SerializeInstance(CompStateDto stateDto)
+    {
+        ComponentInstanceDto instanceDto = new()
+        {
+            MetadataJson = SerializeMetadata(),
+            StateJson = SerializeState(stateDto)
+
+        };
+        return instanceDto;
     }
 
     public static ComponentMetadata DeserializeMetadata(string metadataJson)

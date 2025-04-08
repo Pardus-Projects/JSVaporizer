@@ -1,13 +1,20 @@
 ﻿using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NuFlexiArch;
+using System.Runtime.Versioning;
+using System.Text.Encodings.Web;
+using static JSVaporizer.JSVapor;
 
 namespace JSVNuFlexiArch;
 
+[SupportedOSPlatform("browser")]
 public interface IJSVComponent : IComponent
 {
-    public static bool InitializeFromJson(string metadataJson, string stateDtoJson)
+    public static bool InstantiateFromJson(string instanceDtoJson, string referenceElementId, bool append=false)
     {
+        ComponentInstanceDto instanceDto = ComponentInstanceDto.Deserialize(instanceDtoJson);
+        string metadataJson = instanceDto.MetadataJson;
+        string stateDtoJson = instanceDto.StateJson;
+
         ComponentMetadata compMetadata = AComponent.DeserializeMetadata(metadataJson);
         Dictionary<string, string> mdDict = AComponent.ToDictionary(compMetadata);
 
@@ -20,13 +27,33 @@ public interface IJSVComponent : IComponent
             throw new ArgumentException($"stateDto.CompType = \"{compTypeAQN}\" was not found.");
         }
 
-        AComponent? aComp = (AComponent?)Activator.CreateInstance(compType, new object[] { unqPrefix, new BlackHole() });
+        AComponent? aComp = (AComponent?)Activator.CreateInstance(compType, new object[] { unqPrefix });
         if (aComp == null)
         {
-            throw new ArgumentException($"CreateInstance() failed for: compNameStr = \"{unqPrefix}\", compType = \"{compType}\"");
+            throw new ArgumentException($"CreateInstance() failed for: unqPrefix = \"{unqPrefix}\", compType = \"{compType}\"");
         }
 
         CompStateDto stateDto = aComp.DeserializeState(stateDtoJson);
+
+        // Render
+        HtmlContentBuilder htmlCB = (HtmlContentBuilder)((IComponent)aComp).GetRenderer().Render(aComp);
+        using (var sw = new StringWriter())
+        {
+            htmlCB.WriteTo(sw, HtmlEncoder.Default);
+            string componentHtml = sw.ToString();
+
+            Element referenceElem = Document.AssertGetElementById(referenceElementId);
+            
+            if (append)
+            {
+                referenceElem.AppendChild(Document.CreateElement(unqPrefix, "div"));
+                Document.AssertGetElementById(unqPrefix).SetProperty("outerHTML", componentHtml);
+            }
+            else // replace
+            {
+                referenceElem.SetProperty("outerHTML", componentHtml);
+            }
+        }
 
         return aComp.SetState(stateDto);
     }
@@ -48,16 +75,12 @@ public class JSVComponentRenderer : IComponentRenderer
         htmlCB.AppendHtml(compEnd);
     }
 
-    protected virtual Task RenderBody(AComponent comp, IHtmlHelper Html, HtmlContentBuilder htmlCB)
-    {
-        return Task.CompletedTask;
-    }
+    protected virtual void RenderBody(AComponent comp, HtmlContentBuilder htmlCB) { }
 
-    public async Task<object> RenderAsync(AComponent comp, params object[] args)
+    public object Render(AComponent comp, params object[] args)
     {
-        IHtmlHelper Html = (IHtmlHelper)args[0];
         HtmlContentBuilder? htmlCB = new();
-        if (args.Length > 1)
+        if (args.Length > 0)
         {
             htmlCB = (HtmlContentBuilder)args[1];
             if (htmlCB == null)
@@ -67,7 +90,7 @@ public class JSVComponentRenderer : IComponentRenderer
         }
 
         RenderOpen(comp, htmlCB);
-        await RenderBody(comp, Html, htmlCB);
+        RenderBody(comp, htmlCB);
         RenderClose(comp, htmlCB);
 
         return htmlCB;
