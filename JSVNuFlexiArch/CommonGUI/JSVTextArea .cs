@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NuFlexiArch;
 using System.Runtime.Versioning;
 using static JSVaporizer.JSVapor;
@@ -9,20 +8,18 @@ namespace JSVNuFlexiArch;
 [SupportedOSPlatform("browser")]
 public class JSVTextArea : ATextArea, IJSVComponent
 {
-    private IComponentRenderer _renderer;
     public string Id { get; set; }
     public string LabelId { get; set; }
 
-    public JSVTextArea(string unqPrefix)
+    public JSVTextArea(string uniqueName)
     {
-        _renderer = new JSVTextAreaRenderer();
-        Metadata.Add("UnqPrefix", unqPrefix);
+        Renderer = new JSVTextAreaRenderer();
+        Metadata.Add("UnqPrefix", uniqueName);
         Metadata.Add("CompTypeAQN", GetAssemblyQualifiedName());
 
-        Id = JSVComponentHelpers.AppendElementSuffix(unqPrefix, "TextAreaId");
-        LabelId = JSVComponentHelpers.AppendElementSuffix(unqPrefix, "LabelId");
+        Id = uniqueName.AppendElementSuffix("InputId");
+        LabelId = uniqueName.AppendElementSuffix("LabelId");
     }
-    public IComponentRenderer GetRenderer() => _renderer;
 
     private string? _labelVal;
     private string? _textVal;

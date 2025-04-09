@@ -15,21 +15,26 @@ public interface IJSVComponent : IComponent
         CompMetadata compMetadata = AComponent.DeserializeMetadata(instanceDto.MetadataJson);
 
         Dictionary<string, string> mdDict = AComponent.ToDictionary(compMetadata);
-        string unqPrefix = mdDict["UnqPrefix"];
+        string uniqueName = mdDict["UnqPrefix"];
         string compTypeAQN = mdDict["CompTypeAQN"];
 
         // Instantiate
-        AComponent aComp = Instantiate(unqPrefix, compTypeAQN);
+        AComponent aComp = Instantiate(uniqueName, compTypeAQN);
         CompDataDto stateDto = aComp.DeserializeState(instanceDto.StateJson);
 
         // Render
-        bool success = Render(unqPrefix, aComp, referenceElementId, append);
+        bool renderSuccess = Render(uniqueName, aComp, referenceElementId, append);
+
+        // Set initialize
+        bool initSuccess = aComp.Initialize();
 
         // Set state
-        return aComp.UpdateState(stateDto);
+        bool updateStateSuccess =  aComp.UpdateState(stateDto);
+
+        return renderSuccess && initSuccess && updateStateSuccess;
     }
 
-    public static AComponent Instantiate(string unqPrefix, string compTypeAQN)
+    public static AComponent Instantiate(string uniqueName, string compTypeAQN)
     {
         Type? compType = Type.GetType(compTypeAQN);
         if (compType == null)
@@ -37,18 +42,18 @@ public interface IJSVComponent : IComponent
             throw new ArgumentException($"compTypeAQN = \"{compTypeAQN}\" was not found.");
         }
 
-        AComponent? aComp = (AComponent?)Activator.CreateInstance(compType, new object[] { unqPrefix });
+        AComponent? aComp = (AComponent?)Activator.CreateInstance(compType, new object[] { uniqueName });
         if (aComp == null)
         {
-            throw new ArgumentException($"CreateInstance() failed for: unqPrefix = \"{unqPrefix}\", compType = \"{compType}\"");
+            throw new ArgumentException($"CreateInstance() failed for: uniqueName = \"{uniqueName}\", compType = \"{compType}\"");
         }
 
         return aComp;
     }
 
-    public static bool Render(string unqPrefix, AComponent aComp, string referenceElementId, bool append) {
+    public static bool Render(string uniqueName, AComponent aComp, string referenceElementId, bool append) {
         // Render HTML
-        HtmlContentBuilder htmlCB = (HtmlContentBuilder)((IComponent)aComp).GetRenderer().Render(aComp);
+        HtmlContentBuilder htmlCB = (HtmlContentBuilder) aComp.GetRenderer().Render(aComp);
 
         // Put HTML in the DOM somewhere
         using (var sw = new StringWriter())
@@ -60,8 +65,8 @@ public interface IJSVComponent : IComponent
 
             if (append)
             {
-                referenceElem.AppendChild(Document.CreateElement(unqPrefix, "div"));
-                Document.AssertGetElementById(unqPrefix).SetProperty("outerHTML", componentHtml);
+                referenceElem.AppendChild(Document.CreateElement(uniqueName, "div"));
+                Document.AssertGetElementById(uniqueName).SetProperty("outerHTML", componentHtml);
             }
             else // replace
             {
@@ -90,6 +95,19 @@ public class JSVComponentRenderer : IComponentRenderer
     }
 
     protected virtual void RenderBody(AComponent comp, HtmlContentBuilder htmlCB) { }
+    public virtual string RenderBodyToHtml(AComponent comp)
+    {
+        HtmlContentBuilder htmlCB = new();
+        RenderBody(comp, htmlCB);
+
+        // Put HTML in the DOM somewhere
+        using (var sw = new StringWriter())
+        {
+            htmlCB.WriteTo(sw, HtmlEncoder.Default);
+            string componentHtml = sw.ToString();
+            return componentHtml;
+        }
+    }
 
     public object Render(AComponent comp, params object[] args)
     {
@@ -113,9 +131,14 @@ public class JSVComponentRenderer : IComponentRenderer
 
 public static class JSVComponentHelpers
 {
-    public static string AppendElementSuffix(string unqPrefix, string suffix)
+    public static string AppendElementSuffix(this string uniqueName, string suffix)
     {
-        return unqPrefix + "_" + suffix;
+        return uniqueName + "_" + suffix;
+    }
+
+    public static string AppendSubComponentuffix(this string uniqueName, string suffix)
+    {
+        return uniqueName + "_-_" + suffix;
     }
 }
 

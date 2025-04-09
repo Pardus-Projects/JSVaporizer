@@ -4,61 +4,19 @@ using System.Text.Json.Serialization;
 
 namespace NuFlexiArch;
 
-[JsonSerializable(typeof(CompInstanceDto))]
-public partial class ComponentInstanceContext : JsonSerializerContext { }
-public class CompInstanceDto
+public interface IComponent
 {
-    public required string MetadataJson { get; set; }
-    public required string StateJson { get; set; }
-
-    public string Serialize()
-    {
-        return JsonSerializer.Serialize(this, (JsonTypeInfo<CompInstanceDto>)ComponentInstanceContext.Default.CompInstanceDto);
-    }
-
-    public static CompInstanceDto Deserialize(string instanceDtoJson)
-    {
-        CompInstanceDto? nCompInstanceDto = JsonSerializer.Deserialize(instanceDtoJson, ComponentInstanceContext.Default.CompInstanceDto);
-        if (nCompInstanceDto == null)
-        {
-            throw new ArgumentException($"nCompInstanceDto = null for instanceDtoJson = \"{instanceDtoJson}\"");
-        }
-        CompInstanceDto instanceDto = nCompInstanceDto;
-        return instanceDto;
-    }
+    // Stub in case it's needed
 }
-
-[JsonSerializable(typeof(CompMetadata))]
-[JsonSerializable(typeof(List<CompMetadataItem>))]
-[JsonSerializable(typeof(CompMetadataItem))]
-public partial class MetadataContext : JsonSerializerContext { }
-public class CompMetadata
-{
-    public List<CompMetadataItem> List { get; set; } = new();
-    public void Add(string name, string value)
-    {
-        List.Add(new CompMetadataItem(name, value));
-    }
-}
-
-public class CompMetadataItem
-{
-    public string Name { get; set; }
-    public string Value { get; set; }
-    public CompMetadataItem(string name, string value)
-    {
-        Name = name;
-        Value = value;
-    }
-}
-
-[JsonSerializable(typeof(CompDataDto))]
-public partial class CompDataDtoContext : JsonSerializerContext { }
-public class CompDataDto { }
 
 public abstract class AComponent
 {
+    public IComponentRenderer Renderer { get; set; } = new BlackHole();
     public CompMetadata Metadata { get; set; } = new();
+
+    public virtual IComponentRenderer GetRenderer() { return Renderer; }
+
+    public virtual bool Initialize() { return true; }
 
     public virtual bool UpdateState(CompDataDto stateDto) { return true; }
 
@@ -133,3 +91,74 @@ public abstract class AComponent
         return dict;
     }
 }
+
+
+public interface IComponentRenderer
+{
+    public object Render(AComponent comp, params object[] args);
+}
+
+// In case you need one
+public class BlackHole : IComponentRenderer
+{
+    public object Render(AComponent comp, params object[] args)
+    {
+        return new();
+    }
+}
+
+[JsonSerializable(typeof(CompInstanceDto))]
+public partial class ComponentInstanceContext : JsonSerializerContext { }
+public class CompInstanceDto
+{
+    public required string MetadataJson { get; set; }
+    public required string StateJson { get; set; }
+
+    public string Serialize()
+    {
+        return JsonSerializer.Serialize(this, (JsonTypeInfo<CompInstanceDto>)ComponentInstanceContext.Default.CompInstanceDto);
+    }
+
+    public static CompInstanceDto Deserialize(string instanceDtoJson)
+    {
+        CompInstanceDto? nCompInstanceDto = JsonSerializer.Deserialize(instanceDtoJson, ComponentInstanceContext.Default.CompInstanceDto);
+        if (nCompInstanceDto == null)
+        {
+            throw new ArgumentException($"nCompInstanceDto = null for instanceDtoJson = \"{instanceDtoJson}\"");
+        }
+        CompInstanceDto instanceDto = nCompInstanceDto;
+        return instanceDto;
+    }
+}
+
+[JsonSerializable(typeof(CompMetadata))]
+[JsonSerializable(typeof(List<CompMetadataItem>))]
+[JsonSerializable(typeof(CompMetadataItem))]
+public partial class MetadataContext : JsonSerializerContext { }
+public class CompMetadata
+{
+    public List<CompMetadataItem> List { get; set; } = new();
+    public void Add(string name, string value)
+    {
+        List.Add(new CompMetadataItem(name, value));
+    }
+}
+
+public class CompMetadataItem
+{
+    public string Name { get; set; }
+    public string Value { get; set; }
+    public CompMetadataItem(string name, string value)
+    {
+        Name = name;
+        Value = value;
+    }
+}
+
+[JsonSerializable(typeof(CompDataDto))]
+public partial class CompDataDtoContext : JsonSerializerContext { }
+public class CompDataDto { }
+
+
+
+

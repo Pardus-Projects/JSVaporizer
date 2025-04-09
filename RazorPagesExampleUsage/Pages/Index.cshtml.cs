@@ -55,7 +55,7 @@ namespace MyExampleApplication.Pages
 
             SliderDataDto sliderDataDto = new()
             {
-                Label = "",
+                Label = "JSVSlider LABEL",
                 Value = 96,
                 MinValue = 7,
                 MaxValue = 107,

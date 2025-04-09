@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NuFlexiArch;
 using System.Runtime.Versioning;
 using static JSVaporizer.JSVapor;
@@ -9,18 +8,16 @@ namespace JSVNuFlexiArch;
 [SupportedOSPlatform("browser")]
 public class JSVTextDisplay : ATextDisplay, IJSVComponent
 {
-    private IComponentRenderer _renderer;
     public string Id;
 
-    public JSVTextDisplay(string unqPrefix)
+    public JSVTextDisplay(string uniqueName)
     {
-        _renderer = new JSVTextDisplayRenderer();
-        Metadata.Add("UnqPrefix", unqPrefix);
+        Renderer = new JSVTextDisplayRenderer();
+        Metadata.Add("UnqPrefix", uniqueName);
         Metadata.Add("CompTypeAQN", GetAssemblyQualifiedName());
 
-        Id = JSVComponentHelpers.AppendElementSuffix(unqPrefix, "InputId");
+        Id = uniqueName.AppendElementSuffix("InputId");
     }
-    public IComponentRenderer GetRenderer() => _renderer;
 
     private string? _text;
 
