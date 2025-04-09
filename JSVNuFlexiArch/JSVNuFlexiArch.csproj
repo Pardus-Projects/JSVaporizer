@@ -12,7 +12,7 @@
 	  <Title>JSV NuFlexiArch</Title>
 	  <Version>1.0.9.4</Version>
 	  <PackageProjectUrl>https://github.com/PardusLabs/JSVaporizer</PackageProjectUrl>
-	  <Description>A JSVaporizer implementation of NuFlexiArch</Description>
+	  <Description>NuFlexiArch + JSVapor is an experimental, lightweight framework for building interactive web applications using C# and WebAssembly, without relying on higher-level abstractions like Blazor.</Description>
 	  <Company>Pardus Labs</Company>
 	  <PackageIcon>img.png</PackageIcon>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
