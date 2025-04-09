@@ -61,7 +61,7 @@ This framework is split across three main namespaces (and corresponding files/fo
 
 2. **Cloning the Repository**
 
-    git clone https://github.com/PardusLabs/ZenArch.git  
+    git clone https://github.com/PardusLabs/JSVaporizer-NuFlexiArch.git  
     cd NuFlexiArch-JSVapor
 
 3. **Building**  
