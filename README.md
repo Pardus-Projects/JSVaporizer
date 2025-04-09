@@ -1,8 +1,4 @@
-Below is a sample **README.md** that you could include with this project. Feel free to adapt it to your specific needs, add more details, or remove sections that aren’t relevant.
-
----
-
-# NuFlexiArch + JSVapor
+# NuFlexiArch + JSVaporizer
 
 NuFlexiArch + JSVapor is an experimental, lightweight framework for building interactive web applications using C# and WebAssembly, without relying on higher-level abstractions like Blazor. It provides:
 
