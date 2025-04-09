@@ -8,7 +8,7 @@ The NuFlexiArch/JSVNuFlexiArch framework is a modular, extensible architecture d
 ### Core Abstractions
 - **Component Base Classes and Interfaces:**
   - **`AComponent` & `ATextInput`:**  
-    Provide a common foundation for UI components, handling metadata (via `ComponentMetadata`) and state management using Data Transfer Objects (DTOs) like `TextInputStateDto`.
+    Provide a common foundation for UI components, handling metadata (via `ComponentMetadata`) and state management using Data Transfer Objects (DTOs) like `TextInputDataDto`.
   - **State Management:**  
     Each component can serialize and deserialize its state to/from JSON. This allows for easy persistence and restoration of component state.
 
@@ -40,7 +40,7 @@ The NuFlexiArch/JSVNuFlexiArch framework is a modular, extensible architecture d
   Contains the core abstractions such as `AComponent`, `TransformerDto`, and related interfaces (`ITransformer`, `ITransformerRegistry`).
 
 - **MyViewLib:**  
-  Implements concrete UI components like `JSVTextInput` and `TextInputRenderer`, along with state management classes like `TextInputStateDto` and its serializer context.
+  Implements concrete UI components like `JSVTextInput` and `TextInputRenderer`, along with state management classes like `TextInputDataDto` and its serializer context.
 
 - **JSVNuFlexiArch:**  
   Provides browser-specific implementations:
@@ -64,7 +64,7 @@ Components can be instantiated and initialized from JSON data using the static m
 
 ### State Management and Transformation
 - **State Serialization/Deserialization:**  
-  Components maintain their state in DTOs (such as `TextInputStateDto`). These can be easily serialized to JSON for persistence or transmission, and deserialized back to restore state.
+  Components maintain their state in DTOs (such as `TextInputDataDto`). These can be easily serialized to JSON for persistence or transmission, and deserialized back to restore state.
 - **Data Transformation:**  
   The transformer mechanism allows converting data between different formats (e.g., JSON to DTO, DTO to view-friendly formats) using custom transformer implementations and a registry for dynamic lookup.
 

@@ -3,9 +3,9 @@ using System.Text.Json.Serialization.Metadata;
 
 namespace NuFlexiArch;
 
-[JsonSerializable(typeof(TextDisplayDto))]
+[JsonSerializable(typeof(TextDisplayDataDto))]
 public partial class TextDisplaySerializerContext : JsonSerializerContext { }
-public class TextDisplayDto : CompStateDto
+public class TextDisplayDataDto : CompDataDto
 {
     public string? Text { get; set; }
 }
@@ -15,9 +15,9 @@ public abstract class ATextDisplay : AComponent
     public abstract void SetText(string? text);
     public abstract string? GetText();
 
-    public override bool SetState(CompStateDto tempDto)
+    public override bool UpdateState(CompDataDto tempDto)
     {
-        if (tempDto is TextDisplayDto tDto)
+        if (tempDto is TextDisplayDataDto tDto)
         {
             SetText(tDto.Text);
             return true;
@@ -25,9 +25,9 @@ public abstract class ATextDisplay : AComponent
         throw new ArgumentException("Invalid DTO type for ATextDisplay.");
     }
 
-    public override CompStateDto GetState()
+    public override CompDataDto GetState()
     {
-        return new TextDisplayDto
+        return new TextDisplayDataDto
         {
             Text = GetText()
         };
@@ -35,7 +35,7 @@ public abstract class ATextDisplay : AComponent
 
     public override JsonTypeInfo GetJsonTypeInfo()
     {
-        return TextDisplaySerializerContext.Default.TextDisplayDto;
+        return TextDisplaySerializerContext.Default.TextDisplayDataDto;
     }
 }
 

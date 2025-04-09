@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace NuFlexiArch;
 
-[JsonSerializable(typeof(RadioGroupStateDto))]
+[JsonSerializable(typeof(RadioGroupDataDto))]
 public partial class RadioGroupSerializerContext : JsonSerializerContext { }
 
 // Each option is a (value, label) pair; you might store them in the DTO.
@@ -13,7 +13,7 @@ public class RadioGroupOption
     public string? Label { get; set; }
 }
 
-public class RadioGroupStateDto : CompStateDto
+public class RadioGroupDataDto : CompDataDto
 {
     public List<RadioGroupOption> Options { get; set; } = new();
     public string? SelectedValue { get; set; }
@@ -27,9 +27,9 @@ public abstract class ARadioGroup : AComponent
     public abstract void SetSelectedValue(string? value);
     public abstract string? GetSelectedValue();
 
-    public override bool SetState(CompStateDto tempDto)
+    public override bool UpdateState(CompDataDto tempDto)
     {
-        if (tempDto is RadioGroupStateDto rgDto)
+        if (tempDto is RadioGroupDataDto rgDto)
         {
             SetOptions(rgDto.Options);
             SetSelectedValue(rgDto.SelectedValue);
@@ -38,9 +38,9 @@ public abstract class ARadioGroup : AComponent
         throw new ArgumentException("Invalid DTO type for ARadioGroup.");
     }
 
-    public override CompStateDto GetState()
+    public override CompDataDto GetState()
     {
-        var dto = new RadioGroupStateDto
+        var dto = new RadioGroupDataDto
         {
             Options = GetOptions(),
             SelectedValue = GetSelectedValue()
@@ -50,6 +50,6 @@ public abstract class ARadioGroup : AComponent
 
     public override JsonTypeInfo GetJsonTypeInfo()
     {
-        return RadioGroupSerializerContext.Default.RadioGroupStateDto;
+        return RadioGroupSerializerContext.Default.RadioGroupDataDto;
     }
 }

@@ -3,17 +3,17 @@ using System.Text.Json.Serialization;
 
 namespace NuFlexiArch;
 
-[JsonSerializable(typeof(SliderStateDto))]
+[JsonSerializable(typeof(SliderDataDto))]
 public partial class SliderSerializerContext : JsonSerializerContext { }
 
-public class SliderStateDto : CompStateDto
+public class SliderDataDto : CompDataDto
 {
     public string? Label { get; set; }
     public double? Value { get; set; }
     public double MinValue { get; set; }
     public double MaxValue { get; set; }
     public double? Step { get; set; }
-    public TextDisplayDto? ValueDisplayDto { get; set; } 
+    public TextDisplayDataDto? ValueDisplayDto { get; set; } 
 }
 
 public abstract class ASlider : AComponent
@@ -33,9 +33,9 @@ public abstract class ASlider : AComponent
     public abstract void SetStep(double? val);
     public abstract double? GetStep();
 
-    public override bool SetState(CompStateDto tempDto)
+    public override bool UpdateState(CompDataDto tempDto)
     {
-        if (tempDto is SliderStateDto sDto)
+        if (tempDto is SliderDataDto sDto)
         {
             SetLabel(sDto.Label);
             SetValue(sDto.Value);
@@ -47,9 +47,9 @@ public abstract class ASlider : AComponent
         throw new ArgumentException("Invalid DTO type for ASlider.");
     }
 
-    public override CompStateDto GetState()
+    public override CompDataDto GetState()
     {
-        return new SliderStateDto
+        return new SliderDataDto
         {
             Label = GetLabel(),
             Value = GetValue(),
@@ -61,6 +61,6 @@ public abstract class ASlider : AComponent
 
     public override JsonTypeInfo GetJsonTypeInfo()
     {
-        return SliderSerializerContext.Default.SliderStateDto;
+        return SliderSerializerContext.Default.SliderDataDto;
     }
 }

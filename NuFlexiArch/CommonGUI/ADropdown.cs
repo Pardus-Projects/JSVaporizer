@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace NuFlexiArch;
 
 [JsonSerializable(typeof(DropdownOption))]
-[JsonSerializable(typeof(DropdownStateDto))]
+[JsonSerializable(typeof(DropdownDataDto))]
 public partial class DropdownSerializerContext : JsonSerializerContext { }
 
 public class DropdownOption
@@ -13,7 +13,7 @@ public class DropdownOption
     public string? Label { get; set; }
 }
 
-public class DropdownStateDto : CompStateDto
+public class DropdownDataDto : CompDataDto
 {
     public bool AllowMultiple { get; set; }
     public List<DropdownOption> Options { get; set; } = new();
@@ -32,9 +32,9 @@ public abstract class ADropdown : AComponent
     public abstract void SetSelectedValues(List<string> values);
     public abstract List<string> GetSelectedValues();
 
-    public override bool SetState(CompStateDto tempDto)
+    public override bool UpdateState(CompDataDto tempDto)
     {
-        if (tempDto is DropdownStateDto ddDto)
+        if (tempDto is DropdownDataDto ddDto)
         {
             SetAllowMultiple(ddDto.AllowMultiple);
             SetOptions(ddDto.Options);
@@ -44,9 +44,9 @@ public abstract class ADropdown : AComponent
         throw new ArgumentException("Invalid DTO type for ADropdown.");
     }
 
-    public override CompStateDto GetState()
+    public override CompDataDto GetState()
     {
-        var dto = new DropdownStateDto
+        var dto = new DropdownDataDto
         {
             AllowMultiple = GetAllowMultiple(),
             Options = GetOptions(),
@@ -57,6 +57,6 @@ public abstract class ADropdown : AComponent
 
     public override JsonTypeInfo GetJsonTypeInfo()
     {
-        return DropdownSerializerContext.Default.DropdownStateDto;
+        return DropdownSerializerContext.Default.DropdownDataDto;
     }
 }

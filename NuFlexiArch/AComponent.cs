@@ -4,35 +4,35 @@ using System.Text.Json.Serialization;
 
 namespace NuFlexiArch;
 
-[JsonSerializable(typeof(ComponentInstanceDto))]
+[JsonSerializable(typeof(CompInstanceDto))]
 public partial class ComponentInstanceContext : JsonSerializerContext { }
-public class ComponentInstanceDto
+public class CompInstanceDto
 {
     public required string MetadataJson { get; set; }
     public required string StateJson { get; set; }
 
     public string Serialize()
     {
-        return JsonSerializer.Serialize(this, ComponentInstanceContext.Default.ComponentInstanceDto);
+        return JsonSerializer.Serialize(this, (JsonTypeInfo<CompInstanceDto>)ComponentInstanceContext.Default.CompInstanceDto);
     }
 
-    public static ComponentInstanceDto Deserialize(string instanceDtoJson)
+    public static CompInstanceDto Deserialize(string instanceDtoJson)
     {
-        ComponentInstanceDto? nCompInstanceDto = JsonSerializer.Deserialize(instanceDtoJson, ComponentInstanceContext.Default.ComponentInstanceDto);
+        CompInstanceDto? nCompInstanceDto = JsonSerializer.Deserialize(instanceDtoJson, ComponentInstanceContext.Default.CompInstanceDto);
         if (nCompInstanceDto == null)
         {
             throw new ArgumentException($"nCompInstanceDto = null for instanceDtoJson = \"{instanceDtoJson}\"");
         }
-        ComponentInstanceDto instanceDto = nCompInstanceDto;
+        CompInstanceDto instanceDto = nCompInstanceDto;
         return instanceDto;
     }
 }
 
-[JsonSerializable(typeof(ComponentMetadata))]
+[JsonSerializable(typeof(CompMetadata))]
 [JsonSerializable(typeof(List<CompMetadataItem>))]
 [JsonSerializable(typeof(CompMetadataItem))]
 public partial class MetadataContext : JsonSerializerContext { }
-public class ComponentMetadata
+public class CompMetadata
 {
     public List<CompMetadataItem> List { get; set; } = new();
     public void Add(string name, string value)
@@ -52,36 +52,36 @@ public class CompMetadataItem
     }
 }
 
-[JsonSerializable(typeof(CompStateDto))]
-public partial class CompStateDtoContext : JsonSerializerContext { }
-public class CompStateDto { }
+[JsonSerializable(typeof(CompDataDto))]
+public partial class CompDataDtoContext : JsonSerializerContext { }
+public class CompDataDto { }
 
 public abstract class AComponent
 {
-    public ComponentMetadata Metadata { get; set; } = new();
+    public CompMetadata Metadata { get; set; } = new();
 
-    public virtual bool SetState(CompStateDto stateDto) { return true; }
+    public virtual bool UpdateState(CompDataDto stateDto) { return true; }
 
-    public virtual CompStateDto GetState() { return new(); }
+    public virtual CompDataDto GetState() { return new(); }
 
     public virtual JsonTypeInfo GetJsonTypeInfo()
     {
-        return CompStateDtoContext.Default.CompStateDto;
+        return CompDataDtoContext.Default.CompDataDto;
     }
 
-    public virtual string SerializeState(CompStateDto sDto)
+    public virtual string SerializeState(CompDataDto sDto)
     {
         return JsonSerializer.Serialize(sDto, GetJsonTypeInfo());
     }
 
-    public virtual CompStateDto DeserializeState(string stateDtoJson)
+    public virtual CompDataDto DeserializeState(string stateDtoJson)
     {
-        CompStateDto? nStateDto = (CompStateDto?)JsonSerializer.Deserialize(stateDtoJson, GetJsonTypeInfo());
-        if (nStateDto == null)
+        CompDataDto? nDataDto = (CompDataDto?)JsonSerializer.Deserialize(stateDtoJson, GetJsonTypeInfo());
+        if (nDataDto == null)
         {
-            throw new ArgumentException($"nStateDto = null for stateDtoJson = \"{stateDtoJson}\"");
+            throw new ArgumentException($"nDataDto = null for stateDtoJson = \"{stateDtoJson}\"");
         }
-        CompStateDto stateDto = nStateDto;
+        CompDataDto stateDto = nDataDto;
         return stateDto;
     }
 
@@ -97,12 +97,12 @@ public abstract class AComponent
 
     public string SerializeMetadata()
     {
-        return JsonSerializer.Serialize(Metadata, MetadataContext.Default.ComponentMetadata);
+        return JsonSerializer.Serialize(Metadata, (JsonTypeInfo<CompMetadata>)MetadataContext.Default.CompMetadata);
     }
 
-    public ComponentInstanceDto SerializeInstance(CompStateDto stateDto)
+    public CompInstanceDto SerializeInstance(CompDataDto stateDto)
     {
-        ComponentInstanceDto instanceDto = new()
+        CompInstanceDto instanceDto = new()
         {
             MetadataJson = SerializeMetadata(),
             StateJson = SerializeState(stateDto)
@@ -111,18 +111,18 @@ public abstract class AComponent
         return instanceDto;
     }
 
-    public static ComponentMetadata DeserializeMetadata(string metadataJson)
+    public static CompMetadata DeserializeMetadata(string metadataJson)
     {
-        ComponentMetadata? nCompMetadata = JsonSerializer.Deserialize(metadataJson, MetadataContext.Default.ComponentMetadata);
+        CompMetadata? nCompMetadata = JsonSerializer.Deserialize(metadataJson, MetadataContext.Default.CompMetadata);
         if (nCompMetadata == null)
         {
             throw new ArgumentException($"nCompMetadata = null for stateDtoJson = \"{metadataJson}\"");
         }
-        ComponentMetadata compMetadata = nCompMetadata;
+        CompMetadata compMetadata = nCompMetadata;
         return compMetadata;
     }
 
-    public static Dictionary<string, string> ToDictionary(ComponentMetadata md)
+    public static Dictionary<string, string> ToDictionary(CompMetadata md)
     {
         Dictionary<string, string> dict = new();
         foreach (CompMetadataItem mdItem in md.List)

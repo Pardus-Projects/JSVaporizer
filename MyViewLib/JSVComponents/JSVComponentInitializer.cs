@@ -9,8 +9,8 @@ public partial class JSVComponentInitializer
 {
     [JSExport]
     [SupportedOSPlatform("browser")]
-    public static bool InstantiateFromJson(string instanceDtoJson, string referenceElementId)
+    public static bool InstantiateAndRenderFromJson(string instanceDtoJson, string referenceElementId)
     {
-        return IJSVComponent.InstantiateFromJson(instanceDtoJson, referenceElementId);
+        return IJSVComponent.InstantiateAndRenderFromJson(instanceDtoJson, referenceElementId);
     }
 }

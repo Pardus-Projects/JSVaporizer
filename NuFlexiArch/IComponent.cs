@@ -14,9 +14,7 @@ public class BlackHole : IComponentRenderer
 {
     public object Render(AComponent comp, params object[] args)
     {
-        var taskSource = new TaskCompletionSource<object>();
-        taskSource.SetResult(new());
-        return taskSource.Task;
+        return new();
     }
 }
 

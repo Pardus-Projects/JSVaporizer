@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace NuFlexiArch;
 
 [JsonSerializable(typeof(ListBoxItem))]
-[JsonSerializable(typeof(ListBoxStateDto))]
+[JsonSerializable(typeof(ListBoxDataDto))]
 public partial class ListBoxSerializerContext : JsonSerializerContext { }
 
 public class ListBoxItem
@@ -13,7 +13,7 @@ public class ListBoxItem
     public string? Label { get; set; }
 }
 
-public class ListBoxStateDto : CompStateDto
+public class ListBoxDataDto : CompDataDto
 {
     public bool AllowMultiple { get; set; }
     public List<ListBoxItem> Items { get; set; } = new();
@@ -31,9 +31,9 @@ public abstract class AListBox : AComponent
     public abstract void SetSelectedValues(List<string> values);
     public abstract List<string> GetSelectedValues();
 
-    public override bool SetState(CompStateDto tempDto)
+    public override bool UpdateState(CompDataDto tempDto)
     {
-        if (tempDto is ListBoxStateDto lbDto)
+        if (tempDto is ListBoxDataDto lbDto)
         {
             SetAllowMultiple(lbDto.AllowMultiple);
             SetItems(lbDto.Items);
@@ -43,9 +43,9 @@ public abstract class AListBox : AComponent
         throw new ArgumentException("Invalid DTO type for AListBox.");
     }
 
-    public override CompStateDto GetState()
+    public override CompDataDto GetState()
     {
-        var dto = new ListBoxStateDto
+        var dto = new ListBoxDataDto
         {
             AllowMultiple = GetAllowMultiple(),
             Items = GetItems(),
@@ -56,6 +56,6 @@ public abstract class AListBox : AComponent
 
     public override JsonTypeInfo GetJsonTypeInfo()
     {
-        return ListBoxSerializerContext.Default.ListBoxStateDto;
+        return ListBoxSerializerContext.Default.ListBoxDataDto;
     }
 }

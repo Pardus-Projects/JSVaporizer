@@ -3,10 +3,10 @@ using System.Text.Json.Serialization;
 
 namespace NuFlexiArch;
 
-[JsonSerializable(typeof(CheckboxStateDto))]
+[JsonSerializable(typeof(CheckboxDataDto))]
 public partial class CheckboxSerializerContext : JsonSerializerContext { }
 
-public class CheckboxStateDto : CompStateDto
+public class CheckboxDataDto : CompDataDto
 {
     public string? Label { get; set; }
     public bool IsChecked { get; set; }
@@ -20,9 +20,9 @@ public abstract class ACheckbox : AComponent
     public abstract void SetIsChecked(bool isChecked);
     public abstract bool GetIsChecked();
 
-    public override bool SetState(CompStateDto tempDto)
+    public override bool UpdateState(CompDataDto tempDto)
     {
-        if (tempDto is CheckboxStateDto dto)
+        if (tempDto is CheckboxDataDto dto)
         {
             SetLabel(dto.Label);
             SetIsChecked(dto.IsChecked);
@@ -31,9 +31,9 @@ public abstract class ACheckbox : AComponent
         throw new ArgumentException("Invalid DTO type for ACheckbox.");
     }
 
-    public override CompStateDto GetState()
+    public override CompDataDto GetState()
     {
-        return new CheckboxStateDto
+        return new CheckboxDataDto
         {
             Label = GetLabel(),
             IsChecked = GetIsChecked()
@@ -42,6 +42,6 @@ public abstract class ACheckbox : AComponent
 
     public override JsonTypeInfo GetJsonTypeInfo()
     {
-        return CheckboxSerializerContext.Default.CheckboxStateDto;
+        return CheckboxSerializerContext.Default.CheckboxDataDto;
     }
 }

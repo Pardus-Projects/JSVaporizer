@@ -3,10 +3,10 @@ using System.Text.Json.Serialization;
 
 namespace NuFlexiArch;
 
-[JsonSerializable(typeof(TextInputStateDto))]
+[JsonSerializable(typeof(TextInputDataDto))]
 public partial class TextInputSerializerContext : JsonSerializerContext { }
 
-public class TextInputStateDto : CompStateDto
+public class TextInputDataDto : CompDataDto
 {
     public string? Label { get; set; }
     public string? InputValue { get; set; }
@@ -19,9 +19,9 @@ public abstract class ATextInput : AComponent
     public abstract void SetInputValue(string? val);
     public abstract string? GetInputValue();
 
-    public override bool SetState(CompStateDto tempDto)
+    public override bool UpdateState(CompDataDto tempDto)
     {
-        if (tempDto is TextInputStateDto sDto)
+        if (tempDto is TextInputDataDto sDto)
         {
             SetLabel(sDto.Label);
             SetInputValue(sDto.InputValue);
@@ -30,9 +30,9 @@ public abstract class ATextInput : AComponent
         throw new ArgumentException("Invalid DTO type for ATextInput.");
     }
 
-    public override CompStateDto GetState()
+    public override CompDataDto GetState()
     {
-        var sDto = new TextInputStateDto
+        var sDto = new TextInputDataDto
         {
             Label = GetLabel(),
             InputValue = GetInputValue()
@@ -42,6 +42,6 @@ public abstract class ATextInput : AComponent
 
     public override JsonTypeInfo GetJsonTypeInfo()
     {
-        return TextInputSerializerContext.Default.TextInputStateDto;
+        return TextInputSerializerContext.Default.TextInputDataDto;
     }
 }

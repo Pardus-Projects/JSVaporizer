@@ -3,10 +3,10 @@ using System.Text.Json.Serialization;
 
 namespace NuFlexiArch;
 
-[JsonSerializable(typeof(TextAreaStateDto))]
+[JsonSerializable(typeof(TextAreaDataDto))]
 public partial class TextAreaSerializerContext : JsonSerializerContext { }
 
-public class TextAreaStateDto : CompStateDto
+public class TextAreaDataDto : CompDataDto
 {
     public string? Label { get; set; }
     public string? TextValue { get; set; }
@@ -28,9 +28,9 @@ public abstract class ATextArea : AComponent
     public abstract void SetMaxLength(int maxLength);
     public abstract int GetMaxLength();
 
-    public override bool SetState(CompStateDto tempDto)
+    public override bool UpdateState(CompDataDto tempDto)
     {
-        if (tempDto is TextAreaStateDto taDto)
+        if (tempDto is TextAreaDataDto taDto)
         {
             SetLabel(taDto.Label);
             SetTextValue(taDto.TextValue);
@@ -42,9 +42,9 @@ public abstract class ATextArea : AComponent
         throw new ArgumentException("Invalid DTO type for ATextArea.");
     }
 
-    public override CompStateDto GetState()
+    public override CompDataDto GetState()
     {
-        var taDto = new TextAreaStateDto
+        var taDto = new TextAreaDataDto
         {
             Label = GetLabel(),
             TextValue = GetTextValue(),
@@ -56,6 +56,6 @@ public abstract class ATextArea : AComponent
 
     public override JsonTypeInfo GetJsonTypeInfo()
     {
-        return TextAreaSerializerContext.Default.TextAreaStateDto;
+        return TextAreaSerializerContext.Default.TextAreaDataDto;
     }
 }

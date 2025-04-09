@@ -9,22 +9,32 @@ namespace JSVNuFlexiArch;
 [SupportedOSPlatform("browser")]
 public interface IJSVComponent : IComponent
 {
-    public static bool InstantiateFromJson(string instanceDtoJson, string referenceElementId, bool append=false)
+    public static bool InstantiateAndRenderFromJson(string instanceDtoJson, string referenceElementId, bool append=false)
     {
-        ComponentInstanceDto instanceDto = ComponentInstanceDto.Deserialize(instanceDtoJson);
-        string metadataJson = instanceDto.MetadataJson;
-        string stateDtoJson = instanceDto.StateJson;
+        CompInstanceDto instanceDto = CompInstanceDto.Deserialize(instanceDtoJson);
+        CompMetadata compMetadata = AComponent.DeserializeMetadata(instanceDto.MetadataJson);
 
-        ComponentMetadata compMetadata = AComponent.DeserializeMetadata(metadataJson);
         Dictionary<string, string> mdDict = AComponent.ToDictionary(compMetadata);
-
         string unqPrefix = mdDict["UnqPrefix"];
         string compTypeAQN = mdDict["CompTypeAQN"];
 
+        // Instantiate
+        AComponent aComp = Instantiate(unqPrefix, compTypeAQN);
+        CompDataDto stateDto = aComp.DeserializeState(instanceDto.StateJson);
+
+        // Render
+        bool success = Render(unqPrefix, aComp, referenceElementId, append);
+
+        // Set state
+        return aComp.UpdateState(stateDto);
+    }
+
+    public static AComponent Instantiate(string unqPrefix, string compTypeAQN)
+    {
         Type? compType = Type.GetType(compTypeAQN);
         if (compType == null)
         {
-            throw new ArgumentException($"stateDto.CompType = \"{compTypeAQN}\" was not found.");
+            throw new ArgumentException($"compTypeAQN = \"{compTypeAQN}\" was not found.");
         }
 
         AComponent? aComp = (AComponent?)Activator.CreateInstance(compType, new object[] { unqPrefix });
@@ -33,17 +43,21 @@ public interface IJSVComponent : IComponent
             throw new ArgumentException($"CreateInstance() failed for: unqPrefix = \"{unqPrefix}\", compType = \"{compType}\"");
         }
 
-        CompStateDto stateDto = aComp.DeserializeState(stateDtoJson);
+        return aComp;
+    }
 
-        // Render
+    public static bool Render(string unqPrefix, AComponent aComp, string referenceElementId, bool append) {
+        // Render HTML
         HtmlContentBuilder htmlCB = (HtmlContentBuilder)((IComponent)aComp).GetRenderer().Render(aComp);
+
+        // Put HTML in the DOM somewhere
         using (var sw = new StringWriter())
         {
             htmlCB.WriteTo(sw, HtmlEncoder.Default);
             string componentHtml = sw.ToString();
 
             Element referenceElem = Document.AssertGetElementById(referenceElementId);
-            
+
             if (append)
             {
                 referenceElem.AppendChild(Document.CreateElement(unqPrefix, "div"));
@@ -55,7 +69,7 @@ public interface IJSVComponent : IComponent
             }
         }
 
-        return aComp.SetState(stateDto);
+        return true;
     }
 }
 

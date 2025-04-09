@@ -23,20 +23,20 @@ namespace MyExampleApplication.Pages
 
         public void OnGet()
         {
-            TextDisplayDto textDisplayDto = new()
+            TextDisplayDataDto textDisplayDto = new()
             {
                 Text = "JSVTextDisplay TEXT"
             };
             JSVTextDisplay_InstanceJson = JSVTextDisplay.SerializeInstance(textDisplayDto).Serialize();
 
-            TextInputStateDto textInputStateDto = new()
+            TextInputDataDto textInputDataDto = new()
             {
                 Label = "JSVTextInput LABEL",
                 InputValue = "JSVTextInput VALUE"
             };
-            JSVTextInput_InstanceJson = JSVTextInput.SerializeInstance(textInputStateDto).Serialize();
+            JSVTextInput_InstanceJson = JSVTextInput.SerializeInstance(textInputDataDto).Serialize();
 
-            TextAreaStateDto textAreaStateDto = new()
+            TextAreaDataDto textAreaDataDto = new()
             {
                 Label = "JSVTextArea LABEL",
                 TextValue = "JSVTextArea VALUE",
@@ -44,16 +44,16 @@ namespace MyExampleApplication.Pages
                 Cols = 80,
                 MaxLength = 90
             };
-            JSVTextArea_InstanceJson = JSVTextArea.SerializeInstance(textAreaStateDto).Serialize();
+            JSVTextArea_InstanceJson = JSVTextArea.SerializeInstance(textAreaDataDto).Serialize();
 
-            CheckboxStateDto checkboxStateDto = new()
+            CheckboxDataDto checkboxDataDto = new()
             {
                 Label = "JSVCheckbox LABEL",
                 IsChecked = true
             };
-            JSVCheckbox_InstanceJson = JSVCheckbox.SerializeInstance(checkboxStateDto).Serialize();
+            JSVCheckbox_InstanceJson = JSVCheckbox.SerializeInstance(checkboxDataDto).Serialize();
 
-            SliderStateDto sliderStateDto = new()
+            SliderDataDto sliderDataDto = new()
             {
                 Label = "",
                 Value = 96,
@@ -61,7 +61,7 @@ namespace MyExampleApplication.Pages
                 MaxValue = 107,
                 Step = 0.5
             };
-            JSVSlider_InstanceJson = JSVSlider.SerializeInstance(sliderStateDto).Serialize();
+            JSVSlider_InstanceJson = JSVSlider.SerializeInstance(sliderDataDto).Serialize();
         }
     }
 }

@@ -5,7 +5,7 @@ namespace NuFlexiArch;
 
 [JsonSerializable(typeof(DataGridColumn))]
 [JsonSerializable(typeof(DataGridRow))]
-[JsonSerializable(typeof(DataGridStateDto))]
+[JsonSerializable(typeof(DataGridDataDto))]
 public partial class DataGridSerializerContext : JsonSerializerContext { }
 
 public class DataGridColumn
@@ -22,7 +22,7 @@ public class DataGridRow
     public bool IsSelected { get; set; }
 }
 
-public class DataGridStateDto : CompStateDto
+public class DataGridDataDto : CompDataDto
 {
     public List<DataGridColumn> Columns { get; set; } = new();
     public List<DataGridRow> Rows { get; set; } = new();
@@ -44,9 +44,9 @@ public abstract class ADataGrid : AComponent
     public abstract void SetSortAscending(bool ascending);
     public abstract bool GetSortAscending();
 
-    public override bool SetState(CompStateDto tempDto)
+    public override bool UpdateState(CompDataDto tempDto)
     {
-        if (tempDto is DataGridStateDto dgDto)
+        if (tempDto is DataGridDataDto dgDto)
         {
             SetColumns(dgDto.Columns);
             SetRows(dgDto.Rows);
@@ -57,9 +57,9 @@ public abstract class ADataGrid : AComponent
         throw new ArgumentException("Invalid DTO type for ADataGrid.");
     }
 
-    public override CompStateDto GetState()
+    public override CompDataDto GetState()
     {
-        var dto = new DataGridStateDto
+        var dto = new DataGridDataDto
         {
             Columns = GetColumns(),
             Rows = GetRows(),
@@ -71,6 +71,6 @@ public abstract class ADataGrid : AComponent
 
     public override JsonTypeInfo GetJsonTypeInfo()
     {
-        return DataGridSerializerContext.Default.DataGridStateDto;
+        return DataGridSerializerContext.Default.DataGridDataDto;
     }
 }
