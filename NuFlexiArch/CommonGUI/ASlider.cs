@@ -18,20 +18,20 @@ public class SliderDataDto : CompDataDto
 
 public abstract class ASlider : AComponent
 {
-    public abstract void SetLabel(string? val);
-    public abstract string? GetLabel();
+    protected abstract void SetLabel(string? val);
+    protected abstract string? GetLabel();
 
-    public abstract void SetValue(double? val);
-    public abstract double? GetValue();
+    protected abstract void SetValue(double? val);
+    protected abstract double? GetValue();
 
-    public abstract void SetMinValue(double val);
-    public abstract double GetMinValue();
+    protected abstract void SetMinValue(double val);
+    protected abstract double GetMinValue();
 
-    public abstract void SetMaxValue(double val);
-    public abstract double GetMaxValue();
+    protected abstract void SetMaxValue(double val);
+    protected abstract double GetMaxValue();
 
-    public abstract void SetStep(double? val);
-    public abstract double? GetStep();
+    protected abstract void SetStep(double? val);
+    protected abstract double? GetStep();
 
     public override bool UpdateState(CompDataDto tempDto)
     {

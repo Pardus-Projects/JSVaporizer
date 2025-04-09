@@ -14,10 +14,10 @@ public class TextInputDataDto : CompDataDto
 
 public abstract class ATextInput : AComponent
 {
-    public abstract void SetLabel(string? val);
-    public abstract string? GetLabel();
-    public abstract void SetInputValue(string? val);
-    public abstract string? GetInputValue();
+    protected abstract void SetLabel(string? val);
+    protected abstract string? GetLabel();
+    protected abstract void SetInputValue(string? val);
+    protected abstract string? GetInputValue();
 
     public override bool UpdateState(CompDataDto tempDto)
     {

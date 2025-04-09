@@ -14,11 +14,11 @@ public class ButtonDataDto : CompDataDto
 
 public abstract class AButton : AComponent
 {
-    public abstract void SetLabel(string? label);
-    public abstract string? GetLabel();
+    protected abstract void SetLabel(string? label);
+    protected abstract string? GetLabel();
 
-    public abstract void SetDisabled(bool isDisabled);
-    public abstract bool GetDisabled();
+    protected abstract void SetDisabled(bool isDisabled);
+    protected abstract bool GetDisabled();
 
     public override bool UpdateState(CompDataDto tempDto)
     {

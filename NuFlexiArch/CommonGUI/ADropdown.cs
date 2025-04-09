@@ -23,14 +23,14 @@ public class DropdownDataDto : CompDataDto
 
 public abstract class ADropdown : AComponent
 {
-    public abstract void SetAllowMultiple(bool allow);
-    public abstract bool GetAllowMultiple();
+    protected abstract void SetAllowMultiple(bool allow);
+    protected abstract bool GetAllowMultiple();
 
-    public abstract void SetOptions(List<DropdownOption> options);
-    public abstract List<DropdownOption> GetOptions();
+    protected abstract void SetOptions(List<DropdownOption> options);
+    protected abstract List<DropdownOption> GetOptions();
 
-    public abstract void SetSelectedValues(List<string> values);
-    public abstract List<string> GetSelectedValues();
+    protected abstract void SetSelectedValues(List<string> values);
+    protected abstract List<string> GetSelectedValues();
 
     public override bool UpdateState(CompDataDto tempDto)
     {

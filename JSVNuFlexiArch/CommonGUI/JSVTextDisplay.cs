@@ -21,13 +21,13 @@ public class JSVTextDisplay : ATextDisplay, IJSVComponent
 
     private string? _text;
 
-    public override void SetText(string? text)
+    protected override void SetText(string? text)
     {
         _text = text;
         Document.AssertGetElementById(Id).SetProperty("innerHTML", _text ?? "");
     }
 
-    public override string? GetText()
+    protected override string? GetText()
     {
         throw new NotImplementedException();
     }

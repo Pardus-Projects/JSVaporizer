@@ -21,11 +21,11 @@ public class RadioGroupDataDto : CompDataDto
 
 public abstract class ARadioGroup : AComponent
 {
-    public abstract void SetOptions(List<RadioGroupOption> options);
-    public abstract List<RadioGroupOption> GetOptions();
+    protected abstract void SetOptions(List<RadioGroupOption> options);
+    protected abstract List<RadioGroupOption> GetOptions();
 
-    public abstract void SetSelectedValue(string? value);
-    public abstract string? GetSelectedValue();
+    protected abstract void SetSelectedValue(string? value);
+    protected abstract string? GetSelectedValue();
 
     public override bool UpdateState(CompDataDto tempDto)
     {

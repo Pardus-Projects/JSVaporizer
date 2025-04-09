@@ -27,57 +27,57 @@ public class JSVTextArea : ATextArea, IJSVComponent
     private int _cols;
     private int _maxLength;
 
-    public override void SetLabel(string? val)
+    protected override void SetLabel(string? val)
     {
         _labelVal = val;
         Document.AssertGetElementById(LabelId).SetProperty("innerHTML", _labelVal ?? "");
     }
 
-    public override string? GetLabel()
+    protected override string? GetLabel()
     {
         return _labelVal;
     }
 
-    public override void SetTextValue(string? val)
+    protected override void SetTextValue(string? val)
     {
         _textVal = val;
         Document.AssertGetElementById(Id).SetFormElemValue(_textVal);
     }
 
-    public override string? GetTextValue()
+    protected override string? GetTextValue()
     {
         return _textVal;
     }
 
-    public override void SetRows(int rows)
+    protected override void SetRows(int rows)
     {
         _rows = rows;
        Document.AssertGetElementById(Id).SetProperty("rows", _rows);
     }
 
-    public override int GetRows()
+    protected override int GetRows()
     {
         return _rows;
     }
 
-    public override void SetCols(int cols)
+    protected override void SetCols(int cols)
     {
         _cols = cols;
         Document.AssertGetElementById(Id).SetProperty("cols", _cols);
     }
 
-    public override int GetCols()
+    protected override int GetCols()
     {
         return _cols;
     }
 
-    public override void SetMaxLength(int maxLength)
+    protected override void SetMaxLength(int maxLength)
     {
         _maxLength = maxLength;
         Document.AssertGetElementById(Id).SetProperty("maxLength", _maxLength);
     }
 
-    public override int GetMaxLength()
+    protected override int GetMaxLength()
     {
         return _maxLength;
     }

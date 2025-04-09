@@ -17,16 +17,16 @@ public class TextAreaDataDto : CompDataDto
 
 public abstract class ATextArea : AComponent
 {
-    public abstract void SetLabel(string? val);
-    public abstract string? GetLabel();
-    public abstract void SetTextValue(string? val);
-    public abstract string? GetTextValue();
-    public abstract void SetRows(int rows);
-    public abstract int GetRows();
-    public abstract void SetCols(int cols);
-    public abstract int GetCols();
-    public abstract void SetMaxLength(int maxLength);
-    public abstract int GetMaxLength();
+    protected abstract void SetLabel(string? val);
+    protected abstract string? GetLabel();
+    protected abstract void SetTextValue(string? val);
+    protected abstract string? GetTextValue();
+    protected abstract void SetRows(int rows);
+    protected abstract int GetRows();
+    protected abstract void SetCols(int cols);
+    protected abstract int GetCols();
+    protected abstract void SetMaxLength(int maxLength);
+    protected abstract int GetMaxLength();
 
     public override bool UpdateState(CompDataDto tempDto)
     {

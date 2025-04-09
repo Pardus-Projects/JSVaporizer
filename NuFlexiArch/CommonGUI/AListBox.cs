@@ -22,14 +22,14 @@ public class ListBoxDataDto : CompDataDto
 
 public abstract class AListBox : AComponent
 {
-    public abstract void SetAllowMultiple(bool allow);
-    public abstract bool GetAllowMultiple();
+    protected abstract void SetAllowMultiple(bool allow);
+    protected abstract bool GetAllowMultiple();
 
-    public abstract void SetItems(List<ListBoxItem> items);
-    public abstract List<ListBoxItem> GetItems();
+    protected abstract void SetItems(List<ListBoxItem> items);
+    protected abstract List<ListBoxItem> GetItems();
 
-    public abstract void SetSelectedValues(List<string> values);
-    public abstract List<string> GetSelectedValues();
+    protected abstract void SetSelectedValues(List<string> values);
+    protected abstract List<string> GetSelectedValues();
 
     public override bool UpdateState(CompDataDto tempDto)
     {

@@ -23,24 +23,24 @@ public class JSVTextInput : ATextInput, IJSVComponent
     private string? _labelValue;
     private string? _textValue;
 
-    public override void SetLabel(string? val = null)
+    protected override void SetLabel(string? val = null)
     {
         _labelValue = val;
         Document.AssertGetElementById(LabelId).SetProperty("innerHTML", val??"");
     }
 
-    public override string? GetLabel()
+    protected override string? GetLabel()
     {
         return _labelValue;
     }
 
-    public override void SetInputValue(string? val)
+    protected override void SetInputValue(string? val)
     {
         _textValue = val;
         Document.AssertGetElementById(Id).SetFormElemValue(_textValue);
     }
 
-    public override string? GetInputValue()
+    protected override string? GetInputValue()
     {
         return _textValue;
     }

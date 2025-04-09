@@ -15,14 +15,14 @@ public class DatePickerDataDto : CompDataDto
 
 public abstract class ADatePicker : AComponent
 {
-    public abstract void SetSelectedDate(DateTime? date);
-    public abstract DateTime? GetSelectedDate();
+    protected abstract void SetSelectedDate(DateTime? date);
+    protected abstract DateTime? GetSelectedDate();
 
-    public abstract void SetMinDate(DateTime? date);
-    public abstract DateTime? GetMinDate();
+    protected abstract void SetMinDate(DateTime? date);
+    protected abstract DateTime? GetMinDate();
 
-    public abstract void SetMaxDate(DateTime? date);
-    public abstract DateTime? GetMaxDate();
+    protected abstract void SetMaxDate(DateTime? date);
+    protected abstract DateTime? GetMaxDate();
 
     public override bool UpdateState(CompDataDto tempDto)
     {

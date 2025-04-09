@@ -32,17 +32,17 @@ public class DataGridDataDto : CompDataDto
 
 public abstract class ADataGrid : AComponent
 {
-    public abstract void SetColumns(List<DataGridColumn> columns);
-    public abstract List<DataGridColumn> GetColumns();
+    protected abstract void SetColumns(List<DataGridColumn> columns);
+    protected abstract List<DataGridColumn> GetColumns();
 
-    public abstract void SetRows(List<DataGridRow> rows);
-    public abstract List<DataGridRow> GetRows();
+    protected abstract void SetRows(List<DataGridRow> rows);
+    protected abstract List<DataGridRow> GetRows();
 
-    public abstract void SetSortedBy(string? field);
-    public abstract string? GetSortedBy();
+    protected abstract void SetSortedBy(string? field);
+    protected abstract string? GetSortedBy();
 
-    public abstract void SetSortAscending(bool ascending);
-    public abstract bool GetSortAscending();
+    protected abstract void SetSortAscending(bool ascending);
+    protected abstract bool GetSortAscending();
 
     public override bool UpdateState(CompDataDto tempDto)
     {

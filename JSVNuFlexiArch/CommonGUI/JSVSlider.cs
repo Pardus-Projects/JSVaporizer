@@ -54,53 +54,55 @@ public class JSVSlider : ASlider, IJSVComponent
         return true;
     }
 
-    public override void SetLabel(string? val = null)
+    protected override void SetLabel(string? val = null)
     {
         _labelValue = val;
         Document.AssertGetElementById(LabelId).SetProperty("innerHTML", val ?? "");
     }
 
-    public override string? GetLabel()
+    protected override string? GetLabel()
     {
         return _labelValue;
     }
 
-    public override void SetValue(double? val)
+    protected override void SetValue(double? val)
     {
         _value = val;
         Document.AssertGetElementById(Id).SetFormElemValue(_value);
-
-        ValueDisplay.SetText(_value.ToString());
+        ValueDisplay.UpdateState(new TextDisplayDataDto()
+        {
+            Text = _value.ToString()
+        });
     }
 
-    public override double? GetValue()
+    protected override double? GetValue()
     {
         return _value;
     }
 
-    public override void SetMinValue(double val)
+    protected override void SetMinValue(double val)
     {
         _minValue = val;
         Document.AssertGetElementById(Id).SetProperty("min", _minValue);
     }
 
-    public override double GetMinValue()
+    protected override double GetMinValue()
     {
         return _minValue;
     }
 
-    public override void SetMaxValue(double val)
+    protected override void SetMaxValue(double val)
     {
         _maxValue = val;
         Document.AssertGetElementById(Id).SetProperty("max", _maxValue);
     }
 
-    public override double GetMaxValue()
+    protected override double GetMaxValue()
     {
         return _maxValue;
     }
 
-    public override void SetStep(double? val)
+    protected override void SetStep(double? val)
     {
         _step = val;
         if (_step != null)
@@ -109,7 +111,7 @@ public class JSVSlider : ASlider, IJSVComponent
         }
     }
 
-    public override double? GetStep()
+    protected override double? GetStep()
     {
         return _step;
     }

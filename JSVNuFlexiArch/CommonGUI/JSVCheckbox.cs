@@ -23,24 +23,24 @@ public class JSVCheckbox : ACheckbox, IJSVComponent
     private string? _labelValue;
     private bool? _isChecked;
 
-    public override void SetLabel(string? val = null)
+    protected override void SetLabel(string? val = null)
     {
         _labelValue = val;
         Document.AssertGetElementById(LabelId).SetProperty("innerHTML", val ?? "");
     }
 
-    public override string? GetLabel()
+    protected override string? GetLabel()
     {
         return _labelValue;
     }
 
-    public override void SetIsChecked(bool isChecked)
+    protected override void SetIsChecked(bool isChecked)
     {
         _isChecked = isChecked;
         Document.AssertGetElementById(Id).SetFormElemChecked(_isChecked);
     }
 
-    public override bool GetIsChecked()
+    protected override bool GetIsChecked()
     {
         return _isChecked??false;
     }

@@ -14,11 +14,11 @@ public class CheckboxDataDto : CompDataDto
 
 public abstract class ACheckbox : AComponent
 {
-    public abstract void SetLabel(string? label);
-    public abstract string? GetLabel();
+    protected abstract void SetLabel(string? label);
+    protected abstract string? GetLabel();
 
-    public abstract void SetIsChecked(bool isChecked);
-    public abstract bool GetIsChecked();
+    protected abstract void SetIsChecked(bool isChecked);
+    protected abstract bool GetIsChecked();
 
     public override bool UpdateState(CompDataDto tempDto)
     {

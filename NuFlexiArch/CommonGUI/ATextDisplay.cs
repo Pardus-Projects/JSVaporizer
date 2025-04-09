@@ -12,8 +12,8 @@ public class TextDisplayDataDto : CompDataDto
 
 public abstract class ATextDisplay : AComponent
 {
-    public abstract void SetText(string? text);
-    public abstract string? GetText();
+    protected abstract void SetText(string? text);
+    protected abstract string? GetText();
 
     public override bool UpdateState(CompDataDto tempDto)
     {
