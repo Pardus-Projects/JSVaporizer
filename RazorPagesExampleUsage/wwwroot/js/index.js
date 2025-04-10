@@ -33,6 +33,10 @@ async function LaunchApp() {
     resStr = jsvExports.MyViewLib.JSVComponentInitializer.InstantiateAndRenderFromJson(JSVCheckbox_InstanceJson, "JSVCheckbox_Placeholder");
     //alert("JSVCheckbox says: " + resStr);
 
+    let JSVButton_InstanceJson = $("#hf_JSVButton_InstanceJson").val();
+    resStr = jsvExports.MyViewLib.JSVComponentInitializer.InstantiateAndRenderFromJson(JSVButton_InstanceJson, "JSVButton_Placeholder");
+    //alert("JSVSlider says: " + resStr);
+
     let JSVSlider_InstanceJson = $("#hf_JSVSlider_InstanceJson").val();
     resStr = jsvExports.MyViewLib.JSVComponentInitializer.InstantiateAndRenderFromJson(JSVSlider_InstanceJson, "JSVSlider_Placeholder");
     //alert("JSVSlider says: " + resStr);

@@ -1,9 +1,11 @@
-﻿using NuFlexiArch;
+﻿using JSVNuFlexiArch;
 using System.Runtime.Versioning;
 
 namespace JSVNuFlexiArch;
 
-public abstract class JSVTransformer : ITransformer
+public abstract class TransformerDto;
+
+public abstract class JSVTransformer
 {
     private string? _registryKey;
 
@@ -29,7 +31,7 @@ public abstract class JSVTransformer : ITransformer
     }
 }
 
-public class TransformerRegistry : ITransformerRegistry
+public class TransformerRegistry
 {
     private Dictionary<string, JSVTransformer> _registry = new();
 
@@ -38,7 +40,7 @@ public class TransformerRegistry : ITransformerRegistry
         _registry = registry;
     }
 
-    public ITransformer Get(string xFormerRegistryKey)
+    public JSVTransformer Get(string xFormerRegistryKey)
     {
         if (_registry.ContainsKey(xFormerRegistryKey))
         {
@@ -53,9 +55,9 @@ public class TransformerRegistry : ITransformerRegistry
     }
 
     [SupportedOSPlatform("browser")]
-    public static string Invoke(ITransformerRegistry transformerRegistry, string xFormerName, string dtoJson, string? userInfoJson = null)
+    public static string Invoke(TransformerRegistry transformerRegistry, string xFormerName, string dtoJson, string? userInfoJson = null)
     {
-        ITransformer xFormer = transformerRegistry.Get(xFormerName);
+        JSVTransformer xFormer = transformerRegistry.Get(xFormerName);
         string xFromRes = xFormer.DtoToView(dtoJson, userInfoJson);
         return xFromRes;
     }

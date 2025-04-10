@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization.Metadata;
 using System.Text.Json.Serialization;
 
-namespace NuFlexiArch;
+namespace JSVNuFlexiArch;
 
 [JsonSerializable(typeof(ListBoxItem))]
 [JsonSerializable(typeof(ListBoxDataDto))]
@@ -20,8 +20,10 @@ public class ListBoxDataDto : CompDataDto
     public List<string> SelectedValues { get; set; } = new();
 }
 
-public abstract class AListBox : AComponent
+public abstract class AListBox : JSVComponent
 {
+    protected AListBox(string uniqueName) : base(uniqueName) { }
+
     protected abstract void SetAllowMultiple(bool allow);
     protected abstract bool GetAllowMultiple();
 

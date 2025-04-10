@@ -1,5 +1,5 @@
 ﻿using JSVNuFlexiArch;
-using NuFlexiArch;
+using JSVNuFlexiArch;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 
@@ -11,6 +11,6 @@ public partial class JSVComponentInitializer
     [SupportedOSPlatform("browser")]
     public static bool InstantiateAndRenderFromJson(string instanceDtoJson, string referenceElementId)
     {
-        return IJSVComponent.InstantiateAndRenderFromJson(instanceDtoJson, referenceElementId);
+        return JSVComponentMaterializer.InstantiateAndRenderFromJson(instanceDtoJson, referenceElementId);
     }
 }

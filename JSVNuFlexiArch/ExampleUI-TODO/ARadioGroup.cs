@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization.Metadata;
 using System.Text.Json.Serialization;
 
-namespace NuFlexiArch;
+namespace JSVNuFlexiArch;
 
 [JsonSerializable(typeof(RadioGroupDataDto))]
 public partial class RadioGroupSerializerContext : JsonSerializerContext { }
@@ -19,8 +19,10 @@ public class RadioGroupDataDto : CompDataDto
     public string? SelectedValue { get; set; }
 }
 
-public abstract class ARadioGroup : AComponent
+public abstract class ARadioGroup : JSVComponent
 {
+    protected ARadioGroup(string uniqueName) : base(uniqueName) { }
+
     protected abstract void SetOptions(List<RadioGroupOption> options);
     protected abstract List<RadioGroupOption> GetOptions();
 

@@ -10,7 +10,7 @@
 
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	  <Title>JSV NuFlexiArch</Title>
-	  <Version>1.0.9.4</Version>
+	  <Version>1.0.9.5</Version>
 	  <PackageProjectUrl>https://github.com/PardusLabs/JSVaporizer</PackageProjectUrl>
 	  <Description>NuFlexiArch + JSVapor is an experimental, lightweight framework for building interactive web applications using C# and WebAssembly, without relying on higher-level abstractions like Blazor.</Description>
 	  <Company>Pardus Labs</Company>
@@ -47,11 +47,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Html.Abstractions" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.3.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\NuFlexiArch\NuFlexiArch.csproj" />
-  </ItemGroup>
-
+	
   <ItemGroup>
     <Reference Include="JSVaporizer.NET.8">
       <HintPath>..\JSVaporizer.NET.8\bin\Debug\net8.0\JSVaporizer.NET.8.dll</HintPath>

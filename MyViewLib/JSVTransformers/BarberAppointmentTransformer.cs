@@ -1,6 +1,6 @@
 ﻿using JSVaporizer;
 using JSVNuFlexiArch;
-using NuFlexiArch;
+using JSVNuFlexiArch;
 using System;
 using System.Collections.Generic;
 using System.Linq;

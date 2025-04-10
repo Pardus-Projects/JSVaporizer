@@ -1,25 +1,28 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using JSVNuFlexiArch;
-using NuFlexiArch;
+using JSVNuFlexiArch;
 
 namespace MyExampleApplication.Pages
 {
     public class IndexModel : PageModel
     {
         public JSVTextDisplay JSVTextDisplay = new("JSVTextDisplay");
-        public string JSVTextDisplay_InstanceJson;
+        public string? JSVTextDisplay_InstanceJson;
 
         public JSVTextInput JSVTextInput = new("JSVTextInput");
-        public string JSVTextInput_InstanceJson;
+        public string? JSVTextInput_InstanceJson;
 
         public JSVTextArea JSVTextArea = new("JSVTextArea");
-        public string JSVTextArea_InstanceJson;
+        public string? JSVTextArea_InstanceJson;
 
         public JSVCheckbox JSVCheckbox = new("JSVCheckbox");
-        public string JSVCheckbox_InstanceJson;
+        public string? JSVCheckbox_InstanceJson;
 
         public JSVSlider JSVSlider = new("JSVSlider");
-        public string JSVSlider_InstanceJson;
+        public string? JSVSlider_InstanceJson;
+
+        public JSVButton JSVButton = new("JSVButton");
+        public string? JSVButton_InstanceJson;
 
         public void OnGet()
         {
@@ -52,6 +55,14 @@ namespace MyExampleApplication.Pages
                 IsChecked = true
             };
             JSVCheckbox_InstanceJson = JSVCheckbox.SerializeInstance(checkboxDataDto).Serialize();
+
+            ButtonDataDto buttonDataDto = new()
+            {
+                Label = "JSVButton LABEL",
+                Text = "JSVButton (No click handler yet...)",
+                IsDisabled = false
+            };
+            JSVButton_InstanceJson = JSVButton.SerializeInstance(buttonDataDto).Serialize();
 
             SliderDataDto sliderDataDto = new()
             {

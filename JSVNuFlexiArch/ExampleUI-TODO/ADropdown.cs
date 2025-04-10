@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization.Metadata;
 using System.Text.Json.Serialization;
 
-namespace NuFlexiArch;
+namespace JSVNuFlexiArch;
 
 [JsonSerializable(typeof(DropdownOption))]
 [JsonSerializable(typeof(DropdownDataDto))]
@@ -21,8 +21,10 @@ public class DropdownDataDto : CompDataDto
     public List<string> SelectedValues { get; set; } = new();
 }
 
-public abstract class ADropdown : AComponent
+public abstract class ADropdown : JSVComponent
 {
+    protected ADropdown(string uniqueName) : base(uniqueName) { }
+
     protected abstract void SetAllowMultiple(bool allow);
     protected abstract bool GetAllowMultiple();
 

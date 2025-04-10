@@ -1,20 +1,24 @@
 ﻿using System.Text.Json.Serialization.Metadata;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Html;
+using System.Reflection.Emit;
 
-namespace NuFlexiArch;
+namespace JSVNuFlexiArch;
 
-public interface IComponent
+public delegate object? ComponentEventHandler(object[] args);
+
+public abstract class JSVComponent
 {
-    // Stub in case it's needed
-}
+    protected JSVComponent(string uniqueName)
+    {
+        Renderer = new JSVComponentRenderer();
+        Metadata.Add("UnqPrefix", uniqueName);
+        Metadata.Add("CompTypeAQN", GetAssemblyQualifiedName());
+    }
 
-public abstract class AComponent
-{
-    public IComponentRenderer Renderer { get; set; } = new BlackHole();
+    public IJSVComponentRenderer Renderer { get; set; } = new BlackHole();
     public CompMetadata Metadata { get; set; } = new();
-
-    public virtual IComponentRenderer GetRenderer() { return Renderer; }
 
     public virtual bool Initialize() { return true; }
 
@@ -90,21 +94,8 @@ public abstract class AComponent
 
         return dict;
     }
-}
 
-
-public interface IComponentRenderer
-{
-    public object Render(AComponent comp, params object[] args);
-}
-
-// In case you need one
-public class BlackHole : IComponentRenderer
-{
-    public object Render(AComponent comp, params object[] args)
-    {
-        return new();
-    }
+    public virtual void RenderBody(HtmlContentBuilder htmlCB) { }
 }
 
 [JsonSerializable(typeof(CompInstanceDto))]

@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization.Metadata;
 using System.Text.Json.Serialization;
 
-namespace NuFlexiArch;
+namespace JSVNuFlexiArch;
 
 [JsonSerializable(typeof(DataGridColumn))]
 [JsonSerializable(typeof(DataGridRow))]
@@ -30,8 +30,10 @@ public class DataGridDataDto : CompDataDto
     public bool SortAscending { get; set; } = true;
 }
 
-public abstract class ADataGrid : AComponent
+public abstract class ADataGrid : JSVComponent
 {
+    protected ADataGrid(string uniqueName) : base(uniqueName) { }
+
     protected abstract void SetColumns(List<DataGridColumn> columns);
     protected abstract List<DataGridColumn> GetColumns();
 

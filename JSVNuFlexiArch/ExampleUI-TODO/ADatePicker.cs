@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization.Metadata;
 using System.Text.Json.Serialization;
 
-namespace NuFlexiArch;
+namespace JSVNuFlexiArch;
 
 [JsonSerializable(typeof(DatePickerDataDto))]
 public partial class DatePickerSerializerContext : JsonSerializerContext { }
@@ -13,8 +13,10 @@ public class DatePickerDataDto : CompDataDto
     public DateTime? MaxDate { get; set; }
 }
 
-public abstract class ADatePicker : AComponent
+public abstract class ADatePicker : JSVComponent
 {
+    protected ADatePicker(string uniqueName) : base(uniqueName) { }
+
     protected abstract void SetSelectedDate(DateTime? date);
     protected abstract DateTime? GetSelectedDate();
 
