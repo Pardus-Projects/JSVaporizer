@@ -1,231 +1,305 @@
 # JSVaporizer & JSVNuFlexiArch
 
-This repository provides a custom .NET WebAssembly interop layer (in the `JSVaporizer` namespace) and a small component framework (in the `JSVNuFlexiArch` namespace) for building interactive web UI entirely in C#. The code demonstrates how to directly call and expose JavaScript functions using `[JSImport]` and `[JSExport]`, while managing DOM elements, events, and state in C#.
+A **lightweight, incremental** approach to adding WebAssembly-driven, C#-based client functionality to existing Razor Pages or MVC applications—without rewriting everything in Blazor or duplicating logic in JavaScript.
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Architecture](#architecture)
-  - [JSVaporizer (Interop Layer)](#jsvaporizer-interop-layer)
-  - [JSVNuFlexiArch (Components)](#jsvnuflexiarch-components)
-  - [Transformer Architecture](#transformer-architecture)
-- [Combining Transformers and Components](#combining-transformers-and-components)
-- [Key Features](#key-features)
-- [Usage](#usage)
-  - [Prerequisites](#prerequisites)
-  - [Building and Running](#building-and-running)
-  - [Basic Example](#basic-example)
-- [Creating Custom Components](#creating-custom-components)
-- [Known Limitations / Caveats](#known-limitations--caveats)
-- [Contributing](#contributing)
-- [License](#license)
+1. [Motivation](#motivation)  
+2. [Key Features](#key-features)  
+3. [How It Works](#how-it-works)  
+   1. [C# Interop Classes (JSVaporizer)](#c-interop-classes-jsvaporizer)  
+   2. [UI Components (JSVNuFlexiArch)](#ui-components-jsvnuflexiarch)  
+   3. [JavaScript Modules](#javascript-modules)  
+4. [Usage](#usage)  
+   1. [Project Setup](#project-setup)  
+   2. [Initialization](#initialization)  
+   3. [Creating and Using Components](#creating-and-using-components)  
+   4. [Event Handling](#event-handling)  
+5. [Advantages](#advantages)  
+6. [Limitations and Why Not to Use](#limitations-and-why-not-to-use)  
+7. [Examples](#examples)  
+8. [License](#license)  
+9. [Contributing](#contributing)
 
 ---
 
-## Overview
+## Motivation
 
-This project shows how to integrate .NET code with browser APIs via `[JSExport]` and `[JSImport]`, as well as how to implement a basic “component” system. **JSVaporizer** is the low-level library that calls or is called by JavaScript, while **JSVNuFlexiArch** provides:
+Many applications use **Razor Pages** or **MVC** for server-side rendering. Over time, front-end JavaScript can become unmaintainable “spaghetti” — particularly if you’re duplicating **DTO and validation logic** in both C# and JS.
 
-1. A small model for defining and rendering UI components (buttons, checkboxes, sliders, etc.).  
-2. A “transformer” mechanism for converting JSON data into a component-based view (populating the DOM) and vice versa (gathering data from the DOM back into DTOs).
+Some teams would like to adopt **WebAssembly** for dynamic behaviors in the browser, but **migrating fully** to Blazor or a large SPA framework can be **overkill or infeasible**. This toolkit was created to:
 
-The code is particularly useful if you want to avoid a JavaScript-based front-end framework or the full Blazor stack, and instead manually manage DOM elements from C#.
-
----
-
-## Architecture
-
-### JSVaporizer (Interop Layer)
-
-- **Interop Classes**  
-  - `WasmElement`, `WasmDocument`, `WasmWindow`, etc. wrap DOM APIs using `[JSImport("functionName", "moduleName")]`.
-  - `WasmJSVEventHandlerPool`, `WasmJSVGenericFuncPool` maintain dictionaries of C# delegates for event handling or generic function callbacks keyed by a string.
-- **`Element` Class**  
-  - Manages references to browser DOM objects. Uses ephemeral `JSObject` references that are disposed once the element is attached to the DOM. Further calls use the element’s `Id` to look up a fresh `JSObject`.
-- **Event Handling**  
-  - Events are registered via `AddEventListener(string eventType, string funcKey, EventHandlerCalledFromJS handler)`.  
-  - The event callback is passed from JS back to C# using `[JSExport]`, then triggers the appropriate function from `WasmJSVEventHandlerPool`.
-
-### JSVNuFlexiArch (Components)
-
-- **`JSVComponent`**: An abstract base class representing a “component” with:
-  - A `Metadata` object that stores key-value pairs (such as a unique prefix or the assembly-qualified type name).
-  - Methods to render HTML (`Renderer.Render()`), update state (`UpdateState()`), and retrieve state (`GetState()`).
-  - JSON serialization hooks to store/restore component data (`SerializeState()` / `DeserializeState()`).
-- **Renderers**  
-  - Components define how they generate DOM elements (labels, inputs, etc.) via classes like `JSVButtonRenderer`, `JSVCheckboxRenderer`, etc.
-  - `JSVComponentRenderer` handles the basic pattern of writing opening and closing `<div>` tags, while a subclass’s `RenderBody(...)` supplies the inner HTML.
-- **Concrete Components**  
-  - **`JSVButton`**: Renders a `<button>` with an optional label.  
-  - **`JSVCheckbox`**: Renders an `<input type="checkbox">` plus label.  
-  - **`JSVSlider`**: Renders an `<input type="range">` plus label and displays the current numeric value.  
-  - **`JSVTextDisplay`**: Renders text inside a `<span>`.  
-  - **`JSVTextInput`**: Renders an `<input type="text">` plus an optional label.
-
-### Transformer Architecture
-
-- **`JSVTransformer`**  
-  - An abstract class that converts a JSON string (DTO) into a view representation, or converts the current view back into a DTO. It can also handle validation, event setup, or additional logic.  
-  - Typical flow:
-    1. **Load** JSON input.  
-    2. **Convert** to a data object (`TransformerDto`).  
-    3. **Populate** the DOM and/or call component methods with that data (e.g., `SetFormElemValue(...)`).  
-    4. **Gather** changes back into a DTO from the current UI state and potentially re-serialize to JSON.
-
-- **`TransformerDto`**  
-  - A base class for data objects used in transformations. Specific transformer implementations typically define their own DTO types.
-
-- **`TransformerRegistry`**  
-  - Maintains a dictionary of transformers keyed by a string.  
-  - Provides a static `Invoke(...)` method to retrieve the correct transformer and call `DtoToView(...)`, returning the result.
-
----
-
-## Combining Transformers and Components
-
-Because transformers govern the flow of data (JSON ↔ DTO ↔ UI) and components manage their own DOM presence, **you can combine them** in flexible ways:
-
-- **Single Transformer, Multiple Components**  
-  - In `DtoToView(...)`, retrieve or instantiate multiple components, and set their state using the data object you deserialized.  
-  - In `ViewToDto(...)`, gather each component’s state to build or update your DTO.  
-  - This allows one JSON schema to drive multiple UI elements on the same page.
-
-- **Multiple Transformers**  
-  - If you have different logical sections or forms, each can have its own transformer. You can register them in `TransformerRegistry` using distinct keys.
-
-- **Event Binding & Validation**  
-  - Transformers can attach click, change, or other event listeners to components in `DtoToView(...)`.  
-  - They can also perform validation on the aggregated DTO in `ViewToDto(...)`, deciding how to handle or display errors.
-
-This synergy provides a **modular, maintainable** system:  
-- **Components** focus on **how** to render and update DOM elements.  
-- **Transformers** focus on **which** data goes where, and **when** it needs to be validated or sent back to a server.
+- **Avoid duplicated logic**: Keep validation, data transfer objects, and core logic in shared C#.
+- **Incrementally introduce client-side interactivity**: Without rewriting your entire Razor Pages app.
+- **Maintain full control**: Provide typed access to the DOM and events, rather than hiding them behind heavy abstractions.
+- **Keep it small**: No built-in routing or large ecosystem — just a straightforward bridge between .NET and the browser DOM.
 
 ---
 
 ## Key Features
 
-1. **Low-Level DOM Control**  
-   Read/write DOM properties (e.g. `.innerHTML`, `.disabled`, `.value`), manage attributes, and register/unregister event listeners entirely in C#.
+1. **Typed DOM Wrappers**  
+   Classes like `Document` and `Element` that let you manipulate attributes, properties, and children in C#.
 
-2. **Events and Callbacks**  
-   The dictionary-based “pool” mechanism lets you register event listeners with unique “function keys,” bridging from JavaScript events back to C#.
+2. **Event Handling**  
+   Register and remove JavaScript event listeners from C# methods. Use delegates to handle browser events.
 
-3. **Ephemeral `JSObject` Usage**  
-   Minimizes memory usage by disposing of expensive `JSObject` references after each operation and re-fetching them by ID when needed.
+3. **“Component” Model**  
+   A base class (`JSVComponent`) and derived examples (`JSVButton`, `JSVSlider`, etc.) that render HTML and maintain internal state via C# DTOs.
 
-4. **Customizable Components**  
-   Each component encapsulates its state in a data-transfer object (DTO) and can be easily extended or combined. State changes are reflected in the DOM and vice versa.
+4. **Transformer System**  
+   `JSVTransformer` classes can convert JSON payloads to strongly typed C# objects, avoiding repeated code in JS.
 
 5. **Source-Generated JSON**  
-   Uses `[JsonSerializable]` attributes for efficient serialization without reflection. Each component’s data DTO has its own generated context.
+   Minimizes reflection overhead with `[JsonSerializable]` contexts.
 
-6. **Flexible Transformers**  
-   Implement your own `JSVTransformer` to handle custom data flows from JSON → component → JSON, using the `TransformerRegistry` to retrieve and apply them on demand.
+6. **Incremental & Non-Invasive**  
+   Compatible with your existing Razor Pages — no full re-architecture required.
+
+---
+
+## How It Works
+
+### 1. C# Interop Classes (JSVaporizer)
+
+Within the **`JSVaporizer`** namespace, you’ll find:
+
+- **`WasmElement`, `WasmDocument`, `WasmWindow`** partial classes:  
+  - Each class has `[JSImport(...)]` attributes pointing to JavaScript functions (e.g. `element.js`, `document.js`, `window.js`).  
+  - This is your typed interface to perform actions like `SetAttribute`, `AppendChild`, `AddEventListener`, or `alert(...)`.
+
+- **`JSVEventHandlerPool`** and **`JSVGenericFuncPool`**:  
+  - Store C# delegates for event callbacks or generic function calls.  
+  - When a JS event occurs, it calls into these pools to find the matching delegate and executes it in C#.
+
+- **`Document`** and **`Element`** classes:  
+  - Provide a friendlier abstraction on top of the lower-level `[JSImport]` calls.  
+  - For example, `element.SetAttribute("class", "btn")` or `element.AppendChild(childElem)`.
+
+These classes **mirror** the DOM but **in C#**. You can think of them as a “bridging layer” between .NET code and JavaScript.
+
+### 2. UI Components (JSVNuFlexiArch)
+
+Under the **`JSVNuFlexiArch`** namespace, you’ll find:
+
+- **`JSVComponent`**:  
+  - An abstract class with lifecycle methods (`Initialize`, `UpdateState`, `GetState`, `RenderBody`).  
+  - Each subclass typically has an associated DTO (`CompDataDto`) to represent its state (e.g. label, isChecked, etc.).
+
+- **Derived Components** (e.g., `JSVButton`, `JSVCheckbox`, `JSVSlider`, `JSVTextInput`, etc.):  
+  - Each has typed properties for user interaction, sets up event listeners, and renders HTML from C#.  
+  - They rely on the DOM interop in `JSVaporizer` behind the scenes.
+
+- **`JSVComponentMaterializer`**:  
+  - Dynamically **instantiates** components from assembly-qualified names, sets their state (DTO), and **injects** them into the DOM.  
+  - This allows you to pass JSON describing the component and its state, and let the library handle the entire process.
+
+### 3. JavaScript Modules
+
+In your **`wwwroot`** (or similar) folder, you’ll have:
+
+- **`jsv_init.js`**:  
+  - Bootstraps the .NET WASM runtime (`dotnet.js`), loads the `"JSVaporizer.NET.8"` assembly (adjust if needed), and then calls `setModuleImports(...)` to bind your partial classes (`WasmElement`, etc.) to actual JS implementations.
+
+- **`for_dotnet/`** folder containing files like:  
+  - **`element.js`, `document.js`, `window.js`, `js_function_pool.js`**  
+  - Each exports specific functions (e.g. `createJSVaporizerElement`, `getPropertyNamesArray`, `alert(...)`) that your `[JSImport("...", "element")]` or `[JSImport("...", "window")]` calls in C# need.
+
+These JS files **do not** contain business logic — they simply provide a minimal layer for DOM manipulation and event handling, deferring actual logic to your C# code.
 
 ---
 
 ## Usage
 
-### Prerequisites
+### 1. Project Setup
 
-- .NET 7 or higher SDK (for WebAssembly support and `[JSImport]` / `[JSExport]` usage).
-- A compatible toolchain for .NET WebAssembly projects, such as a Blazor WebAssembly app or a console-like WASM app with the right build targets.
-- A modern browser that supports WebAssembly.
+1. **Add the C# Projects**  
+   Include references to the `JSVaporizer` and `JSVNuFlexiArch` projects in your .NET solution.  
+   Make sure you’re targeting .NET 7 or higher (with WebAssembly support).
 
-### Building and Running
+2. **Include the JavaScript Files**  
+   - Place `jsv_init.js`, plus the `for_dotnet/*.js` files in a location served by your web app (e.g., `wwwroot/js/`).  
+   - Adjust relative imports in `jsv_init.js` to match your directory structure.
 
-1. **Clone or copy** this repository into your local environment.  
-2. **Open** the `.csproj` in Visual Studio, VS Code, or your preferred editor.  
-3. **Build** the project:
-   ```bash
-   dotnet build
-   ```
-4. If this is part of a Blazor WebAssembly app, **run** it:
-   ```bash
-   dotnet run
-   ```
-5. **Open** the site in your browser. The .NET → JavaScript bridging code should load automatically.
+3. **Configure .NET WASM Boot**  
+   - Typically, you’ll have a `<script>` tag referencing `dotnet.js` from the official WASM runtime, then a `<script>` for your `jsv_init.js`. This ensures the runtime is loaded before your initialization code.
 
-### Basic Example
+### 2. Initialization
 
-Suppose you want to create and render a `JSVButton`:
+In a Razor file or `_Layout.cshtml`:
 
-```csharp
-// Example usage in a Blazor page or other .NET WASM entry point:
-
-// 1. Create a unique name for the button.
-string uniqueName = "MyFirstButton";
-
-// 2. Instantiate the button.
-JSVButton button = new JSVButton(uniqueName);
-
-// 3. Render the button into a container element in the DOM.
-bool appended = JSVComponentMaterializer.Render(uniqueName, button, "someContainerId", append: true);
-
-// 4. Update the button’s state from a DTO.
-var buttonDto = new ButtonDataDto { Label = "Click me!", Text = "Submit", IsDisabled = false };
-button.UpdateState(buttonDto);
-
-// 5. Optionally wire up additional events in the Initialize() method or manually.
+```html
+<script src="_framework/dotnet.js" defer></script>
+<script src="js/jsv_init.js" defer></script>
 ```
 
-In this snippet, the code uses your existing `JSVComponentMaterializer.Render(...)` method to generate HTML for the button and place it into a DOM element with ID `someContainerId`.
+Make sure the script references are in the correct order so the `.NET` runtime is available to `jsv_init.js`.
+
+### 3. Creating and Using Components
+
+#### Manual Instantiation
+
+```csharp
+// Create a new JSVTextInput with a unique prefix
+var textInput = new JSVTextInput("myTextInput");
+
+// Update its state (label, initial text)
+textInput.UpdateState(new TextInputDataDto {
+    Label = "Enter your name:",
+    InputValue = ""
+});
+
+// Render it into an existing DOM element "placeholder"
+JSVComponentMaterializer.Render(
+    "myTextInput",
+    textInput,
+    "placeholder",
+    append: false
+);
+```
+
+#### JSON + Materializer
+
+```csharp
+// Suppose you have a JSON describing both metadata and state
+string sliderInstanceJson = "{ \"MetadataJson\": \"...\", \"StateJson\": \"...\" }";
+
+// Dynamically create & render the component described by JSON
+bool success = JSVComponentMaterializer.InstantiateAndRenderFromJson(
+    sliderInstanceJson,
+    referenceElementId: "sliderContainer",
+    append: true
+);
+```
+
+### 4. Event Handling
+
+Inside a component, you can register events like so:
+
+```csharp
+// C# event handler
+EventHandlerCalledFromJS clickHandler = (elem, eventType, evnt) =>
+{
+    Console.Log("Button clicked in C#");
+    // Return behavior: e.g., prevent default & stop propagation
+    return (int)JSVEventHandlerBehavior.NoDefault_NoPropagate;
+};
+
+// Attach it to your element
+Element buttonElem = Document.AssertGetElementById("myButtonId");
+buttonElem.AddEventListener("click", "buttonClickKey", clickHandler);
+```
+
+When the user clicks, the JavaScript code in `element.js` calls back into C# via `CallJSVEventHandler(funcKey, elem, eventType, event)`.
 
 ---
 
-## Creating Custom Components
+## Advantages
 
-1. **Inherit** from `JSVComponent`.  
-2. **Provide** a constructor that sets up a unique prefix and assigns a renderer:
-   ```csharp
-   public class MyNewComponent : JSVComponent
-   {
-       public MyNewComponent(string uniqueName)
-       {
-           Renderer = new MyComponentRenderer(); // custom renderer
-           Metadata.Add("UnqPrefix", uniqueName);
-           Metadata.Add("CompTypeAQN", GetAssemblyQualifiedName());
+1. **Incremental, Non-Invasive**  
+   Continue using Razor Pages. Introduce client-side C# logic only where needed.
 
-           // ... Additional setup ...
-       }
-   }
-   ```
-3. **Implement** methods like `UpdateState(...)` and `GetState()` to push or pull data from the DOM.  
-4. **Create** a renderer subclass that overrides `RenderBody(...)`:
-   ```csharp
-   public class MyComponentRenderer : JSVComponentRenderer
-   {
-       protected override void RenderBody(JSVComponent tmpComp, HtmlContentBuilder htmlCB)
-       {
-           // Build the HTML for your component, e.g.:
-           htmlCB.AppendHtml($"<div id=\"{...}\">Hello World</div>");
-       }
-   }
-   ```
-5. **Use** `[JsonSerializable]` attributes if you want a strongly typed DTO for your component’s state.  
-6. **Test** the component in your host application (e.g., a Blazor WASM app).
+2. **Reduced JavaScript Duplication**  
+   Keep DTOs and validation in strongly typed C#, rather than rewriting them in JS.
+
+3. **Fine-Grained DOM Control**  
+   Directly manipulate attributes, events, etc. No large abstraction layers.
+
+4. **No Full Blazor Requirement**  
+   If Blazor is impractical or you only want certain .NET features, this toolkit gives a simpler approach.
+
+5. **Source-Generated Serialization**  
+   Efficient `[JsonSerializable]` contexts to avoid reflection overhead.
 
 ---
 
-## Known Limitations / Caveats
+## Limitations and Why Not to Use
 
-- **Event Key Collisions**: Each event listener is associated with a string `funcKey`. Make sure these keys remain unique or you could overwrite an existing handler.  
-- **Case-Sensitive Attributes**: In the `Element` class, attributes must be lowercase, reflecting how browsers typically normalize attribute names.  
-- **Renaming IDs**: Changing an element’s `id` at runtime is not supported because the library uses IDs to track DOM references.  
-- **`GetText()` Unimplemented**: In some components (e.g., `JSVTextDisplay`), certain getter methods (`GetText()`) are placeholders with `NotImplementedException`. If you need that functionality, you’ll need to implement it.  
-- **Performance Overhead**: Because ephemeral `JSObject` references are disposed after each usage, the code often re-fetches DOM elements by ID. This is simpler to manage but can be slower with frequent property reads/writes.  
-- **Transformer Keys**: If you use multiple transformers, ensure your registry keys are unique to avoid collisions in `TransformerRegistry`.
+1. **Not a Full Framework**  
+   No built-in routing, no large ecosystem or official docs beyond this. Large-scale apps might prefer a bigger solution.
+
+2. **Limited Community**  
+   This is a custom toolkit. If you need a robust community or official support, consider Blazor or another mainstream framework.
+
+3. **Potential Key Collisions**  
+   Reusing the same `funcKey` for multiple listeners is disallowed unless you remove the previous one. By design, but could be restrictive.
+
+4. **Modern Browser Dependence**  
+   Uses ES modules and dynamic imports; older browsers need polyfills or won’t work smoothly.
+
+5. **Performance / Startup**  
+   All .NET WASM solutions have an initial load cost. If minimal footprint or maximum speed is critical, pure JS might be better.
+
+6. **Requires Setup**  
+   Must load `.NET WASM` and your JS modules in the correct order. This is more manual than a typical Blazor or React app.
+
+---
+
+## Examples
+
+### Simple JSVButton
+
+```csharp
+public void BuildButton()
+{
+    var button = new JSVButton("myButton");
+    button.UpdateState(new ButtonDataDto {
+        Text = "Click Me!",
+        Label = "Optional Label"
+    });
+
+    // Insert into the DOM
+    JSVComponentMaterializer.Render(
+        "myButton",
+        button,
+        "buttonContainer",
+        append: false
+    );
+}
+```
+
+### Slider with Event Sync
+
+```csharp
+public void BuildSlider()
+{
+    var slider = new JSVSlider("volumeSlider");
+    slider.UpdateState(new SliderDataDto {
+        Label = "Volume",
+        Value = 50,
+        MinValue = 0,
+        MaxValue = 100,
+        Step = 1
+    });
+
+    // Renders into an existing div with ID="sliderPlaceholder"
+    JSVComponentMaterializer.Render(
+        "volumeSlider",
+        slider,
+        "sliderPlaceholder",
+        append: true
+    );
+}
+
+// The 'Initialize()' method in JSVSlider automatically
+// wires up "change" and "Reset" button events internally.
+```
 
 ---
 
 ## Contributing
 
-Contributions are welcome! If you find a bug or want to request a feature, please open an issue or submit a pull request. To contribute:
+1. **Issues**  
+   - Feel free to open an issue if you find a bug or have a feature request. Provide as much detail as possible.
 
-1. **Fork** this repository.  
-2. **Create** a new branch for your changes.  
-3. **Commit** and push to your fork.  
-4. **Open** a pull request describing the changes.
+2. **Pull Requests**  
+   - Fork, add or improve components, then open a pull request. We welcome any additions or corrections.
 
+3. **Style & Conventions**  
+   - Follow .NET naming standards, keep the JavaScript minimal, and maintain clarity throughout the codebase.
 
+4. **Roadmap**  
+   - Potential expansions: advanced event systems, more components, or a more sophisticated approach to disposing/unmounting components.
+
+**Thank you for considering JSVaporizer & JSVNuFlexiArch!**  
+If you need an incremental way to unify your client-side and server-side C# logic without fully embracing a heavier framework like Blazor, this toolkit might be the right fit. Otherwise, if you need official support or advanced features (like SSR, routing, large ecosystems), you might be better served by Blazor or a mainstream JS framework.
