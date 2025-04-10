@@ -13,14 +13,15 @@
 		<Title>JS Vaporizer</Title>
 		<Version>1.0.9.5</Version>
 		<PackageProjectUrl>https://github.com/PardusLabs/JSVaporizer</PackageProjectUrl>
-		<Description>NuFlexiArch + JSVapor is an experimental, lightweight framework for building interactive web applications using C# and WebAssembly, without relying on higher-level abstractions like Blazor.</Description>
+		<Description>NuFlexiArch-JSVapor is an experimental, lightweight framework for building interactive web applications using C# and WebAssembly, without relying on higher-level abstractions like Blazor.</Description>
 		<Company>Pardus Labs</Company>
 		<PackageIcon>img.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/PardusLabs/JSVaporizer</RepositoryUrl>
 		<PackageTags>
 			Blazor;WebAssembly;WASM;DOM;Interop;NuFlexiArch;JSVaporizer;DynamicUI;UIComponents;
-			JSON;DataBinding;EventHandlers;Reflection;AOTFriendly;FormBuilder;DynamicForms;DeclarativeUI
+			JSON;DataBinding;EventHandlers;Reflection;AOTFriendly;FormBuilder;DynamicForms;DeclarativeUI;
+			JavaScript; JSExport; JSImport; UI; Components; Frontend; CSharp; DotNet; SPA; SinglePageApplication
 		</PackageTags>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<IncludeSymbols>True</IncludeSymbols>

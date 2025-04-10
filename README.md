@@ -9,6 +9,7 @@ This repository provides a custom .NET WebAssembly interop layer (in the `JSVapo
   - [JSVaporizer (Interop Layer)](#jsvaporizer-interop-layer)
   - [JSVNuFlexiArch (Components)](#jsvnuflexiarch-components)
   - [Transformer Architecture](#transformer-architecture)
+- [Combining Transformers and Components](#combining-transformers-and-components)
 - [Key Features](#key-features)
 - [Usage](#usage)
   - [Prerequisites](#prerequisites)
@@ -24,8 +25,9 @@ This repository provides a custom .NET WebAssembly interop layer (in the `JSVapo
 ## Overview
 
 This project shows how to integrate .NET code with browser APIs via `[JSExport]` and `[JSImport]`, as well as how to implement a basic “component” system. **JSVaporizer** is the low-level library that calls or is called by JavaScript, while **JSVNuFlexiArch** provides:
-1. A small model for defining and rendering UI components (buttons, checkboxes, sliders, etc.).
-2. A “transformer” mechanism for converting JSON data into a component view and vice versa.
+
+1. A small model for defining and rendering UI components (buttons, checkboxes, sliders, etc.).  
+2. A “transformer” mechanism for converting JSON data into a component-based view (populating the DOM) and vice versa (gathering data from the DOM back into DTOs).
 
 The code is particularly useful if you want to avoid a JavaScript-based front-end framework or the full Blazor stack, and instead manually manage DOM elements from C#.
 
@@ -37,9 +39,9 @@ The code is particularly useful if you want to avoid a JavaScript-based front-en
 
 - **Interop Classes**  
   - `WasmElement`, `WasmDocument`, `WasmWindow`, etc. wrap DOM APIs using `[JSImport("functionName", "moduleName")]`.
-  - `WasmJSVEventHandlerPool`, `WasmJSVGenericFuncPool` maintain dictionaries of C# delegates for event handling or generic function callbacks keyed by a string.  
+  - `WasmJSVEventHandlerPool`, `WasmJSVGenericFuncPool` maintain dictionaries of C# delegates for event handling or generic function callbacks keyed by a string.
 - **`Element` Class**  
-  - Manages references to browser DOM objects. Uses ephemeral `JSObject` references that are disposed once the element is attached to the DOM. Further calls use the element’s `Id` to look up a fresh `JSObject`.  
+  - Manages references to browser DOM objects. Uses ephemeral `JSObject` references that are disposed once the element is attached to the DOM. Further calls use the element’s `Id` to look up a fresh `JSObject`.
 - **Event Handling**  
   - Events are registered via `AddEventListener(string eventType, string funcKey, EventHandlerCalledFromJS handler)`.  
   - The event callback is passed from JS back to C# using `[JSExport]`, then triggers the appropriate function from `WasmJSVEventHandlerPool`.
@@ -63,26 +65,48 @@ The code is particularly useful if you want to avoid a JavaScript-based front-en
 ### Transformer Architecture
 
 - **`JSVTransformer`**  
-  - An abstract class for taking a JSON string (a DTO) and turning it into a view representation, or converting the current view back into a DTO.  
-  - Each transformer implements methods such as `JsonToDto(string dtoJson)`, `DtoToView(string dtoJson, string? userInfoJson = null)`, and `ViewToDto()`.  
-  - A typical flow is:  
-    1. **Load** a JSON string.  
-    2. **Convert** it to a data object (`TransformerDto`).  
-    3. **Render** or **update** a UI component.  
-    4. **Capture** changes from the UI back into a DTO.  
+  - An abstract class that converts a JSON string (DTO) into a view representation, or converts the current view back into a DTO. It can also handle validation, event setup, or additional logic.  
+  - Typical flow:
+    1. **Load** JSON input.  
+    2. **Convert** to a data object (`TransformerDto`).  
+    3. **Populate** the DOM and/or call component methods with that data (e.g., `SetFormElemValue(...)`).  
+    4. **Gather** changes back into a DTO from the current UI state and potentially re-serialize to JSON.
+
 - **`TransformerDto`**  
-  - A base or marker class for data objects used in transformation. Your custom transformers may define subclasses representing specific data structures.  
+  - A base class for data objects used in transformations. Specific transformer implementations typically define their own DTO types.
+
 - **`TransformerRegistry`**  
-  - Maintains a dictionary of transformers (`JSVTransformer` instances) keyed by a string (e.g., a name or identifier).  
-  - Allows you to look up the correct transformer at runtime (`transformerRegistry.Get(xFormerName)`) and invoke it.  
-  - Provides a static `Invoke(...)` method to load a transformer by name, run `DtoToView(...)`, and return the resulting HTML or other data.
+  - Maintains a dictionary of transformers keyed by a string.  
+  - Provides a static `Invoke(...)` method to retrieve the correct transformer and call `DtoToView(...)`, returning the result.
+
+---
+
+## Combining Transformers and Components
+
+Because transformers govern the flow of data (JSON ↔ DTO ↔ UI) and components manage their own DOM presence, **you can combine them** in flexible ways:
+
+- **Single Transformer, Multiple Components**  
+  - In `DtoToView(...)`, retrieve or instantiate multiple components, and set their state using the data object you deserialized.  
+  - In `ViewToDto(...)`, gather each component’s state to build or update your DTO.  
+  - This allows one JSON schema to drive multiple UI elements on the same page.
+
+- **Multiple Transformers**  
+  - If you have different logical sections or forms, each can have its own transformer. You can register them in `TransformerRegistry` using distinct keys.
+
+- **Event Binding & Validation**  
+  - Transformers can attach click, change, or other event listeners to components in `DtoToView(...)`.  
+  - They can also perform validation on the aggregated DTO in `ViewToDto(...)`, deciding how to handle or display errors.
+
+This synergy provides a **modular, maintainable** system:  
+- **Components** focus on **how** to render and update DOM elements.  
+- **Transformers** focus on **which** data goes where, and **when** it needs to be validated or sent back to a server.
 
 ---
 
 ## Key Features
 
 1. **Low-Level DOM Control**  
-   Read/write DOM properties (e.g., `.innerHTML`, `.disabled`, `.value`), manage attributes, and register/unregister event listeners entirely in C#.
+   Read/write DOM properties (e.g. `.innerHTML`, `.disabled`, `.value`), manage attributes, and register/unregister event listeners entirely in C#.
 
 2. **Events and Callbacks**  
    The dictionary-based “pool” mechanism lets you register event listeners with unique “function keys,” bridging from JavaScript events back to C#.
@@ -191,7 +215,7 @@ In this snippet, the code uses your existing `JSVComponentMaterializer.Render(..
 - **Renaming IDs**: Changing an element’s `id` at runtime is not supported because the library uses IDs to track DOM references.  
 - **`GetText()` Unimplemented**: In some components (e.g., `JSVTextDisplay`), certain getter methods (`GetText()`) are placeholders with `NotImplementedException`. If you need that functionality, you’ll need to implement it.  
 - **Performance Overhead**: Because ephemeral `JSObject` references are disposed after each usage, the code often re-fetches DOM elements by ID. This is simpler to manage but can be slower with frequent property reads/writes.  
-- **Transformer Keys**: If you use multiple transformers, ensure your registry keys (the `xFormerRegistryKey`) are unique to avoid collisions in `TransformerRegistry`.  
+- **Transformer Keys**: If you use multiple transformers, ensure your registry keys are unique to avoid collisions in `TransformerRegistry`.
 
 ---
 
@@ -204,10 +228,4 @@ Contributions are welcome! If you find a bug or want to request a feature, pleas
 3. **Commit** and push to your fork.  
 4. **Open** a pull request describing the changes.
 
----
 
-## License
-
-*(If you have a specific open-source license, place it here. For example, MIT.)*
-
-This project is licensed under the [MIT License](LICENSE). See the `LICENSE` file for details.
