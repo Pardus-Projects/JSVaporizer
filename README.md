@@ -151,8 +151,6 @@ See below.
       }
       ```
 
-Make sure the script references are in the correct order so the `.NET` runtime is available to `jsv_init.js`.
-
 ### 2. Creating and Using Components
 
 #### Manual Instantiation
@@ -210,7 +208,7 @@ JSVComponentMaterializer.Render(
    });
 
    async function LaunchApp() {
-         let JSVSlider_InstanceJson = $("#hf_JSVSlider_InstanceJson").val();
+      let JSVSlider_InstanceJson = $("#hf_JSVSlider_InstanceJson").val();
       resStr = jsvExports.MyViewLib.JSVComponentInitializer.InstantiateAndRenderFromJson(JSVSlider_InstanceJson, "JSVSlider_Placeholder");
       alert("It worked.");
    }
