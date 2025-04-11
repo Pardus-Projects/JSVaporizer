@@ -96,16 +96,8 @@ Under the **`JSVNuFlexiArch`** namespace, you’ll find:
 
 ### 3. JavaScript Modules
 
-In your **`wwwroot`** (or similar) folder, you’ll have:
-
-- **`jsv_init.js`**:  
-  - Bootstraps the .NET WASM runtime (`dotnet.js`), loads the `"JSVaporizer.NET.8"` assembly (adjust if needed), and then calls `setModuleImports(...)` to bind your partial classes (`WasmElement`, etc.) to actual JS implementations.
-
-- **`for_dotnet/`** folder containing files like:  
-  - **`element.js`, `document.js`, `window.js`, `js_function_pool.js`**  
-  - Each exports specific functions (e.g. `createJSVaporizerElement`, `getPropertyNamesArray`, `alert(...)`) that your `[JSImport("...", "element")]` or `[JSImport("...", "window")]` calls in C# need.
-
-These JS files **do not** contain business logic — they simply provide a minimal layer for DOM manipulation and event handling, deferring actual logic to your C# code.
+The `JSVaporizer.NET.8.dll` embeds the necessary WASM JavaScript files.  
+See below.
 
 ---
 
@@ -118,24 +110,50 @@ These JS files **do not** contain business logic — they simply provide a minim
    Make sure you’re targeting .NET 7 or higher (with WebAssembly support).
 
 2. **Include the JavaScript Files**  
-   - Place `jsv_init.js`, plus the `for_dotnet/*.js` files in a location served by your web app (e.g., `wwwroot/js/`).  
-   - Adjust relative imports in `jsv_init.js` to match your directory structure.
+   - The `JSVaporizer.NET.8.dll` embeds the necessary WASM JavaScript files:
+   - Allow `ASP.NET Core` to serve these files by adding the following to `Program.cs`
+      ```
+      // Required to serve WASM assembly to client.
+      app.UseStaticFiles(new StaticFileOptions
+      {
+         ServeUnknownFileTypes = true
+      });
 
-3. **Configure .NET WASM Boot**  
-   - Typically, you’ll have a `<script>` tag referencing `dotnet.js` from the official WASM runtime, then a `<script>` for your `jsv_init.js`. This ensures the runtime is loaded before your initialization code.
+      // Extract embedded jsvwasm JavaScript files from JSVaporizer.NET.8 assembly.
+      Assembly ass = typeof(JSVapor).GetTypeInfo().Assembly;
+      EmbeddedFileProvider embProv = new EmbeddedFileProvider(ass, "JSVaporizer.NET.8.jsvwasm");
+      //var verifyFiles = embProv.GetDirectoryContents(""); // For debugging breakpoint
+      app.UseStaticFiles(new StaticFileOptions()
+      {
+         FileProvider = embProv
+      });
+      ```
 
-### 2. Initialization
+3. **Expose the WASM to your front end**  
+   - Add the following to `site.js` or similar:
+      ```
+      let JsvWasm = null;
 
-In a Razor file or `_Layout.cshtml`:
+      export async function GetJsvWasm() {
+         if (JsvWasm == null) {
+            await import("../jsvwasm.js").then((jsvWasm) => {
+                  JsvWasm = {
+                     ExportConfig: jsvWasm.jsvExportConfig,
+                     RegisterCustomImports: jsvWasm.jsvRegisterCustomImports,
+                     RegisterJSFunction: jsvWasm.jsvRegisterJSFunction,
+                     CallJSVGenericFunction: jsvWasm.callJSVGenericFunction,
+                     GetExportedAssembly: jsvWasm.GetExportedAssembly
+                  };
+            });
+         }
 
-```html
-<script src="_framework/dotnet.js" defer></script>
-<script src="js/jsv_init.js" defer></script>
-```
+         return JsvWasm;
+      }
+      ```
 
 Make sure the script references are in the correct order so the `.NET` runtime is available to `jsv_init.js`.
 
-### 3. Creating and Using Components
+### 2. Creating and Using Components
 
 #### Manual Instantiation
 
@@ -158,21 +176,48 @@ JSVComponentMaterializer.Render(
 );
 ```
 
-#### JSON + Materializer
+#### JSON + JSVComponentMaterializer
 
-```csharp
-// Suppose you have a JSON describing both metadata and state
-string sliderInstanceJson = "{ \"MetadataJson\": \"...\", \"StateJson\": \"...\" }";
+1. In a `Sdk="Microsoft.NET.Sdk.WebAssembly"` project (named `MyViewLib` in this example):
+   ```
+   public partial class JSVComponentInitializer
+   {
+      [JSExport]
+      [SupportedOSPlatform("browser")]
+      public static bool InstantiateAndRenderFromJson(string instanceDtoJson, string referenceElementId)
+      {
+         return JSVComponentMaterializer.InstantiateAndRenderFromJson(instanceDtoJson, referenceElementId);
+      }
+   }
+   ```
 
-// Dynamically create & render the component described by JSON
-bool success = JSVComponentMaterializer.InstantiateAndRenderFromJson(
-    sliderInstanceJson,
-    referenceElementId: "sliderContainer",
-    append: true
-);
-```
+2. In **`Foo.cshtml`** 
+   ```razor
+   <h2>JSVSlider</h2>
+   <input id="hf_JSVSlider_InstanceJson" type="hidden" value="@Model.JSVSlider_InstanceJson" />
+   <div id="JSVSlider_Placeholder"></div>
+   ```
 
-### 4. Event Handling
+3. In **`foo.js`** 
+   ```
+   let site;
+
+   import("./site.js").then((module) => {
+      site = module;
+
+      // Launch your front end here
+      LaunchApp();
+   });
+
+   async function LaunchApp() {
+         let JSVSlider_InstanceJson = $("#hf_JSVSlider_InstanceJson").val();
+      resStr = jsvExports.MyViewLib.JSVComponentInitializer.InstantiateAndRenderFromJson(JSVSlider_InstanceJson, "JSVSlider_Placeholder");
+      alert("It worked.");
+   }
+   ```
+
+
+### 3. Event Handling
 
 Inside a component, you can register events like so:
 
