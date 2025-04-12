@@ -1,0 +1,67 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+
+	  <IsPackable>true</IsPackable>
+
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <Title>JSV NuFlexiArch</Title>
+	  <Version>1.1.0.0</Version>
+	  <PackageProjectUrl>https://github.com/PardusLabs/JSVaporizer</PackageProjectUrl>
+	  <Description>NuFlexiArch-JSVapor is an experimental, lightweight framework for building interactive web applications using C# and WebAssembly, without relying on higher-level abstractions like Blazor.</Description>
+	  <Company>Pardus Labs</Company>
+	  <PackageIcon>img.png</PackageIcon>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+	  <RepositoryUrl>https://github.com/PardusLabs/JSVaporizer</RepositoryUrl>
+	  <PackageTags>
+		  Blazor;WebAssembly;WASM;DOM;Interop;NuFlexiArch;JSVaporizer;DynamicUI;UIComponents;
+		  JSON;DataBinding;EventHandlers;Reflection;AOTFriendly;FormBuilder;DynamicForms;DeclarativeUI;
+		  JavaScript; JSExport; JSImport; UI; Components; Frontend; CSharp; DotNet; SPA; SinglePageApplication
+	  </PackageTags>
+	  <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+	  <IncludeSymbols>True</IncludeSymbols>
+	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	  <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+	  <PackageId>PardusLabs.$(AssemblyName)</PackageId>
+	  
+  </PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\img.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\LICENSE.txt">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\README.md">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+	
+  <ItemGroup>
+    <PackageReference Include="Handlebars.Net" Version="2.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Html.Abstractions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.3.0" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <Reference Include="JSVaporizer.NET.8">
+      <HintPath>..\JSVaporizer.NET.8\bin\Debug\net8.0\JSVaporizer.NET.8.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

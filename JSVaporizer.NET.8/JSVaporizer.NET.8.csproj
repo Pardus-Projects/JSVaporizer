@@ -11,7 +11,7 @@
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>JS Vaporizer</Title>
-		<Version>1.0.9.5</Version>
+		<Version>1.1.0.0</Version>
 		<PackageProjectUrl>https://github.com/PardusLabs/JSVaporizer</PackageProjectUrl>
 		<Description>NuFlexiArch-JSVapor is an experimental, lightweight framework for building interactive web applications using C# and WebAssembly, without relying on higher-level abstractions like Blazor.</Description>
 		<Company>Pardus Labs</Company>

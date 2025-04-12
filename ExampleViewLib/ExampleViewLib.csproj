@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+    <OutputType>Library</OutputType>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JSVZenView\JSVZenView.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="JSVaporizer.NET.8">
+      <HintPath>..\JSVaporizer.NET.8\bin\Debug\net8.0\JSVaporizer.NET.8.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+
+
+</Project>
