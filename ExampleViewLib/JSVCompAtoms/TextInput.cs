@@ -1,36 +1,31 @@
-﻿using JSVZenView;
+﻿using JSVNuFlexiArch;
 using System;
 using System.Runtime.Versioning;
 using static JSVaporizer.JSVapor;
 
 namespace ExampleViewLib;
 
-[SupportedOSPlatform("browser")]
-public class TextInput : ZenView
+public class TextInput : JSVComponent
 {
     public string InputId { get; }
-
-    private string? _inputValue;
 
     public TextInput(string uniqueName) : base(uniqueName)
     {
         InputId = UniqueWithSuffix("InputId");
     }
 
-    public string GetInputId()
-    {
-        return InputId;
-    }
+    [SupportedOSPlatform("browser")]
 
     public void SetInputVal(string? val)
     {
-        _inputValue = val;
-        Document.AssertGetElementById(InputId).SetFormElemValue(_inputValue);
+        Document.AssertGetElementById(InputId).SetFormElemValue(val);
     }
+
+    [SupportedOSPlatform("browser")]
 
     public string? GetInputVal()
     {
-        return _inputValue;
+        return Document.AssertGetElementById(InputId).GetFormElemValue();
     }
 
     protected override string GetTemplate()

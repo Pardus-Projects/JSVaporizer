@@ -77,7 +77,7 @@ public static partial class JSVapor
             }
             else
             {
-                jSObject = JSVapor.WasmDocument.GetElementById(Id);
+                jSObject = WasmDocument.GetElementById(Id);
             }
 
             if (jSObject == null)
@@ -400,7 +400,7 @@ public static partial class JSVapor
                 _eventListenersByType[eventType].Add(funcKey);
 
                 // Add to function pool first.
-                JSVapor.WasmJSVEventHandlerPool.Add(funcKey, handler);
+                WasmJSVEventHandlerPool.Add(funcKey, handler);
 
                 // Then add as an event handler.
                 JSObject? jSObject = null;
@@ -414,7 +414,6 @@ public static partial class JSVapor
                     if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
                 }
             }
-
         }
 
         public void RemoveEventListener(string eventType, string funcKey)
@@ -449,7 +448,7 @@ public static partial class JSVapor
                 }
 
                 // Then remove from the function pool.
-                JSVapor.WasmJSVEventHandlerPool.Remove(funcKey);
+                WasmJSVEventHandlerPool.Remove(funcKey);
             }
         }
     }

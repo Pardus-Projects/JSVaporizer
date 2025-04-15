@@ -1,5 +1,5 @@
 ﻿using JSVaporizer;
-using JSVZenView;
+using JSVNuFlexiArch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ public class MyCoolTransformerDto : TransformerDto
     public bool? ParallelPetGrooming { get; set; }
 }
 
-public class BarberAppointmentTransformer : ZVTransform
+public class BarberAppointmentTransformer : JSVTransformer
 {
     public override MyCoolTransformerDto JsonToDto(string dtoJson)
     {

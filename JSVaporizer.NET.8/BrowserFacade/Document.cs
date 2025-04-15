@@ -89,7 +89,7 @@ public static partial class JSVapor
             JSObject? jSObject = null;
             try
             {
-                jSObject = JSVapor.WasmDocument.CreateJSVaporizerElement(id, tagName, _createdByJSVaporizerAttributeName);
+                jSObject = WasmDocument.CreateJSVaporizerElement(id, tagName, _createdByJSVaporizerAttributeName);
 
                 Element elem = new Element(id, jSObject);
 
@@ -111,26 +111,29 @@ public static partial class JSVapor
             {
                 return _jsvElements[id];
             }
+
             // Otherwise return whatever the DOM says we have.
-            else
+            // Used existing copy if there is one,
+            // so that different callers see the same exact Elememt object.
+            // We need this behavior unles we rewrite things like event handlers,
+            // which are (until changed so they are tracked inside Document!) tracked inside the incididual Element objects.
+            JSObject? jSObject = null;
+            try
             {
-                JSObject? jSObject = null;
-                try
+                jSObject = WasmDocument.GetElementById(id);
+                if (jSObject != null)
                 {
-                    jSObject = JSVapor.WasmDocument.GetElementById(id);
-                    if (jSObject != null)
-                    {
-                        return new Element(id);
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    _jsvElements[id] = new Element(id);
+                    return _jsvElements[id];
                 }
-                finally
+                else
                 {
-                    if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
+                    return null;
                 }
+            }
+            finally
+            {
+                if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
             }
         }
 
@@ -141,7 +144,7 @@ public static partial class JSVapor
             //      They are expensive, so we will look them up on the fly
             //      then use JSObject.Dispose() to dispose them.
 
-            JSObject[] jSObjectArr = JSVapor.WasmDocument.GetElementsArrayByTagName(tagName);
+            JSObject[] jSObjectArr = WasmDocument.GetElementsArrayByTagName(tagName);
             return jSObjectArr.ToList();
         }
 

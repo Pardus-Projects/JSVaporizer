@@ -8,27 +8,15 @@
 
 <a href="BarberAppointment">Barber Appointment</a>
 
-<h1>Components Test</h1>
-
 <hr />
 
-<h2>TextInput_Server render server-side</h2>
-<input id="hf_TextInput_Server_MetadataJson" type="hidden" value="@Model.TextInput_Server.GetMetadataJson()" />
-@Model.TextInput_Server.RenderBuilder()
+<h1>Render Test</h1>
 
-<h2>TextInput_Client render client-side</h2>
-<input id="hf_TextInput_Client_MetadataJson" type="hidden" value="@Model.TextInput_Client.GetMetadataJson()" />
-<div id="TextInput_Wrapper"></div>
+<h2>MyTestCompUniqueName_CLIENT</h2>
+<input id="hf_MyTestCompBuilder_UN" type="hidden" value="MyTestCompUniqueName_CLIENT" />
+<input id="hf_MyTestCompBuilder_AQN" type="hidden" value="@Model.MyTestCompBuilder.AssemblyQualifiedName" />
+<span id="MyTestComp_Placeholder"></span>
 
-<h2>TwoTextInputs</h2>
-<input id="hf_TwoTextInputs_MetadataJson" type="hidden" value="@Model.TwoTextInputs.GetMetadataJson()" />
-<div id="TwoTextInputs_Wrapper"></div>
-
-<h2>ThreeTextInputsHandlebars</h2>
-<input id="hf_ThreeTextInputsHandlebars_MetadataJson" type="hidden" value="@Model.ThreeTextInputsHandlebars.GetMetadataJson()" />
-<div id="ThreeTextInputsHandlebars_Wrapper"></div>
-
-<hr />
 
 
 

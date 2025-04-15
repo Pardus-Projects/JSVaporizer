@@ -14,19 +14,12 @@ async function LaunchApp() {
 
     // Get exports from any web assemblies exported.
     let jsvExports = await JsvWasm.GetExportedAssembly("ExampleViewLib");
-    let myCompMaterializer = jsvExports.ExampleViewLib.MyComponentMaterializer.MaterializeFromJson;
 
-    let resStr;
+    let MyTestCompBuilder_UN = $("#hf_MyTestCompBuilder_UN").val();
+    let MyTestCompBuilder_AQN = $("#hf_MyTestCompBuilder_AQN").val();
+    jsvExports.ExampleViewLib.JSVCompBuilderInvoker.Invoke(MyTestCompBuilder_UN, MyTestCompBuilder_AQN, "MyTestComp_Placeholder");
 
-    resStr = myCompMaterializer($("#hf_TextInput_Server_MetadataJson").val(), "TextInput_Wrapper");
-
-    resStr = myCompMaterializer($("#hf_TextInput_Client_MetadataJson").val(), "TextInput_Wrapper");
-
-    resStr = myCompMaterializer($("#hf_TwoTextInputs_MetadataJson").val(), "TwoTextInputs_Wrapper");
-
-    resStr = myCompMaterializer($("#hf_ThreeTextInputsHandlebars_MetadataJson").val(), "ThreeTextInputsHandlebars_Wrapper");
-    
-    alert("resStr says: " + resStr);
+    alert("FINISHED");
 }
 
 

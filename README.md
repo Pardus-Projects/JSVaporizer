@@ -1,310 +1,255 @@
-# JSVaporizer-ZenView
+# **JSVaporizer** 
+A Lightweight .NET WASM Framework for Handcrafted UI Components
 
-A **mini-framework** for .NET WebAssembly (WASM) that unifies **server-side** Razor Pages logic with **client-side** interactivity – all in **C#**. It consists of two parts:
+## Overview
 
-1. **JSVaporizer**: A _bare-metal DOM and JS interop_ toolkit, providing:
-   - Ephemeral `JSObject` usage
-   - Custom `[JSExport]` / `[JSImport]` bindings
-   - Thread-safe function/event pools (string-keyed)
-   - Basic wrappers for DOM (`Document`, `Element`), `Window` APIs, and more
+**JSVaporizer** is a minimalistic, highly flexible framework for building interactive web UIs in .NET using WebAssembly, without the overhead of a more opinionated system like Blazor. It provides:
 
-2. **ZenView**: A _higher-level “component” system_ built on JSVaporizer:
-   - Reflection-based rendering
-   - Handlebars.NET templating for server & client HTML generation
-   - Composable UI elements (e.g. `TextInput`, `TwoTextInputs`, etc.)
+1. **Simple, Component-Based Architecture**:  
+   - Define your own UI components by subclassing `JSVComponent`.  
+   - Use Handlebars templates to generate markup on either the server or client.
 
-Together, these allow you to place your **business logic, data transformations, and UI rendering** all in **C#**, while still using Razor for pages and HTML structure.
+2. **Direct DOM Interaction**:  
+   - Bypass the typical virtual DOM or heavy data-binding layers.  
+   - Manipulate DOM elements using typed C# classes (`Document`, `Element`, etc.) and low-level `[JSImport]`/`[JSExport]` interop.
+
+3. **Event-Handler Pooling**:  
+   - Attach .NET delegates to DOM events (e.g., “click,” “change”) through a function pool keyed by a unique string, eliminating extensive JavaScript boilerplate.
+
+4. **Server + Client Rendering**:  
+   - Render partial HTML on the server (Razor Pages or MVC) and then enhance or replace portions of the DOM at runtime on the client, purely in C#.
+
+By focusing on direct control and a straightforward lifecycle (“Build → Insert → Wire up events”), **JSVaporizer** offers a “do-it-yourself” style for developers who prefer minimal abstraction while still enjoying strongly-typed .NET code and tooling.
 
 ---
 
 ## Table of Contents
 
-1. [Features](#features)
-2. [Installing & Setup](#installing--setup)
-3. [Key Concepts](#key-concepts)
-   - [JSVaporizer Facade](#jsvaporizer-facade)
-   - [ZenView Components](#zenview-components)
-   - [ZVTransform & TransformerRegistry](#zvtransform--transformerregistry)
-4. [Usage Examples](#usage-examples)
-   - [Server-Side Rendering](#server-side-rendering)
-   - [Client-Side Materialization](#client-side-materialization)
-   - [Form Handling via Transformers](#form-handling-via-transformers)
-5. [Advanced Scenarios](#advanced-scenarios)
-   - [Composition](#composition)
-   - [DOM Facade Internals](#dom-facade-internals)
-   - [Function & Event Pools](#function--event-pools)
-6. [Comparison to Blazor](#comparison-to-blazor)
-7. [FAQ](#faq)
-8. [License](#license)
+- [Key Features](#key-features)  
+- [Getting Started](#getting-started)  
+  - [Installation](#installation)  
+  - [Basic Usage](#basic-usage)  
+- [Core Concepts](#core-concepts)  
+  - [JSVComponent](#jsvcomponent)  
+  - [Templates with Handlebars](#templates-with-handlebars)  
+  - [JSVCompBuilder and Post-Attach Setup](#jsvcompbuilder-and-post-attach-setup)  
+  - [DOM Wrappers (Document & Element)](#dom-wrappers-document--element)  
+  - [Event Handling](#event-handling)  
+- [Creating a New Component](#creating-a-new-component)  
+- [Examples](#examples)  
+- [FAQ](#faq)  
+- [Contributing](#contributing)  
+- [License](#license)
 
 ---
 
-## Features
+## Key Features
 
-- **Shared C# Logic**: Write validation or business rules once; run them _client-side_ in WASM or _server-side_ via Razor Pages.
-- **Low-Level DOM Control**: Directly query/manipulate the DOM using ephemeral `JSObject` handles, or wrap it in higher-level ZenView components.
-- **Component-Based UI**: Build and nest UI components with reflection-based “auto-rendering” and Handlebars templates.
-- **Incremental Migration**: Gradually replace “JavaScript spaghetti” in Razor pages. Keep your existing HTML and only adopt WASM logic where needed.
-- **No Full Rewrite**: Works seamlessly with standard ASP.NET Core Razor Pages; you don’t have to jump to a new SPA framework.
-- **Extensible**: Add new ZenView components (like `TextInput`, `TextArea`, etc.) or custom Transformers for advanced workflows.
-
----
-
-## Installing & Setup
-
-1. **Create or Use an ASP.NET Core (Razor Pages, Minimal APIs, MVC) Project**  
-   Ensure you have a `.NET 8` environment.
-
-2. **Include the JSVaporizer-ZenView Libraries**  
-   - If you have them as **NuGet** packages (hypothetical packages `JSVaporizer` and `ZenView`), reference them in your `.csproj`.
-   - Or, if you’re building from source, include the `.csproj` for both libraries in your solution and reference them.
-
-3. **Enable WebAssembly Support**  
-   In your `wwwroot` or project structure, ensure you have the **dotnet.wasm** files or `_framework/dotnet.js` that your WASM runtime uses. Typically, you might see them under `_framework/`.
-
-4. **Set Up JavaScript Glue**  
-   - Place files like `jsvwasm.js`, `site.js`, etc. in `wwwroot/js/` (or similar).  
-   - Load them in your `_Layout.cshtml` or specific pages.
-   - Adjust the `import("./site.js")` patterns as desired within those files.
+- **Lightweight**: Only the minimal set of classes you need to interface with JS from .NET, manipulate DOM elements, and render HTML via templates.  
+- **Flexible Rendering**: Use the same component model for server-side generation (Razor) or client-side dynamic insertion.  
+- **Typed DOM Access**: `Element` and `Document` classes mimic common web APIs but in a strictly typed C# manner, letting you do things like `element.SetAttribute("class", "my-class")` or `document.AssertGetElementById("someId")`.  
+- **No Heavy Dependencies**: Relies on the new .NET 7/8 `[JSExport]` / `[JSImport]` attributes for WASM interop—no bulky frameworks.  
+- **Event Delegation in C#**: Add or remove event listeners in the browser with a one-liner in .NET code, thanks to the event-handler pool.
 
 ---
 
-## Key Concepts
+## Getting Started
 
-### JSVaporizer Facade
+### Installation
 
-- **DOM Classes**:  
-  - `Document.AssertGetElementById(string id)`  
-  - `Element.SetProperty(...)`, `AppendChild(...)`, etc.  
-- **Function/Event Pools**:  
-  - Store delegates in a dictionary keyed by strings, so JS can call `.NET` or .NET can call `JSFunction` by referencing a key.
-- **Window, Console, Alert**:  
-  - Minimal wrappers for `window.alert`, `console.log`, etc.
+1. **Clone or Add Reference**  
+   - Copy the source files into your project, or reference the compiled library (if you’ve built a NuGet package, install it via `dotnet add package JSVaporizer`).
+   
+2. **Ensure .NET 7+**  
+   - JSVaporizer heavily relies on the .NET WASM interop features introduced in .NET 7. Make sure your project targets `.NET 7` or `.NET 8`.
 
-### ZenView Components
+3. **Use a Supported Browser**  
+   - WebAssembly with JavaScript interop is widely supported in modern browsers. No special polyfills should be required beyond typical .NET WASM support.
 
-- **Subclass `ZenView`** to create a custom component:
+### Basic Usage
 
-   ~~~~csharp
-   [SupportedOSPlatform("browser")]
-   public class TextInput : ZenView
+1. **Define a Component**  
+   ```csharp
+   public class MyLabel : JSVComponent
    {
-      public string InputId { get; }
+       public string LabelId { get; }
 
-      private string? _inputValue;
+       public MyLabel(string uniqueName) : base(uniqueName)
+       {
+           LabelId = UniqueWithSuffix("LabelId");
+       }
 
-      public TextInput(string uniqueName) : base(uniqueName)
-      {
-         InputId = UniqueWithSuffix("InputId");
-      }
-
-      public string GetInputId()
-      {
-         return InputId;
-      }
-
-      public void SetInputVal(string? val)
-      {
-         _inputValue = val;
-         Document.AssertGetElementById(InputId).SetFormElemValue(_inputValue);
-      }
-
-      public string? GetInputVal()
-      {
-         return _inputValue;
-      }
-
-      protected override string GetTemplate()
-      {
-         string hTemplate = Environment.NewLine + @"
+       protected override string GetTemplate()
+       {
+           return $@"
                <span id=""{{{UniqueName}}}"">
-                  <input id=""{{{InputId}}}"" type=""text""/>
+                   <label id=""{{{LabelId}}}"">Hello from JSVaporizer</label>
                </span>
-         ";
-
-         return hTemplate;
-      }
+           ";
+       }
    }
-   ~~~~
+   ```
 
-- **Render**:  
-  - **Server**: `myView.RenderBuilder()` in a Razor Page  
-  - **Client**: The metadata JSON approach or `[JSExport]` calls that do `MaterializeFromJson(...)`.
+2. **Render on the Server**  
+   In a Razor Page:
+   ```csharp
+   @page
+   @model IndexModel
 
-### ZVTransform & TransformerRegistry
+   @{
+       var labelComp = new MyLabel("myUniqueLabel");
+   }
 
-- **ZVTransform**:  
-  - Abstract base for “data in, data out” transformations. For example, a form might define `JsonToDto(...)`, `DtoToView(...)`, `ViewToDto(...)`.
-- **TransformerRegistry**:  
-  - A dictionary mapping string keys to `ZVTransform` instances.  
-  - `Invoke(...)` looks up the transform by name and calls `DtoToView` or similar.
+   <h1>Hello World with JSVaporizer</h1>
+   @labelComp.RenderBuilder()
+   ```
 
-**Use Case**: In the **BarberAppointment** example, we set up a hidden JSON field, then call `.NET` to fill the form fields or validate them, avoiding parallel JavaScript logic.
-
----
-
-## Usage Examples
-
-### Server-Side Rendering
-
-~~~~csharp
-// IndexModel.cs
-public class IndexModel : PageModel
-{
-    public TextInput TextInput_Server = new("TextInput_Server");
-    public void OnGet() { /* no special logic here */ }
-}
-
-// index.cshtml
-@model IndexModel
-@{
-    // Renders the text input server-side, returning HTML
-    var serverSideHtml = Model.TextInput_Server.RenderBuilder();
-}
-<div>
-    @serverSideHtml
-</div>
-~~~~
-
-### Client-Side Materialization
-
-~~~~csharp
-// If you store the metadata JSON from your ZenView:
-string metadataJson = Model.TextInput_Client.GetMetadataJson();
-
-// On the Razor page:
-<input id="hf_TextInput_Client_MetadataJson" type="hidden" value="@metadataJson" />
-<div id="TextInput_Wrapper"></div>
-~~~~
-
-Then, in `index.js`:
-
-~~~~js
-import("./site.js").then((module) => {
-    site = module;
-    LaunchApp();
-});
-
-async function LaunchApp() {
-    let JsvWasm = await site.GetJsvWasm();
-    // 'myCompMaterializer' is your .NET method that calls "MaterializeFromJson"
-    let metaJson = document.getElementById("hf_TextInput_Client_MetadataJson").value;
-    let resStr = myCompMaterializer(metaJson, "TextInput_Wrapper");
-    alert("Client-side materialization done! " + resStr);
-}
-~~~~
-
-### Form Handling via Transformers
-
-~~~~csharp
-public class BarberAppointmentTransformer : ZVTransform
-{
-    public override string DtoToView(string dtoJson, string? userInfoJson = null)
-    {
-        // 1) Convert JSON -> DTO
-        var dto = JsonToDto(dtoJson);
-        // 2) Populate form fields
-        Element nameElem = Document.AssertGetElementById("txtName");
-        nameElem.SetFormElemValue(dto.Name);
-        // etc.
-        // 3) Attach event handler
-        Document.AssertGetElementById("btnBookNow")
-                .AddEventListener("click", "btnBookClick", MyClickHandler());
-        return "Form is loaded!";
-    }
-
-    public override MyCoolTransformerDto ViewToDto() {
-       // read from DOM -> build DTO
-    }
-
-    private EventHandlerCalledFromJS MyClickHandler() {
-        return (elem, eventType, evnt) => {
-            var updatedDto = ViewToDto();
-            // validation, AjaxPOST, etc.
-            return (int)JSVEventHandlerBehavior.NoDefault_NoPropagate;
-        };
-    }
-}
-~~~~
+3. **Replace or Insert on the Client**  
+   If you have a placeholder `<div id="myPlaceholder"></div>` in the HTML, you can call:
+   ```csharp
+   JSVCompBuilder.Invoke(
+       "myUniqueLabel",
+       typeof(MyLabelBuilder).AssemblyQualifiedName,
+       "myPlaceholder"
+   );
+   ```
+   and the placeholder’s content becomes the component’s rendered HTML.
 
 ---
 
-## Advanced Scenarios
+## Core Concepts
 
-### Composition
+### JSVComponent
 
-You can **nest** multiple ZenView components in a single class:
+- **Base class** for all components in JSVaporizer.  
+- Stores a `uniqueName` and provides the `Render()` method that calls a Handlebars template (`GetTemplate()`).
+- Example Subclasses: `CheckBox`, `TextInput`, `Button`, `DropDownList`.
 
-~~~~csharp
-public class TwoTextInputs : ZenView
-{
-    public TextInput Input1 { get; }
-    public TextInput Input2 { get; }
+### Templates with Handlebars
 
-    public TwoTextInputs(string uniqueName) : base(uniqueName)
-    {
-        Input1 = new(UniqueWithSuffix("Input1"));
-        Input2 = new(UniqueWithSuffix("Input2"));
-    }
+- Components override `GetTemplate()` to return a Handlebars string:
+  ```csharp
+  protected override string GetTemplate()
+  {
+      return @"
+          <span id=""{{{UniqueName}}}"">
+              <input type=""checkbox"" id=""{{{CheckBoxId}}}"" />
+          </span>
+      ";
+  }
+  ```
+- **Why Handlebars?**  
+  - Simplifies inline expressions like `{{MyProperty}}` or loops with `{{#each}}`.
+  - You still get full C# control over property data.
 
-    protected override string GetTemplate() => @"
-            <div id=""{{{UniqueName}}}"">
-                Input 1
-                {{{Input1}}}
-                <hr />
-                Input 2
-                {{{Input2}}}
-            </div>
-        ";
-}
-~~~~
+### JSVCompBuilder and Post-Attach Setup
 
-When you call `Render()`, the **base** `ZenView` will **detect** that `Input1` and `Input2` are also `ZenView` objects, rendering them in place.
+- **`JSVCompBuilder`**: A pattern for creating a component, setting default properties, and then inserting it into the DOM.  
+- **`PostAttachToDOMSetup`**: An optional delegate that runs after the component’s HTML is in the page, ideal for binding event handlers.  
+  ```csharp
+  public PostAttachToDOMSetup? PostAttachToDOMSetup;
+  ```
 
-### DOM Facade Internals
+### DOM Wrappers (Document & Element)
 
-- **Ephemeral JSObject**:  
-  - Each `Element` fetches a short-lived reference to the underlying DOM node.  
-  - Freed (`Dispose()`) after each usage to avoid memory leaks in .NET → JS bridging.
+- `Document` provides methods like `CreateElement(...)`, `GetElementById(...)`, or `GetElementsByTagName(...)`, each returning an `Element`.
+- `Element` wraps a DOM element and offers:
+  - `.SetProperty(...)`, `.GetProperty(...)`  
+  - `.SetAttribute(...)`, `.GetAttribute(...)`  
+  - `.AddEventListener(...)`, `.RemoveEventListener(...)`  
+- Under the hood, it uses `[JSImport]` calls to interact with the browser’s DOM API.
 
-- **Event System**:  
-  - `AddEventListener("click", "someKey", handler)` stores your `.NET` delegate in a dictionary.  
-  - A JavaScript wrapper calls back into `[JSExport]` with `funcKey = "someKey"`, which looks up the delegate.
+### Event Handling
 
-### Function & Event Pools
-
-- You register a function:
-
-~~~~csharp
-WasmJSVEventHandlerPool.Add("myKey", myDelegate);
-~~~~
-
-- Later, JavaScript triggers an event, calls `CallJSVEventHandler("myKey", ...)`, which executes `myDelegate`.
+- **AddEventListener**: 
+  ```csharp
+  myButton.AddEventListener("click", "myClickKey", (elem, eventType, evnt) =>
+  {
+      // C# logic for click
+      Console.Log("Button was clicked!");
+      return (int)JSVEventHandlerBehavior.NoDefault_NoPropagate;
+  });
+  ```
+- This automatically registers an event handler in the `WasmJSVEventHandlerPool`, letting the browser route the “click” to your C# method.
 
 ---
 
-## Comparison to Blazor
+## Creating a New Component
 
-**Blazor** is a fully integrated component model from Microsoft that includes:
+1. **Subclass `JSVComponent`**  
+   ```csharp
+   public class FancyParagraph : JSVComponent
+   {
+       public FancyParagraph(string uniqueName) : base(uniqueName) {}
 
-- Automatic diffing & re-rendering
-- Razor `.razor` files for components
-- Rich ecosystem of libraries
+       protected override string GetTemplate()
+       {
+           return @"
+               <p id=""{{{UniqueName}}}"">A fancy paragraph!</p>
+           ";
+       }
+   }
+   ```
+2. **Add Interactive Methods** (optional)  
+   If you need to manipulate the DOM post-render:
+   ```csharp
+   [SupportedOSPlatform("browser")]
+   public void SetText(string newText)
+   {
+       Document.AssertGetElementById(UniqueName).SetProperty("textContent", newText);
+   }
+   ```
 
-**JSVaporizer-ZenView** is _lighter_ and _more direct_:
+3. **Use the New Component**  
+   - Server side with `@myParagraph.RenderBuilder()`.  
+   - Client side with a `JSVCompBuilder` subclass or direct creation, then inserting via `outerHTML`.
 
-- Emphasizes minimal bridging of DOM, ephemeral references
-- Leaves you in control of how to structure pages (standard `.cshtml`)
-- Good for incremental migration from Razor Pages or partial adoption of WASM logic
+---
+
+## Examples
+
+### A Composite Component
+
+See `MyTestComp` for a larger example that contains:
+- A `DropDownList`  
+- A `Button`  
+- A `List<string>` displayed in a `<ul>`  
+- A click event handler that removes itself after firing once.
+
+### A “One-and-Done” Button
+
+- `Button` class lets you show a button with an event handler. In `OnClick`, you can remove the event after triggering once, effectively disabling further clicks.
 
 ---
 
 ## FAQ
 
-**1. Do I have to rewrite all Razor pages to use ZenView?**  
-No. You can adopt it selectively. Keep the rest of your pages as plain Razor + JS.
+1. **How does this differ from Blazor?**  
+   - JSVaporizer is far more manual and lightweight. Blazor does diff-based rendering, has signal-driven re-renders, and includes many abstractions. JSVaporizer basically gives you direct DOM control via .NET. No large runtime overhead or specialized lifecycle.
 
-**2. Can I do partial page updates?**  
-Yes. You can call `Render()` on a subcomponent and inject its HTML into the DOM. Or directly manipulate DOM elements via `JSVaporizer`.
+2. **Can I still use JavaScript libraries alongside it?**  
+   - Absolutely. JSVaporizer’s approach is minimal enough to coexist with other JS frameworks or libraries.
 
+3. **Is there any virtual DOM or diffing?**  
+   - No. If you need to update, you can either set `.SetProperty("outerHTML", ...)` to fully replace elements or manipulate them directly.
 
+4. **What about server-side only usage (no WASM)?**  
+   - You can still use `JSVComponent` to render HTML strings on the server (like Razor partials). The client-side features (events, `Element` wrappers) won’t apply without WASM, though.
+
+---
+
+## Contributing
+
+- **Issues & Features**: Please open issues on GitHub if you find a bug or have a request.  
+- **Pull Requests**: We welcome improvements, additional components, or better tooling.  
+- **Testing**: Automated tests using [Playwright](https://playwright.dev/dotnet/docs/intro) or similar are recommended to verify DOM interactions in a headless browser.
+
+---
+
+## License
+
+This project is provided under the [MIT License](./LICENSE), meaning it’s free and open-source. Feel free to fork, modify, and adapt it for your own needs.
+
+---
+
+**Enjoy building .NET-based UIs** with direct DOM control using **JSVaporizer**! If you have questions or want to showcase a project that uses it, we’d love to hear from you.

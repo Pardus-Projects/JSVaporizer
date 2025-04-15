@@ -56,6 +56,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Handlebars.Net" Version="2.1.6" />
 		<PackageReference Include="Microsoft.AspNetCore.Html.Abstractions" Version="2.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.3.0" />
 	</ItemGroup>

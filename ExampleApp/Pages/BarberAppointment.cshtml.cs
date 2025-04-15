@@ -7,6 +7,7 @@ namespace RazorPagesExampleUsage.Pages.BarberAppointmentModel;
 public class BarberAppointmentModel : PageModel
 {
     public string XformerDtoJSON = "";
+    public string XformerAQN = "";
 
     public void OnGet()
     {
@@ -19,5 +20,6 @@ public class BarberAppointmentModel : PageModel
         };
 
         XformerDtoJSON = JsonSerializer.Serialize(xformerDto);
+        XformerAQN = new BarberAppointmentTransformer().AssemblyQualifiedName;
     }
 }
