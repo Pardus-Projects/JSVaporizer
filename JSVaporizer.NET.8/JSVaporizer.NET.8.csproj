@@ -11,17 +11,16 @@
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>JS Vaporizer</Title>
-		<Version>1.1.0.1</Version>
+		<Version>1.2.0.0</Version>
 		<PackageProjectUrl>https://github.com/PardusLabs/JSVaporizer</PackageProjectUrl>
-		<Description>JSVaporizer-ZenView is an experimental, lightweight framework for building interactive web applications using C# and WebAssembly, without relying on higher-level abstractions like Blazor.</Description>
+		<Description>JSVaporizer is a lightweight .NET WASM framework for building C#-based UI components, offering direct DOM access, Handlebars templates, and a simple event model. It avoids the overhead of bigger frameworks, giving you typed wrappers for the DOM and full control in .NET.</Description>
 		<Company>Pardus Labs</Company>
 		<PackageIcon>img.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/PardusLabs/JSVaporizer</RepositoryUrl>
 		<PackageTags>
-			Blazor;WebAssembly;WASM;DOM;Interop;NuFlexiArch;JSVaporizer;DynamicUI;UIComponents;
-			JSON;DataBinding;EventHandlers;Reflection;AOTFriendly;FormBuilder;DynamicForms;DeclarativeUI;
-			JavaScript; JSExport; JSImport; UI; Components; Frontend; CSharp; DotNet; SPA; SinglePageApplication
+			WebAssembly; WASM; .NET; C#; DOM; UI; Components; Interop; Handlebars; Minimal; Lightweight; JS Interop
+
 		</PackageTags>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<IncludeSymbols>True</IncludeSymbols>
