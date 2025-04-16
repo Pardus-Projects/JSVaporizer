@@ -9,6 +9,7 @@ namespace ExampleViewLib;
 public class DropDownList : JSVComponent
 {
     public string DropDownId { get; }
+    public FormLabel Label { get; set; }
 
     // This holds the list of options that we’ll render
     public List<string> Options { get; set; } = new();
@@ -16,6 +17,7 @@ public class DropDownList : JSVComponent
     public DropDownList(string uniqueName) : base(uniqueName)
     {
         DropDownId = UniqueWithSuffix("DropDownId");
+        Label = new(UniqueWithSuffix("Label"), DropDownId);
     }
 
     [SupportedOSPlatform("browser")]

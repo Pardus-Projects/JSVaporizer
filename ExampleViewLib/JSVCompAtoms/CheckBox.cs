@@ -7,10 +7,12 @@ namespace ExampleViewLib;
 public class CheckBox : JSVComponent
 {
     public string CheckBoxId { get; }
+    public FormLabel Label { get; set; }
 
     public CheckBox(string uniqueName) : base(uniqueName)
     {
         CheckBoxId = UniqueWithSuffix("CheckBoxId");
+        Label = new(UniqueWithSuffix("Label"), CheckBoxId);
     }
 
     [SupportedOSPlatform("browser")]

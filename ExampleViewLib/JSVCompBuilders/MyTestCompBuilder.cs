@@ -14,9 +14,29 @@ public class MyTestCompBuilder : JSVCompBuilder
     public override JSVComponent Build(string uniqueName)
     {
         MyTestComp myTestComp = new MyTestComp(uniqueName);
+
         myTestComp.MyString = "Hello, World!";
         myTestComp.MyList = ["A", "B", "C"];
+
+        myTestComp.MyCheckBox.Label.Text = "My checkbox";
+        
         myTestComp.MyDropDownList.Options = myTestComp.MyList;
+        myTestComp.MyDropDownList.Label.Text = "My dropdown list";
+
+        // Radio Button Group & Labels
+        foreach (string item in myTestComp.MyList)
+        {
+            RadioButton rb = new RadioButton(myTestComp.UniqueWithSuffix($"rb_{item}"));
+            rb.Name = myTestComp.UniqueWithSuffix("MyRadioGroup");
+            myTestComp.MyRadioButtonList.Add(rb);
+
+            FormLabel fl = rb.Label;
+            fl.Text = item;
+            rb.Name = myTestComp.UniqueWithSuffix("MyRadioGroup");
+        }
+
+        myTestComp.MyTextArea.Label.Text = "My textarea";
+        myTestComp.MyTextInput.Label.Text = "My text input";
 
         PostAttachToDOMSetup = () =>
         {
@@ -43,13 +63,21 @@ public class MyTestComp : JSVComponent
     public int? MyInt { get; set; }
     public string? MyString { get; set; }
     public List<string> MyList { get; set; } = new();
+
+    public CheckBox MyCheckBox;
     public DropDownList MyDropDownList;
+    public List<RadioButton> MyRadioButtonList { get; set; } = new();
+    public TextInput MyTextInput;
+    public TextArea MyTextArea;
     public Button MyButton;
 
     public MyTestComp(string uniqueName) : base(uniqueName)
     {
         MyInt = 42;
+        MyCheckBox = new(UniqueWithSuffix("MyCheckBox"));
         MyDropDownList = new(UniqueWithSuffix("MyDropDownList"));
+        MyTextInput = new(UniqueWithSuffix("MyTextInput"));
+        MyTextArea = new(UniqueWithSuffix("MyTextArea"));
         MyButton = new(UniqueWithSuffix("MyButton"));
     }
     
@@ -77,7 +105,29 @@ public class MyTestComp : JSVComponent
                 </div>
 
                 <div>
-                    MyDropDownList: {{{MyDropDownList}}}
+                    {{{MyCheckBox}}} {{{MyCheckBox.Label}}}
+                </div>
+
+                <div>
+                    Radio group:
+                    {{#each MyRadioButtonList}}
+                        <span>{{{this}}} {{{this.Label}}}</span>
+                    {{/each}}
+                </div>
+
+                <div>
+                    {{{MyDropDownList}}} {{{MyDropDownList.Label}}}
+                </div>
+
+                <div>
+                    {{{MyTextInput}}}
+                    {{{MyTextInput.Label}}}
+                </div>
+
+                <div>
+                    {{{MyTextArea.Label}}}
+                    <br/>
+                    {{{MyTextArea}}}
                 </div>
 
                 <div>

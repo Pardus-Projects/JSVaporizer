@@ -8,12 +8,14 @@ namespace ExampleViewLib
     public class TextArea : JSVComponent
     {
         public string TextAreaId { get; }
+        public FormLabel Label { get; set; }
         public int Rows { get; set; } = 8;
         public int Cols { get; set; } = 30;
 
         public TextArea(string uniqueName) : base(uniqueName)
         {
             TextAreaId = UniqueWithSuffix("TextAreaId");
+            Label = new(UniqueWithSuffix("Label"), TextAreaId);
         }
         
         [SupportedOSPlatform("browser")]
