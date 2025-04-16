@@ -10,12 +10,27 @@
 
 <hr />
 
-<h1>Render Test</h1>
+<div style="display: flex;">
 
-<h2>MyTestCompUniqueName_CLIENT</h2>
-<input id="hf_MyTestCompBuilder_UN" type="hidden" value="MyTestCompUniqueName_CLIENT" />
-<input id="hf_MyTestCompBuilder_AQN" type="hidden" value="@Model.MyTestCompBuilder.AssemblyQualifiedName" />
-<span id="MyTestComp_Placeholder"></span>
+    <div>
+        <h2>MyTestCompBuilder / MyTestComp</h2>
+        <input id="hf_MyTestCompBuilder_UN" type="hidden" value="MyTestCompUniqueName" />
+        <input id="hf_MyTestCompBuilder_AQN" type="hidden" value="@Model.MyTestCompBuilder.AssemblyQualifiedName" />
+        <span id="MyTestComp_Placeholder"></span>
+    </div>
+
+    <div>
+        <h2>RegistrationFormCompBuilder / RegistrationFormComp</h2>
+        <input id="hf_RegistrationFormComp_UN" type="hidden" value="RegistrationFormComp" />
+        <input id="hf_RegistrationFormComp_AQN" type="hidden" value="@Model.RegistrationFormCompBuilder.AssemblyQualifiedName" />
+        <span id="RegistrationFormComp_Placeholder"></span>
+    </div>
+
+</div>
+
+
+
+
 
 
 

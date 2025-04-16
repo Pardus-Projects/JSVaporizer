@@ -28,11 +28,8 @@ public class MyTestCompBuilder : JSVCompBuilder
         {
             RadioButton rb = new RadioButton(myTestComp.UniqueWithSuffix($"rb_{item}"));
             rb.Name = myTestComp.UniqueWithSuffix("MyRadioGroup");
+            rb.Label.Text = item;
             myTestComp.MyRadioButtonList.Add(rb);
-
-            FormLabel fl = rb.Label;
-            fl.Text = item;
-            rb.Name = myTestComp.UniqueWithSuffix("MyRadioGroup");
         }
 
         myTestComp.MyTextArea.Label.Text = "My textarea";

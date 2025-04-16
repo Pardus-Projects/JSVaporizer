@@ -1,5 +1,4 @@
 ﻿using JSVNuFlexiArch;
-using System;
 using System.Runtime.Versioning;
 using static JSVaporizer.JSVapor;
 
@@ -32,7 +31,7 @@ public class TextInput : JSVComponent
 
     protected override string GetTemplate()
     {
-        string hTemplate = Environment.NewLine + @"
+        string hTemplate = @"
             <span id=""{{{UniqueName}}}"">
                 <input id=""{{{InputId}}}"" type=""text""/>
             </span>

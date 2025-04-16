@@ -1,5 +1,4 @@
 ﻿using JSVNuFlexiArch;
-using System;
 using System.Runtime.Versioning;
 using static JSVaporizer.JSVapor;
 
@@ -34,7 +33,7 @@ namespace ExampleViewLib
 
         protected override string GetTemplate()
         {
-            string hTemplate = Environment.NewLine + @"
+            string hTemplate = @"
                 <span id=""{{{UniqueName}}}"">
                     <textarea 
                         id=""{{{TextAreaId}}}"" 

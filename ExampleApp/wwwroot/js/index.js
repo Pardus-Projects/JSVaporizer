@@ -19,6 +19,10 @@ async function LaunchApp() {
     let MyTestCompBuilder_AQN = $("#hf_MyTestCompBuilder_AQN").val();
     jsvExports.ExampleViewLib.JSVCompBuilderInvoker.Invoke(MyTestCompBuilder_UN, MyTestCompBuilder_AQN, "MyTestComp_Placeholder");
 
+    let RegistrationFormComp_UN = $("#hf_RegistrationFormComp_UN").val();
+    let RegistrationFormComp_AQN = $("#hf_RegistrationFormComp_AQN").val();
+    jsvExports.ExampleViewLib.JSVCompBuilderInvoker.Invoke(RegistrationFormComp_UN, RegistrationFormComp_AQN, "RegistrationFormComp_Placeholder");
+
     alert("FINISHED");
 }
 
