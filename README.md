@@ -1,9 +1,7 @@
 # **JSVaporizer** 
 A Lightweight .NET WASM Framework for Handcrafted UI Components
 
-## TODO
-
-### Weaknesses & Practical Mitigations
+## TODO : Weaknesses & Possible Mitigations
 
 | # | Severity | Weakness (recap) | Mitigation strategy |
 |---|:---:|---|---|
@@ -11,14 +9,12 @@ A Lightweight .NET WASM Framework for Handcrafted UI Components
 | **W‑2** | 8 | **`JSObject` lifetime is fragile.** | *Centralise proxy handling.* <br>• Introduce an **object cache** that maps element‑ID → live `JSObject`. <br>• Use `using`/`await using` so disposal is deterministic. <br>• Provide an `Element.Dispose()` that nulls the cache entry and detaches listeners. |
 | **W‑3** | 8 | **Manual listener clean‑up causes leaks.** | *Auto‑detach.* <br>• Make `Element` implement `IDisposable`; in its `Dispose` iterate `_eventListenersByType` and call `RemoveEventListener`. <br>• In browser JS shim, register a `MutationObserver` that detects node removal and notifies WASM to dispose the matching element. |
 | **W‑4** | 7 | **Stringly‑typed Handlebars has no compile‑time checks.** | *Source‑generate templates.* <br>• Use a Roslyn generator that parses the Handlebars file, creates a partial class with strongly‑typed properties, and raises compile errors on missing members. <br>• Or switch to Razor‑class‑library `.razor` templates (they compile to C#). |
-| **W‑5** | 7 | **`SetProperty` relies on runtime type‑switch.** | *Introduce generics & converters.* <br>```csharp\nvoid SetProperty<T>(string name, T value) where T: unmanaged | string | JSObject\n```<br>• Use a `switch` on `typeof(T)` in *one* place; other overloads fan‑in to the generic method. <br>• For uncommon types, allow users to register a custom `IJSVTypeConverter<T>`. |
+| **W‑5** | 7 | **`SetProperty` relies on runtime type‑switch.** | *Introduce generics & converters.* <br>```SetProperty<T>(string name, T value) where T: unmanaged | string | JSObject\n```<br>• Use a `switch` on `typeof(T)` in *one* place; other overloads fan‑in to the generic method. <br>• For uncommon types, allow users to register a custom `IJSVTypeConverter<T>`. |
 | **W‑6** | 6 | **Caller must lowercase attribute names.** | *Normalize internally.* <br>• In `SetAttribute` / `HasAttribute` / `GetAttribute`, convert `attrName = attrName.ToLowerInvariant()` before use. <br>• Keep the runtime exception only in DEBUG builds as a developer hint. |
 | **W‑7** | 6 | **`WasmJSVGenericFuncPool.Remove` signature mismatch.** | *API tidy‑up.* <br>• Change signature to `bool Remove(string funcKey)` to mirror `Add`. <br>• Provide an `[Obsolete]` overload for one release cycle to avoid breaking existing callers. |
 | **W‑8** | 5 | **Global dictionaries grow indefinitely.** | *Weak refs + periodic sweep.* <br>• Store `WeakReference<Element>` / `WeakReference<Delegate>` in the pools. <br>• Run a lightweight sweep every N seconds (or on pool size > X) to drop dead entries. |
 | **W‑9** | 5 | **Blocking `alert()` freezes the WASM thread.** | *Non‑blocking UI helpers.* <br>• Ship a tiny JS toast/snackbar helper exposed as `Window.Notify(string, int ms=3000)`. <br>• Mark the old `Alert` API as `[Obsolete]` with a doc comment explaining the perf issue. |
 | **W‑10** | 4 | **Hidden‑input plumbing couples views to internals.** | *Decouple host markup.* <br>• Replace hidden `<input>` tags with a single `<script type=\"text/jsv-metadata\">{ JSON }</script>` block that lists builder name + placeholder mapping; parse it at bootstrap. <br>• Or use `data-jsv-*` attributes directly on the placeholder span. |
-
-These mitigations close the functional gaps without changing the framework’s core philosophy—direct DOM access from C# with minimal overhead—while greatly improving robustness for production workloads.
 
 ## Overview
 
