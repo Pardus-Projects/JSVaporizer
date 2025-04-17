@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ExampleViewLib;
+using DemoComponentLib;
 using System.Text.Json;
 
-namespace RazorPagesExampleUsage.Pages.BarberAppointmentModel;
+namespace DemoApp.Pages.BarberAppointmentModel;
 
 public class BarberAppointmentModel : PageModel
 {

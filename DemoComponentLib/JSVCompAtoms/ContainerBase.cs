@@ -3,7 +3,7 @@ using JSVNuFlexiArch;
 using System.Collections.Generic;
 using System.Runtime.Versioning;
 
-namespace ExampleViewLib;
+namespace DemoComponentLib;
 
 public abstract class ContainerBase<TItem> : JSVComponent where TItem : IContainerItem
 {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.Versioning;
 using static JSVaporizer.JSVapor;
 
-namespace ExampleViewLib;
+namespace DemoComponentLib;
 
 [SupportedOSPlatform("browser")]
 public class RegistrationFormCompBuilder : JSVCompBuilder

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ExampleViewLib;
+using DemoComponentLib;
 
-namespace MyExampleApplication.Controllers
+namespace DemoApp.Controllers
 {
 
     [ApiController]

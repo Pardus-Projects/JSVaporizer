@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 using static JSVaporizer.JSVapor;
 using static JSVaporizer.JSVapor.JSVGenericFunctionPool;
 
-namespace ExampleViewLib;
+namespace DemoComponentLib;
 
 [JsonSerializable(typeof(MyCoolTransformerDto))]
 public partial class MyCoolTransformerDtoContext : JsonSerializerContext { }

@@ -2,7 +2,7 @@
 using System.Runtime.Versioning;
 using static JSVaporizer.JSVapor;
 
-namespace ExampleViewLib
+namespace DemoComponentLib
 {
     public class TextArea : JSVComponent
     {

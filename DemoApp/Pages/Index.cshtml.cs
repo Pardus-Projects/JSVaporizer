@@ -1,9 +1,9 @@
-using ExampleViewLib;
+using DemoComponentLib;
 using JSVNuFlexiArch;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using static JSVaporizer.JSVapor;
 
-namespace MyExampleApplication.Pages
+namespace DemoApp.Pages
 {
     public class IndexModel : PageModel
     {
