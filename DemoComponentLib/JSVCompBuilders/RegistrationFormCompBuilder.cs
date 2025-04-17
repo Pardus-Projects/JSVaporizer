@@ -17,7 +17,7 @@ public class RegistrationFormCompBuilder : JSVCompBuilder
         comp.TermsCheckbox.Label.Text = "I accept the terms of service";
         comp.NameInput.Label.Text = "Full Name:";
         comp.EmailInput.Label.Text = "Email:";
-        comp.RegisterButton.Label = "Register";
+        comp.RegisterButton.Text = "Register";
 
         // PostAttachToDOM => set up event listeners
         PostAttachToDOMSetup = () =>

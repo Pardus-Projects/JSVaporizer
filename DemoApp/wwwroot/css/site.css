@@ -33,3 +33,13 @@ div {
 label {
     margin: 1em;
 }
+
+.tab-header {
+    list-style: none;
+    background-color: #efefef;
+}
+
+.tab-header.active {
+    list-style: none;
+    background-color: #ffff00;
+}

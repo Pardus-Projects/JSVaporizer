@@ -5,9 +5,9 @@ VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSVaporizer.NET.8", "JSVaporizer.NET.8\JSVaporizer.NET.8.csproj", "{A8F80DBC-7829-297E-1467-273C9E06E58D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleApp", "ExampleApp\ExampleApp.csproj", "{3DDFCF76-CBFF-2627-1422-C242C2EF608F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoComponentLib", "DemoComponentLib\DemoComponentLib.csproj", "{15DD9EF4-C01E-485C-7615-F56F3A8CF197}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleViewLib", "ExampleViewLib\ExampleViewLib.csproj", "{15DD9EF4-C01E-485C-7615-F56F3A8CF197}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApp", "DemoApp\DemoApp.csproj", "{9ED4F47D-157C-2A60-1689-ADD58DB0890D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +19,14 @@ Global
 		{A8F80DBC-7829-297E-1467-273C9E06E58D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8F80DBC-7829-297E-1467-273C9E06E58D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8F80DBC-7829-297E-1467-273C9E06E58D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3DDFCF76-CBFF-2627-1422-C242C2EF608F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3DDFCF76-CBFF-2627-1422-C242C2EF608F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3DDFCF76-CBFF-2627-1422-C242C2EF608F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3DDFCF76-CBFF-2627-1422-C242C2EF608F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{15DD9EF4-C01E-485C-7615-F56F3A8CF197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{15DD9EF4-C01E-485C-7615-F56F3A8CF197}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15DD9EF4-C01E-485C-7615-F56F3A8CF197}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15DD9EF4-C01E-485C-7615-F56F3A8CF197}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ED4F47D-157C-2A60-1689-ADD58DB0890D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ED4F47D-157C-2A60-1689-ADD58DB0890D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ED4F47D-157C-2A60-1689-ADD58DB0890D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ED4F47D-157C-2A60-1689-ADD58DB0890D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

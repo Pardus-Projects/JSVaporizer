@@ -9,7 +9,7 @@ public class Button : JSVComponent
 {
     public string ButtonId { get; }
 
-    public string Label { get; set; } = "Click Me";
+    public string Text { get; set; } = "Click Me";
 
     public Button(string uniqueName) : base(uniqueName)
     {
@@ -17,13 +17,13 @@ public class Button : JSVComponent
     }
 
     [SupportedOSPlatform("browser")]
-    public void SetLabel(string text)
+    public void SetText(string text)
     {
         Document.AssertGetElementById(ButtonId).SetProperty("textContent", text);
     }
 
     [SupportedOSPlatform("browser")]
-    public string? GetLabel()
+    public string? GetText()
     {
         var propInfo = Document.AssertGetElementById(ButtonId).GetProperty("textContent");
         return propInfo.Value as string;
@@ -45,7 +45,7 @@ public class Button : JSVComponent
     {
         return @"
                 <span id=""{{{UniqueName}}}"">
-                    <button id=""{{{ButtonId}}}"">{{{Label}}}</button>
+                    <button id=""{{{ButtonId}}}"">{{{Text}}}</button>
                 </span>
             ";
     }

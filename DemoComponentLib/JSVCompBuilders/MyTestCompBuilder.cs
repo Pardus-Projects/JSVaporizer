@@ -15,11 +15,19 @@ public class MyTestCompBuilder : JSVCompBuilder
     {
         MyTestComp myTestComp = new MyTestComp(uniqueName);
 
-        myTestComp.MyString = "Hello, World!";
-        myTestComp.MyList = ["A", "B", "C"];
+        // Add a couple of tabs to TabControl
+        Button newButton = new(myTestComp.UniqueWithSuffix("newButton"));
+        newButton.Text = "Brand new button!";
+        Button anotherNewButton = new(myTestComp.UniqueWithSuffix("anotherNewButton"));
+        anotherNewButton.Text = "Another brand new button!";
+        myTestComp.MyTabControl.SetItems(new List<ContainerItemProto>
+        {
+            new TabItemProto("My Tab #1", newButton),
+            new TabItemProto("My Tab #2", anotherNewButton)
+        });
 
+        myTestComp.MyList = ["A", "B", "C"];
         myTestComp.MyCheckBox.Label.Text = "My checkbox";
-        
         myTestComp.MyDropDownList.Options = myTestComp.MyList;
         myTestComp.MyDropDownList.Label.Text = "My dropdown list";
 
@@ -38,6 +46,11 @@ public class MyTestCompBuilder : JSVCompBuilder
         PostAttachToDOMSetup = () =>
         {
             myTestComp.MyButton.OnClick("MyButton_OnClick", MyButtonClickHandler(myTestComp.MyButton));
+
+            newButton.OnClick("newButton_OnClick", AnotherClickHandler(newButton));
+            anotherNewButton.OnClick("anotherNewButton_OnClick", AnotherClickHandler(anotherNewButton));
+
+            myTestComp.MyTabControl.AfterChildrenAttached();
         };
         return myTestComp;
     }
@@ -53,13 +66,24 @@ public class MyTestCompBuilder : JSVCompBuilder
 
         return clickHandler;
     }
+
+    private EventHandlerCalledFromJS AnotherClickHandler(Button btn)
+    {
+        EventHandlerCalledFromJS clickHandler = (JSObject elem, string eventType, JSObject evnt) =>
+        {
+            Window.Alert(btn.Text);
+            return (int)JSVEventHandlerBehavior.NoDefault_NoPropagate;
+        };
+
+        return clickHandler;
+    }
 }
 
 public class MyTestComp : JSVComponent
 {
-    public int? MyInt { get; set; }
-    public string? MyString { get; set; }
     public List<string> MyList { get; set; } = new();
+
+    public TabControl MyTabControl;
 
     public CheckBox MyCheckBox;
     public DropDownList MyDropDownList;
@@ -70,7 +94,7 @@ public class MyTestComp : JSVComponent
 
     public MyTestComp(string uniqueName) : base(uniqueName)
     {
-        MyInt = 42;
+        MyTabControl = new(UniqueWithSuffix("MyTabControl"));
         MyCheckBox = new(UniqueWithSuffix("MyCheckBox"));
         MyDropDownList = new(UniqueWithSuffix("MyDropDownList"));
         MyTextInput = new(UniqueWithSuffix("MyTextInput"));
@@ -80,25 +104,11 @@ public class MyTestComp : JSVComponent
     
     protected override string GetTemplate()
     {
-        return @"
+        string template = @"
             <div id="" {{{UniqueName}}} "">
-                This component has UniqueName = ""{{{UniqueName}}}""
 
                 <div>
-                    MyInt: {{MyInt}}
-                </div>
-
-                <div>
-                    MyString: {{MyString}}
-                </div>
-    
-                <div>
-                    MyList:
-                    <ul>
-                        {{#each MyList}}
-                        <li>{{this}}</li>
-                        {{/each}}
-                    </ul>
+                    TabControl: {{{MyTabControl}}}
                 </div>
 
                 <div>
@@ -132,5 +142,7 @@ public class MyTestComp : JSVComponent
                 </div>
             </div>
         ";
+
+        return template;
     }
 }

@@ -1,5 +1,7 @@
 using ExampleViewLib;
+using JSVNuFlexiArch;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using static JSVaporizer.JSVapor;
 
 namespace MyExampleApplication.Pages
 {
@@ -12,6 +14,9 @@ namespace MyExampleApplication.Pages
         {
             MyTestCompBuilder = new MyTestCompBuilder();
             RegistrationFormCompBuilder = new RegistrationFormCompBuilder();
+
+            //MyTestComp comp = (MyTestComp)MyTestCompBuilder.Build("MyTestCompUniqueName");
+            //comp.Render();
         }
 
     }
