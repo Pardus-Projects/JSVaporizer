@@ -104,11 +104,7 @@ public static partial class JSVapor
     {
         [JSImport("registerJSVGenericFunction", "jsvGenericFunctionPool")]
         public static partial bool RegisterJSVGenericFunction(string funcKey);
-    }
 
-    [SupportedOSPlatform("browser")]
-    internal static partial class WasmJSVGenericFuncPool
-    {
         [JSImport("unregisterJSVGenericFunction", "jsvGenericFunctionPool")]
         public static partial bool UnregisterJSVGenericFunction(string funcKey);
     }

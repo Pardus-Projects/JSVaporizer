@@ -106,8 +106,6 @@ public static partial class JSVapor
             try
             {
                 jSObject = GetJSObject();
-                List<string> propNames = WasmElement.GetPropertyNamesArray(jSObject).ToList();
-
                 return jSObject.HasProperty(propName);
             }
             finally

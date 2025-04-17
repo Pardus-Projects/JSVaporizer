@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 using static JSVaporizer.JSVapor;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 
 namespace JSVNuFlexiArch;
@@ -59,6 +60,4 @@ public abstract class JSVTransformer
         return nFqn;
     }
 }
-
-
 

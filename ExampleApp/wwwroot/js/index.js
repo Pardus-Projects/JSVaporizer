@@ -13,15 +13,15 @@ async function LaunchApp() {
     let JsvWasm = await site.GetJsvWasm();
 
     // Get exports from any web assemblies exported.
-    let jsvExports = await JsvWasm.GetExportedAssembly("ExampleViewLib");
+    let jsvExports = await JsvWasm.GetExportedAssembly("JSVaporizer.NET.8");
 
     let MyTestCompBuilder_UN = $("#hf_MyTestCompBuilder_UN").val();
     let MyTestCompBuilder_AQN = $("#hf_MyTestCompBuilder_AQN").val();
-    jsvExports.ExampleViewLib.JSVCompBuilderInvoker.Invoke(MyTestCompBuilder_UN, MyTestCompBuilder_AQN, "MyTestComp_Placeholder");
+    await jsvExports.JSVNuFlexiArch.JSVCompBuilderInvoker.Invoke(MyTestCompBuilder_UN, MyTestCompBuilder_AQN, "MyTestComp_Placeholder");
 
     let RegistrationFormComp_UN = $("#hf_RegistrationFormComp_UN").val();
     let RegistrationFormComp_AQN = $("#hf_RegistrationFormComp_AQN").val();
-    jsvExports.ExampleViewLib.JSVCompBuilderInvoker.Invoke(RegistrationFormComp_UN, RegistrationFormComp_AQN, "RegistrationFormComp_Placeholder");
+    await jsvExports.JSVNuFlexiArch.JSVCompBuilderInvoker.Invoke(RegistrationFormComp_UN, RegistrationFormComp_AQN, "RegistrationFormComp_Placeholder");
 
     alert("FINISHED");
 }

@@ -1,35 +1,14 @@
-﻿<div id="" {{{UniqueName}}} "">
-    This component has UniqueName = ""{{{UniqueName}}}""
-
-    <div>
-        MyInt: {{MyInt}}
+﻿<ul class="" tab-headers"">
+    {{#each Items}}
+    <li id="{{{HeaderId}}}" data-content-id="{{{ContentId}}}" class="" tab-header"">
+        {{{Title}}}
+    </li>
+    {{/each}}
+</ul>
+<div class="tab-contents">
+    {{#each Items}}
+    <div id="{{{ContentId}}}" class="" tab-content"" style="" display:none;"">
+        {{{ContentComponent}}}
     </div>
-
-    <div>
-        MyString: {{MyString}}
-    </div>
-
-    <div>
-        MyList:
-        <ul>
-            {{#each MyList}}
-            <li>{{this}}</li>
-            {{/each}}
-        </ul>
-    </div>
-
-    <div>
-        Radio group:
-        {{#each MyRadioButtonList}}
-        <span>{{this}}</span>
-        {{/each}}
-    </div>
-
-    <div>
-        MyDropDownList: {{{MyDropDownList}}}
-    </div>
-
-    <div>
-        MyButton: {{{MyButton}}}
-    </div>
+    {{/each}}
 </div>

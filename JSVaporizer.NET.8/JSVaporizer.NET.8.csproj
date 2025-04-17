@@ -11,7 +11,7 @@
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>JS Vaporizer</Title>
-		<Version>1.2.0.1</Version>
+		<Version>1.2.0.2</Version>
 		<PackageProjectUrl>https://github.com/PardusLabs/JSVaporizer</PackageProjectUrl>
 		<Description>JSVaporizer is a lightweight .NET WASM framework for building C#-based UI components, offering direct DOM access, Handlebars templates, and a simple event model. It avoids the overhead of bigger frameworks, giving you typed wrappers for the DOM and full control in .NET.</Description>
 		<Company>Pardus Labs</Company>
