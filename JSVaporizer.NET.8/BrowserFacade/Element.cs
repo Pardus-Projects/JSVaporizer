@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
@@ -385,8 +384,8 @@ public static partial class JSVapor
 
         public IDisposable AddEventListener(string eventType, EventListenerCalledFromJS handler)
         {
-            var id = WasmJSVEventListenerPool.Add(handler);
-            var token = new EventHandlerToken(this, eventType, id);
+            EventListenerId id = WasmJSVEventListenerPool.Add(handler);
+            EventHandlerToken token = new EventHandlerToken(this, eventType, id);
 
             using var js = GetJSObject();
             int listenerCountFromJS = WasmElement.AddEventListener(js, eventType, id.Value);
@@ -429,11 +428,7 @@ public static partial class JSVapor
 
         // Returned by AddEventListener().
         // Call Dispose() to detach the DOM handler.
-        private sealed record EventHandlerToken(
-            Element Owner,
-            string EventType,
-            EventListenerId Id)
-            : IDisposable
+        private sealed record EventHandlerToken(Element Owner, string EventType, EventListenerId Id) : IDisposable
         {
             public void Dispose()
             {

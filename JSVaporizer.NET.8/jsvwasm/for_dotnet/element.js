@@ -26,8 +26,6 @@ export function getElement(exports) {
     };
 }
 
-let eventListenerFuncSpace = {};
-
 function getPropertyNamesArray(elem) {
     var props = [];
     for (var key in elem) {
@@ -36,41 +34,81 @@ function getPropertyNamesArray(elem) {
     return props;
 }
 
-function addEventListener(elem, eventType, funcKey) {
-    if (!eventListenerFuncSpace[funcKey]) {
-        let eventListener = function (event) {
-            let behaviorMode = jsvExports.CallJSVEventListener(funcKey, elem, eventType, event);
+// id -> listener fn
+const eventListenerFuncSpace = new Map();               // Map<int, Function>
 
-            // behaviorMode = 0 : preventDefault = false, stopPropagation = false
-            // behaviorMode = 1 : preventDefault = false, stopPropagation = true
-            // behaviorMode = 2 : preventDefault = true, stopPropagation = false
-            // behaviorMode = 3 : preventDefault = true, stopPropagation = true
+// element -> Set<ids>
+const eventListenerElementIds = new WeakMap();          // WeakMap<Element, Set<int>
 
-            let preventDefault = behaviorMode == 2 || behaviorMode == 3;
-            let stopPropagation = behaviorMode == 1 || behaviorMode == 3;
-
-            if (preventDefault) {
-                event.preventDefault();
-            }
-            if (stopPropagation) {
-                event.stopPropagation();
-            }
-        };
-        eventListenerFuncSpace[funcKey] = eventListener;
-        elem.addEventListener(eventType, eventListener);
-        return Object.keys(eventListenerFuncSpace).length;
-    } else {
-        throw new Error("You currently cannot use the same key value for different listeners, or to apply the same listener to multiple elements. It must be removed before it can be added again.");
-        return Object.keys(eventListenerFuncSpace).length;
+/* ---------- START automatic event listener cleanup ---------- */
+const mo = new MutationObserver(records => {
+    for (const rec of records) {
+        rec.removedNodes.forEach(detachSubtree);
     }
+});
+mo.observe(document, { childList: true, subtree: true });
+
+function detachSubtree(node) {
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+    if (eventListenerElementIds.has(node)) {
+        const ids = Array.from(eventListenerElementIds.get(node));
+        eventListenerElementIds.delete(node);
+        ids.forEach(id => eventListenerFuncSpace.delete(id));
+        jsvExports.RemoveOrphanEventListeners(ids);
+    }
+    node.childNodes.forEach(detachSubtree);
+}
+/* ---------- END automatic event listener cleanup ---------- */
+
+function addEventListener(elem, eventType, listenerId) {
+    if (eventListenerFuncSpace.has(listenerId))
+        throw new Error(`Listener id ${listenerId} is already registered.`);
+
+    let eventListener = function (event) {
+        let behaviorMode = jsvExports.CallJSVEventListener(listenerId, elem, eventType, event);
+
+        // behaviorMode = 0 : preventDefault = false, stopPropagation = false
+        // behaviorMode = 1 : preventDefault = false, stopPropagation = true
+        // behaviorMode = 2 : preventDefault = true, stopPropagation = false
+        // behaviorMode = 3 : preventDefault = true, stopPropagation = true
+
+        const preventDefault = behaviorMode == 2 || behaviorMode == 3;
+        const stopPropagation = behaviorMode == 1 || behaviorMode == 3;
+        if (preventDefault) {
+            event.preventDefault();
+        }
+        if (stopPropagation) {
+            event.stopPropagation();
+        }
+    };
+    eventListenerFuncSpace.set(listenerId, eventListener);
+    elem.addEventListener(eventType, eventListener);
+
+    if (!eventListenerElementIds.has(elem)) {
+        eventListenerElementIds.set(elem, new Set());
+    }
+    eventListenerElementIds.get(elem).add(listenerId);
+
+    return eventListenerFuncSpace.size;
 }
 
-function removeEventListener(elem, eventType, funcKey) {
-    let eventHandler = eventListenerFuncSpace[funcKey];
-    elem.removeEventListener(eventType, eventHandler);
-    delete eventListenerFuncSpace[funcKey];
+function removeEventListener(elem, eventType, listenerId) {
+    const listener = eventListenerFuncSpace.get(listenerId);
+    if (listener) {
+        elem.removeEventListener(eventType, listener);
+        eventListenerFuncSpace.delete(listenerId);
 
-    return Object.keys(eventListenerFuncSpace).length;
+        const set = eventListenerElementIds.get(elem);
+        if (set) {
+            set.delete(listenerId);
+            if (set.size === 0) {
+                eventListenerElementIds.delete(elem);
+            }
+        }
+    }
+
+    return eventListenerFuncSpace.size;
 }
 
 function invokeFunctionProperty(elem, funcPropName, argsArray) {

@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices.JavaScript;
+﻿using System;
+using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 
 namespace JSVaporizer;
@@ -19,6 +20,15 @@ public static partial class JSVapor
         {
             int behaviorMode = WasmJSVEventListenerPool.CallJSVEventListener(new EventListenerId(id), elem, eventType, evnt);
             return behaviorMode;
+        }
+
+        [JSExport]
+        internal static void RemoveOrphanEventListeners(int[] listenerIds)
+        {
+            foreach (int listenerId in listenerIds)
+            {
+                WasmJSVEventListenerPool.Remove(new EventListenerId(listenerId));
+            }
         }
 
         [JSExport]

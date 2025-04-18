@@ -37,7 +37,7 @@ public static partial class JSVapor
             _jsvEventListenerPool[id] = listener;
 #if DEBUG
             EventListenerDebugInfo.Record(id);
-            //Window.Alert("ADD: " + id);
+            //Window.Alert("ADD: " + id + ", current count = " + EventListenerDebugInfo.MapKeyCount());
 #endif
             return id;
         }
@@ -47,7 +47,7 @@ public static partial class JSVapor
             var ok = _jsvEventListenerPool.TryRemove(id, out _);
 #if DEBUG
             EventListenerDebugInfo.Remove(id);
-            //Window.Alert("REMOVE: " + id);
+            //Window.Alert("REMOVE: " + id + ", current count = " + EventListenerDebugInfo.MapKeyCount());
 #endif
             return ok;
         }
