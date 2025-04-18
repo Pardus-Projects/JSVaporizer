@@ -26,10 +26,10 @@ public static partial class JSVapor
         // Events
 
         [JSImport("addEventListener", "element")]
-        internal static partial bool AddEventListener(JSObject elem, string eventType, string funcKey);
+        internal static partial int AddEventListener(JSObject elem, string type, int id);
 
         [JSImport("removeEventListener", "element")]
-        internal static partial bool RemoveEventListener(JSObject elem, string eventType, string funcKey);
+        internal static partial int RemoveEventListener(JSObject elem, string type, int id);
 
         [JSImport("appendChild", "element")]
         // Only finds elements connected to the DOM.

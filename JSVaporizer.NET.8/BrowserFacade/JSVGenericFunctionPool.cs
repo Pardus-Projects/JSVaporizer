@@ -12,7 +12,7 @@ public static partial class JSVapor
             WasmJSVGenericFuncPool.Add(funcKey, func);
         }
 
-        public static void UnregisterJSVGenericFunction(string funcKey, JSVGenericFunction func)
+        public static void UnregisterJSVGenericFunction(string funcKey)
         {
             WasmJSVGenericFuncPool.Remove(funcKey);
         }

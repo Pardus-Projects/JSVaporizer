@@ -1,6 +1,7 @@
 ﻿// -------------- TabControl.cs -----------------
 using JSVaporizer;
 using JSVNuFlexiArch;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Versioning;
 using static JSVaporizer.JSVapor;
@@ -9,6 +10,8 @@ namespace DemoComponentLib;
 
 public class TabControl : ContainerBase<TabItem>
 {
+    private IDisposable _clickToken;
+
     public TabControl(string uniqueName) : base(uniqueName) { }
 
     protected override string RenderInnerTemplate() => @"
@@ -46,7 +49,7 @@ public class TabControl : ContainerBase<TabItem>
         foreach (var it in Items)
         {
             Document.AssertGetElementById(it.HeaderId)
-                    .AddEventListener("click", it.HeaderId + "_clk", (_, _, _) =>
+                    .AddEventListener("click", (_, _, _) =>
                     {
                         // deactivate all
                         foreach (var j in Items)

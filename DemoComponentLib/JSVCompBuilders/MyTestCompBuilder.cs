@@ -45,31 +45,42 @@ public class MyTestCompBuilder : JSVCompBuilder
 
         PostAttachToDOMSetup = () =>
         {
-            myTestComp.MyButton.OnClick("MyButton_OnClick", MyButtonClickHandler(myTestComp.MyButton));
+            myTestComp.MyButton.OnClick(MyButtonClickHandler(myTestComp.MyButton));
 
-            newButton.OnClick("newButton_OnClick", AnotherClickHandler(newButton));
-            anotherNewButton.OnClick("anotherNewButton_OnClick", AnotherClickHandler(anotherNewButton));
+            newButton.OnClick(AnotherClickHandler(newButton));
+            anotherNewButton.OnClick(AnotherClickHandler(anotherNewButton));
 
             myTestComp.MyTabControl.AfterChildrenAttached();
         };
+
         return myTestComp;
     }
 
-    private EventHandlerCalledFromJS MyButtonClickHandler(Button btn)
+    private EventListenerCalledFromJS MyButtonClickHandler(Button btn)
     {
-        EventHandlerCalledFromJS clickHandler = (JSObject elem, string eventType, JSObject evnt) =>
+        EventListenerCalledFromJS clickHandler = (JSObject elem, string eventType, JSObject evnt) =>
         {
             Window.Alert("You clicked me! But you can't do it anymore.");
+
+#if (DEBUG)
+            Window.Alert("Global listener count BEFORE: " + EventListenerDebugInfo.MapKeyCount());
+#endif
+
             btn.RemoveOnClick("MyButton_OnClick");
+
+#if (DEBUG)
+            Window.Alert("Global listener count AFTER: " + EventListenerDebugInfo.MapKeyCount());
+#endif
+
             return (int)JSVEventHandlerBehavior.NoDefault_NoPropagate;
         };
 
         return clickHandler;
     }
 
-    private EventHandlerCalledFromJS AnotherClickHandler(Button btn)
+    private EventListenerCalledFromJS AnotherClickHandler(Button btn)
     {
-        EventHandlerCalledFromJS clickHandler = (JSObject elem, string eventType, JSObject evnt) =>
+        EventListenerCalledFromJS clickHandler = (JSObject elem, string eventType, JSObject evnt) =>
         {
             Window.Alert(btn.Text);
             return (int)JSVEventHandlerBehavior.NoDefault_NoPropagate;

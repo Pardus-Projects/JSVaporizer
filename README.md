@@ -1,21 +1,6 @@
 # **JSVaporizer** 
 A Lightweight .NET WASM Framework for Handcrafted UI Components
 
-## TODO : Weaknesses & Possible Mitigations
-
-| # | Severity | Weakness (recap) | Mitigation strategy |
-|---|:---:|---|---|
-| **W‑1** | 9 | **String‑key pools are brittle.** | *Eliminate manual keys.* <br>• Generate a GUID (or incrementing int) on `AddEventListener`/`RegisterFunction`; return that handle to the caller. <br>• Store a `WeakReference` to the delegate so GC can reclaim it. <br>• Wrap the handle in a tiny `struct ListenerId` to regain type‑safety. |
-| **W‑2** | 8 | **`JSObject` lifetime is fragile.** | *Centralise proxy handling.* <br>• Introduce an **object cache** that maps element‑ID → live `JSObject`. <br>• Use `using`/`await using` so disposal is deterministic. <br>• Provide an `Element.Dispose()` that nulls the cache entry and detaches listeners. |
-| **W‑3** | 8 | **Manual listener clean‑up causes leaks.** | *Auto‑detach.* <br>• Make `Element` implement `IDisposable`; in its `Dispose` iterate `_eventListenersByType` and call `RemoveEventListener`. <br>• In browser JS shim, register a `MutationObserver` that detects node removal and notifies WASM to dispose the matching element. |
-| **W‑4** | 7 | **Stringly‑typed Handlebars has no compile‑time checks.** | *Source‑generate templates.* <br>• Use a Roslyn generator that parses the Handlebars file, creates a partial class with strongly‑typed properties, and raises compile errors on missing members. <br>• Or switch to Razor‑class‑library `.razor` templates (they compile to C#). |
-| **W‑5** | 7 | **`SetProperty` relies on runtime type‑switch.** | *Introduce generics & converters.* <br>```SetProperty<T>(string name, T value) where T: unmanaged | string | JSObject\n```<br>• Use a `switch` on `typeof(T)` in *one* place; other overloads fan‑in to the generic method. <br>• For uncommon types, allow users to register a custom `IJSVTypeConverter<T>`. |
-| **W‑6** | 6 | **Caller must lowercase attribute names.** | *Normalize internally.* <br>• In `SetAttribute` / `HasAttribute` / `GetAttribute`, convert `attrName = attrName.ToLowerInvariant()` before use. <br>• Keep the runtime exception only in DEBUG builds as a developer hint. |
-| **W‑7** | 6 | **`WasmJSVGenericFuncPool.Remove` signature mismatch.** | *API tidy‑up.* <br>• Change signature to `bool Remove(string funcKey)` to mirror `Add`. <br>• Provide an `[Obsolete]` overload for one release cycle to avoid breaking existing callers. |
-| **W‑8** | 5 | **Global dictionaries grow indefinitely.** | *Weak refs + periodic sweep.* <br>• Store `WeakReference<Element>` / `WeakReference<Delegate>` in the pools. <br>• Run a lightweight sweep every N seconds (or on pool size > X) to drop dead entries. |
-| **W‑9** | 5 | **Blocking `alert()` freezes the WASM thread.** | *Non‑blocking UI helpers.* <br>• Ship a tiny JS toast/snackbar helper exposed as `Window.Notify(string, int ms=3000)`. <br>• Mark the old `Alert` API as `[Obsolete]` with a doc comment explaining the perf issue. |
-| **W‑10** | 4 | **Hidden‑input plumbing couples views to internals.** | *Decouple host markup.* <br>• Replace hidden `<input>` tags with a single `<script type=\"text/jsv-metadata\">{ JSON }</script>` block that lists builder name + placeholder mapping; parse it at bootstrap. <br>• Or use `data-jsv-*` attributes directly on the placeholder span. |
-
 ## Overview
 
 **JSVaporizer** is a minimalistic, highly flexible framework for building interactive web UIs in .NET using WebAssembly, without the overhead of a more opinionated system like Blazor. It provides:
@@ -55,6 +40,7 @@ By focusing on direct control and a straightforward lifecycle (“Build → Inse
 - [FAQ](#faq)  
 - [Contributing](#contributing)  
 - [License](#license)
+- [TODO](#todo)
 
 ---
 
@@ -268,3 +254,22 @@ This project is provided under the [MIT License](./LICENSE), meaning it’s free
 ---
 
 **Enjoy building .NET-based UIs** with direct DOM control using **JSVaporizer**! If you have questions or want to showcase a project that uses it, we’d love to hear from you.
+
+---
+
+## TODO
+
+### Weaknesses & Possible Mitigations
+
+| # | Severity | Weakness (recap) | Mitigation strategy |
+|---|:---:|---|---|
+| **W‑2** | 8 | **`JSObject` lifetime is fragile.** | *Centralise proxy handling.* <br>• Introduce an **object cache** that maps element‑ID → live `JSObject`. <br>• Use `using`/`await using` so disposal is deterministic. <br>• Provide an `Element.Dispose()` that nulls the cache entry and detaches listeners. |
+| **W‑4** | 7 | **Stringly‑typed Handlebars has no compile‑time checks.** | *Source‑generate templates.* <br>• Use a Roslyn generator that parses the Handlebars file, creates a partial class with strongly‑typed properties, and raises compile errors on missing members. <br>• Or switch to Razor‑class‑library `.razor` templates (they compile to C#). |
+| **W‑5** | 7 | **`SetProperty` relies on runtime type‑switch.** | *Introduce generics & converters.* <br>```SetProperty<T>(string name, T value) where T: unmanaged | string | JSObject\n```<br>• Use a `switch` on `typeof(T)` in *one* place; other overloads fan‑in to the generic method. <br>• For uncommon types, allow users to register a custom `IJSVTypeConverter<T>`. |
+| **W‑6** | 6 | **Caller must lowercase attribute names.** | *Normalize internally.* <br>• In `SetAttribute` / `HasAttribute` / `GetAttribute`, convert `attrName = attrName.ToLowerInvariant()` before use. <br>• Keep the runtime exception only in DEBUG builds as a developer hint. |
+| **W‑7** | 6 | **`WasmJSVGenericFuncPool.Remove` signature mismatch.** | *API tidy‑up.* <br>• Change signature to `bool Remove(string funcKey)` to mirror `Add`. <br>• Provide an `[Obsolete]` overload for one release cycle to avoid breaking existing callers. |
+| **W‑8** | 5 | **Global dictionaries grow indefinitely.** | *Weak refs + periodic sweep.* <br>• Store `WeakReference<Element>` / `WeakReference<Delegate>` in the pools. <br>• Run a lightweight sweep every N seconds (or on pool size > X) to drop dead entries. |
+| **W‑9** | 5 | **Blocking `alert()` freezes the WASM thread.** | *Non‑blocking UI helpers.* <br>• Ship a tiny JS toast/snackbar helper exposed as `Window.Notify(string, int ms=3000)`. <br>• Mark the old `Alert` API as `[Obsolete]` with a doc comment explaining the perf issue. |
+| **W‑10** | 4 | **Hidden‑input plumbing couples views to internals.** | *Decouple host markup.* <br>• Replace hidden `<input>` tags with a single `<script type=\"text/jsv-metadata\">{ JSON }</script>` block that lists builder name + placeholder mapping; parse it at bootstrap. <br>• Or use `data-jsv-*` attributes directly on the placeholder span. |
+| ~~**W‑1**~~ FIXED | 9 | ~~**String‑key pools are brittle.**~~ | *Eliminate manual keys.* <br>• Generate a GUID (or incrementing int) on `AddEventListener`/`RegisterFunction`; return that handle to the caller. <br>• Store a `WeakReference` to the delegate so GC can reclaim it. <br>• Wrap the handle in a tiny `struct ListenerId` to regain type‑safety. |
+| ~~**W‑3**~~ FIXED from W-1| 8 | ~~**Manual listener clean‑up causes leaks.**~~ | *Auto‑detach.* <br>• Make `Element` implement `IDisposable`; in its `Dispose` iterate `_eventListenersByType` and call `RemoveEventListener`. <br>• In browser JS shim, register a `MutationObserver` that detects node removal and notifies WASM to dispose the matching element. |

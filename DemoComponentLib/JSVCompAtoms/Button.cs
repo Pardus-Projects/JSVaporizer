@@ -1,5 +1,6 @@
 ﻿using JSVaporizer;
 using JSVNuFlexiArch;
+using System;
 using System.Runtime.Versioning;
 using static JSVaporizer.JSVapor;
 
@@ -7,8 +8,9 @@ namespace DemoComponentLib;
 
 public class Button : JSVComponent
 {
-    public string ButtonId { get; }
+    private IDisposable _onClickToken;
 
+    public string ButtonId { get; }
     public string Text { get; set; } = "Click Me";
 
     public Button(string uniqueName) : base(uniqueName)
@@ -30,15 +32,15 @@ public class Button : JSVComponent
     }
 
     [SupportedOSPlatform("browser")]
-    public void OnClick(string funcKey, EventHandlerCalledFromJS handler)
+    public void OnClick(EventListenerCalledFromJS handler)
     {
-        Document.AssertGetElementById(ButtonId).AddEventListener("click", funcKey, handler);
+        _onClickToken = Document.AssertGetElementById(ButtonId).AddEventListener("click", handler);
     }
 
     [SupportedOSPlatform("browser")]
     public void RemoveOnClick(string funcKey)
     {
-        Document.AssertGetElementById(ButtonId).RemoveEventListener("click", funcKey);
+        _onClickToken.Dispose();
     }
 
     protected override string GetTemplate()

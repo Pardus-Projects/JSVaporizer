@@ -23,7 +23,7 @@ public class RegistrationFormCompBuilder : JSVCompBuilder
         PostAttachToDOMSetup = () =>
         {
             // Attach a click event to the Register button
-            comp.RegisterButton.OnClick("RegisterBtnClick", (elem, evtType, evnt) =>
+            comp.RegisterButton.OnClick((elem, evtType, evnt) =>
             {
                 // Validate fields
                 string nameVal = comp.NameInput.GetInputVal() ?? "";

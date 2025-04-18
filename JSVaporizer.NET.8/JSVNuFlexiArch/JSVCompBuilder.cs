@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Runtime.InteropServices.JavaScript;
+using System.Diagnostics;
 using System.Runtime.Versioning;
 using static JSVaporizer.JSVapor;
 

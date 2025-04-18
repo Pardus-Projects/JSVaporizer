@@ -26,7 +26,7 @@ export function getElement(exports) {
     };
 }
 
-let eventHandlerFuncSpace = {};
+let eventListenerFuncSpace = {};
 
 function getPropertyNamesArray(elem) {
     var props = [];
@@ -37,9 +37,9 @@ function getPropertyNamesArray(elem) {
 }
 
 function addEventListener(elem, eventType, funcKey) {
-    if (!eventHandlerFuncSpace[funcKey]) {
-        let eventHandler = function (event) {
-            let behaviorMode = jsvExports.CallJSVEventHandler(funcKey, elem, eventType, event);
+    if (!eventListenerFuncSpace[funcKey]) {
+        let eventListener = function (event) {
+            let behaviorMode = jsvExports.CallJSVEventListener(funcKey, elem, eventType, event);
 
             // behaviorMode = 0 : preventDefault = false, stopPropagation = false
             // behaviorMode = 1 : preventDefault = false, stopPropagation = true
@@ -56,21 +56,21 @@ function addEventListener(elem, eventType, funcKey) {
                 event.stopPropagation();
             }
         };
-        eventHandlerFuncSpace[funcKey] = eventHandler;
-        elem.addEventListener(eventType, eventHandler);
-        return true;
+        eventListenerFuncSpace[funcKey] = eventListener;
+        elem.addEventListener(eventType, eventListener);
+        return Object.keys(eventListenerFuncSpace).length;
     } else {
-        throw new Error("You currently cannot use the same key value for different handlers, or to apply the same hander to multiple elements. It must be removed before it can be added again.");
-        return fasle;
+        throw new Error("You currently cannot use the same key value for different listeners, or to apply the same listener to multiple elements. It must be removed before it can be added again.");
+        return Object.keys(eventListenerFuncSpace).length;
     }
 }
 
 function removeEventListener(elem, eventType, funcKey) {
-    let eventHandler = eventHandlerFuncSpace[funcKey];
+    let eventHandler = eventListenerFuncSpace[funcKey];
     elem.removeEventListener(eventType, eventHandler);
-    delete eventHandlerFuncSpace[funcKey];
+    delete eventListenerFuncSpace[funcKey];
 
-    return true;
+    return Object.keys(eventListenerFuncSpace).length;
 }
 
 function invokeFunctionProperty(elem, funcPropName, argsArray) {

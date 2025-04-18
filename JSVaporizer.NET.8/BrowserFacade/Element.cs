@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
@@ -20,7 +22,7 @@ public static partial class JSVapor
         private JSObject? _ephemeralJSObject = null;
 
         // Keep track of eveant listeners assigned to element.
-        private Dictionary<string, HashSet<string>> _eventListenersByType = new();
+        private readonly Dictionary<string, HashSet<EventHandlerToken>> _eventListenersByType = new();
 
         // Props
 
@@ -381,72 +383,61 @@ public static partial class JSVapor
             }
         }
 
-        public void AddEventListener(string eventType, string funcKey, EventHandlerCalledFromJS handler)
+        public IDisposable AddEventListener(string eventType, EventListenerCalledFromJS handler)
         {
-            // Bookkeeping
-            if (!_eventListenersByType.ContainsKey(eventType))
-            {
-                _eventListenersByType[eventType] = new();
-            }
+            var id = WasmJSVEventListenerPool.Add(handler);
+            var token = new EventHandlerToken(this, eventType, id);
 
-            if (_eventListenersByType[eventType].Contains(funcKey))
-            {
-                throw new JSVException($"The pair ({eventType}, {funcKey}) is already registered as an event listener.");
-            }
-            else
-            {
-                _eventListenersByType[eventType].Add(funcKey);
+            using var js = GetJSObject();
+            int listenerCountFromJS = WasmElement.AddEventListener(js, eventType, id.Value);
 
-                // Add to function pool first.
-                WasmJSVEventHandlerPool.Add(funcKey, handler);
+            //Window.Alert("AddEventListener: " + listenerCountFromJS);
 
-                // Then add as an event handler.
-                JSObject? jSObject = null;
-                try
-                {
-                    jSObject = GetJSObject();
-                    WasmElement.AddEventListener(jSObject, eventType, funcKey);
-                }
-                finally
-                {
-                    if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
-                }
+            if (!_eventListenersByType.TryGetValue(eventType, out var set))
+                _eventListenersByType[eventType] = set = new();
+            set.Add(token);
+
+            return token; // caller can ignore or Dispose later
+        }
+
+        private void RemoveEventListener(EventListenerId id, string eventType)
+        {
+            using var js = GetJSObject();
+            int listenerCountFromJS = WasmElement.RemoveEventListener(js, eventType, id.Value);
+            WasmJSVEventListenerPool.Remove(id);
+
+            //Window.Alert("RemoveEventListener: " + listenerCountFromJS);
+
+            if (_eventListenersByType.TryGetValue(eventType, out var set))
+            {
+                set.RemoveWhere(t => t.Id.Equals(id));
             }
         }
 
-        public void RemoveEventListener(string eventType, string funcKey)
+        public void Dispose()
         {
-            // Bookkeeping
-            if (!_eventListenersByType.ContainsKey(eventType))
+            foreach (var set in _eventListenersByType.Values)
             {
-                throw new JSVException($"There are no listeners for eventType = {eventType}.");
+                foreach (var tok in set.ToArray())
+                {
+                    tok.Dispose();
+                }
             }
-            else if (!_eventListenersByType[eventType].Contains(funcKey))
-            {
-                throw new JSVException($"The pair ({eventType}, {funcKey}) is not registered as an event listener.");
-            }
-            else
-            {
-                _eventListenersByType[eventType].Remove(funcKey);
-                if (_eventListenersByType[eventType].Count == 0)
-                {
-                    _eventListenersByType.Remove(eventType);
-                }
 
-                // Remove as an event handler first.
-                JSObject? jSObject = null;
-                try
-                {
-                    jSObject = GetJSObject();
-                    WasmElement.RemoveEventListener(jSObject, eventType, funcKey);
-                }
-                finally
-                {
-                    if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
-                }
+            _eventListenersByType.Clear();
+        }
 
-                // Then remove from the function pool.
-                WasmJSVEventHandlerPool.Remove(funcKey);
+        // Returned by AddEventListener().
+        // Call Dispose() to detach the DOM handler.
+        private sealed record EventHandlerToken(
+            Element Owner,
+            string EventType,
+            EventListenerId Id)
+            : IDisposable
+        {
+            public void Dispose()
+            {
+                Owner.RemoveEventListener(Id, EventType);
             }
         }
     }
@@ -466,5 +457,4 @@ public static partial class JSVapor
             NotHandled = notHandled;
         }
     }
-
 }

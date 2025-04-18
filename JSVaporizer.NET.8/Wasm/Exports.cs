@@ -15,9 +15,9 @@ public static partial class JSVapor
     internal partial class WasmExports
     {
         [JSExport]
-        internal static int CallJSVEventHandler(string funcKey, JSObject elem, string eventType, JSObject evnt)
+        internal static int CallJSVEventListener(int id, JSObject elem, string eventType, JSObject evnt)
         {
-            int behaviorMode = WasmJSVEventHandlerPool.CallJSVEventHandler(funcKey, elem, eventType, evnt);
+            int behaviorMode = WasmJSVEventListenerPool.CallJSVEventListener(new EventListenerId(id), elem, eventType, evnt);
             return behaviorMode;
         }
 

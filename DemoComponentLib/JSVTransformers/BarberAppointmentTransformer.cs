@@ -58,13 +58,13 @@ public class BarberAppointmentTransformer : JSVTransformer
 
         // Set click handler for btnBookNow
         Element btnBookNow = Document.AssertGetElementById("btnBookNow");
-        btnBookNow.AddEventListener("click", "myButtonClick", BookNowClickHandler());
+        btnBookNow.AddEventListener("click", BookNowClickHandler());
 
         return "You successfully invoked MyCoolTransformer.Transform().";
     }
 
     [SupportedOSPlatform("browser")]
-    private EventHandlerCalledFromJS BookNowClickHandler()
+    private EventListenerCalledFromJS BookNowClickHandler()
     {
         // Register success callback for AjaxPOST().
         RegisterJSVGenericFunction("theSuccessCallback", (object[] args) =>
@@ -79,7 +79,7 @@ public class BarberAppointmentTransformer : JSVTransformer
             return null;
         });
 
-        EventHandlerCalledFromJS clickHandler = (JSObject elem, string eventType, JSObject evnt) =>
+        EventListenerCalledFromJS clickHandler = (JSObject elem, string eventType, JSObject evnt) =>
         {
             MyCoolTransformerDto changedDto = ViewToDto();
 
