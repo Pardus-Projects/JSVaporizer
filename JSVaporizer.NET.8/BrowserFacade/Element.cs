@@ -11,8 +11,10 @@ namespace JSVaporizer;
 public static partial class JSVapor
 {
     [SupportedOSPlatform("browser")]
-    public class Element
+    public class Element : IDisposable
     {
+        private bool _isDisposed;
+
         // https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.javascript.jsobject?view=net-9.0
         //      JSObject objects are expensive.
         //      We should  carry around a JSObject only before the element is added to the DOM.
@@ -64,6 +66,9 @@ public static partial class JSVapor
 
         public JSObject GetJSObject()
         {
+            if (_isDisposed)
+                throw new ObjectDisposedException($"Element {Id} has been disposed.");
+
             // Null out _ephemeralJSObject if it is disposed.
             // This can happen any time after the element is connected to the DOM.
             if (_ephemeralJSObject != null && _ephemeralJSObject.IsDisposed)
@@ -71,26 +76,14 @@ public static partial class JSVapor
                 _ephemeralJSObject = null;
             }
 
-            JSObject? jSObject = null;
             if (_ephemeralJSObject != null)
             {
-                jSObject = _ephemeralJSObject;
-            }
-            else
-            {
-                jSObject = WasmDocument.GetElementById(Id);
+                return _ephemeralJSObject;
             }
 
-            if (jSObject == null)
-            {
-                throw new JSVException("JSObject is null, but is required to be not null.");
-            }
-            else if (jSObject.IsDisposed)
-            {
-                throw new JSVException("[ObjectDisposedException] JSObject IsDisposed = true.");
-            }
 
-            return jSObject;
+            // node should now be in DOM – use central cache
+            return JsObjectCache.GetOrCreate(Id);
         }
 
         public void AssertProperty(string propName)
@@ -103,16 +96,7 @@ public static partial class JSVapor
         }
 
         public bool HasProperty(string propName) {
-            JSObject? jSObject = null;
-            try
-            {
-                jSObject = GetJSObject();
-                return jSObject.HasProperty(propName);
-            }
-            finally
-            {
-                if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
-            }
+            return GetJSObject().HasProperty(propName);
         }
 
         public void SetProperty(string propName, object propVal)
@@ -122,120 +106,96 @@ public static partial class JSVapor
                 throw new JSVException("FIXME: You shouldn't set \"id\" this way until bookkeeping is improved to handle it correctly.");
             }
 
-            JSObject? jSObject = null;
-            try
-            {
-                jSObject = GetJSObject();
+            JSObject jSObject = GetJSObject();
 
-                if (propVal is bool)
-                {
-                    jSObject.SetProperty(propName, (bool)propVal);
-                }
-                else if (propVal is byte[])
-                {
-                    jSObject.SetProperty(propName, (byte[])propVal);
-                }
-                else if (propVal is double)
-                {
-                    jSObject.SetProperty(propName, (double)propVal);
-                }
-                else if (propVal is int)
-                {
-                    jSObject.SetProperty(propName, (int)propVal);
-                }
-                else if (propVal is string)
-                {
-                    jSObject.SetProperty(propName, (string)propVal);
-                }
-                else if (propVal is JSObject)
-                {
-                    jSObject.SetProperty(propName, (JSObject)propVal);
-                }
-                else
-                {
-                    throw new JSVException($"propVal has type {propVal.GetType().ToString()}, which is not allowed here.");
-                }
-            }
-            finally
+            if (propVal is bool)
             {
-                if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
+                jSObject.SetProperty(propName, (bool)propVal);
+            }
+            else if (propVal is byte[])
+            {
+                jSObject.SetProperty(propName, (byte[])propVal);
+            }
+            else if (propVal is double)
+            {
+                jSObject.SetProperty(propName, (double)propVal);
+            }
+            else if (propVal is int)
+            {
+                jSObject.SetProperty(propName, (int)propVal);
+            }
+            else if (propVal is string)
+            {
+                jSObject.SetProperty(propName, (string)propVal);
+            }
+            else if (propVal is JSObject)
+            {
+                jSObject.SetProperty(propName, (JSObject)propVal);
+            }
+            else
+            {
+                throw new JSVException($"propVal has type {propVal.GetType().ToString()}, which is not allowed here.");
             }
         }
 
         public ElementPropInfo GetProperty(string propName)
         {
-            JSObject? jSObject = null;
-            try
+            JSObject jSObject = GetJSObject();
+
+            if (!jSObject.HasProperty(propName))
             {
-                jSObject = GetJSObject();
-
-                if (!jSObject.HasProperty(propName))
-                {
-                    throw new JSVException($"Property \"{propName}\" does not exist.");
-                }
-
-                // See: https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.javascript.jsobject.gettypeofproperty?view=net-9.0#system-runtime-interopservices-javascript-jsobject-gettypeofproperty(system-string)
-                //  Property types are:
-                //      "undefined"     we handle this
-                //      "object"        we handle this
-                //      "boolean"       we handle this
-                //      "number"        we handle this
-                //      "string"        we handle this
-                //      "bigint"        NOT HANDLED YET
-                //      "symbol"        NOT HANDLED YET
-                //      "function"      NOT HANDLED YET
-
-                string propType = jSObject.GetTypeOfProperty(propName);
-
-                ElementPropInfo propInfo;
-
-                if (propType == "object")
-                {
-                    propInfo = new(propName, propType, jSObject.GetPropertyAsJSObject(propName), false);
-                }
-                else if (propType == "boolean")
-                {
-                    propInfo = new(propName, propType, jSObject.GetPropertyAsBoolean(propName), false);
-                }
-                else if (propType == "number")
-                {
-                    propInfo = new(propName, propType, jSObject.GetPropertyAsDouble(propName), false);
-                }
-                else if (propType == "string")
-                {
-                        propInfo = new(propName, propType, jSObject.GetPropertyAsString(propName), false);
-                    }
-                else if (propType == "function")
-                {
-                    propInfo = new(propName, propType, null, true);
-                }
-                else // bigint, symbol
-                {
-                    propInfo = new(propName, propType, null, true);
-                }
-
-                return propInfo;
+                throw new JSVException($"Property \"{propName}\" does not exist.");
             }
-            finally
+
+            // See: https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.javascript.jsobject.gettypeofproperty?view=net-9.0#system-runtime-interopservices-javascript-jsobject-gettypeofproperty(system-string)
+            //  Property types are:
+            //      "undefined"     we handle this
+            //      "object"        we handle this
+            //      "boolean"       we handle this
+            //      "number"        we handle this
+            //      "string"        we handle this
+            //      "bigint"        NOT HANDLED YET
+            //      "symbol"        NOT HANDLED YET
+            //      "function"      NOT HANDLED YET
+
+            string propType = jSObject.GetTypeOfProperty(propName);
+
+            ElementPropInfo propInfo;
+
+            if (propType == "object")
             {
-                if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
+                propInfo = new(propName, propType, jSObject.GetPropertyAsJSObject(propName), false);
             }
+            else if (propType == "boolean")
+            {
+                propInfo = new(propName, propType, jSObject.GetPropertyAsBoolean(propName), false);
+            }
+            else if (propType == "number")
+            {
+                propInfo = new(propName, propType, jSObject.GetPropertyAsDouble(propName), false);
+            }
+            else if (propType == "string")
+            {
+                    propInfo = new(propName, propType, jSObject.GetPropertyAsString(propName), false);
+                }
+            else if (propType == "function")
+            {
+                propInfo = new(propName, propType, null, true);
+            }
+            else // bigint, symbol
+            {
+                propInfo = new(propName, propType, null, true);
+            }
+
+            return propInfo;
         }
 
         public List<string> GetPropertyNamesList()
         {
-            JSObject? jSObject = null;
-            try
-            {
-                jSObject = GetJSObject();
-                List<string> propNames = WasmElement.GetPropertyNamesArray(jSObject).ToList();
+            JSObject jSObject = GetJSObject();
+            List<string> propNames = WasmElement.GetPropertyNamesArray(jSObject).ToList();
 
-                return propNames;
-            }
-            finally
-            {
-                if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
-            }
+            return propNames;
         }
 
         public Dictionary<string, ElementPropInfo> GetPropertiesDictionary()
@@ -266,30 +226,14 @@ public static partial class JSVapor
                 args = [];
             }
 
-            JSObject? jSObject = null;
-            try
-            {
-                jSObject = GetJSObject();
-                WasmElement.InvokeFunctionProperty(jSObject, funcPropName, args);
-            }
-            finally
-            {
-                if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
-            }
+            JSObject jSObject = GetJSObject();
+            WasmElement.InvokeFunctionProperty(jSObject, funcPropName, args);
         }
 
         public List<string> GetMultiSelectOptionValues()
         {
-            JSObject? jSObject = null;
-            try
-            {
-                jSObject = GetJSObject();
-                return WasmElement.GetMultiSelectOptionValues(jSObject).ToList();
-            }
-            finally
-            {
-                if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
-            }
+            JSObject jSObject = GetJSObject();
+            return WasmElement.GetMultiSelectOptionValues(jSObject).ToList();
         }
 
 
@@ -299,21 +243,17 @@ public static partial class JSVapor
 
         public Element AppendChild(Element childElem)
         {
-            JSObject? parentJSObject = null;
-            JSObject? childJSObject = null;
-            try
-            {
-                parentJSObject = GetJSObject();
-                childJSObject = childElem.GetJSObject();
-                WasmElement.AppendChild(parentJSObject, childJSObject);
+            JSObject parentJSObject = GetJSObject();
+            JSObject childJSObject = childElem.GetJSObject();
+            WasmElement.AppendChild(parentJSObject, childJSObject);
 
-                return childElem;
-            }
-            finally
+            if (childJSObject != null && childJSObject.GetPropertyAsBoolean("isConnected"))
             {
-                if (parentJSObject != null) DisposeIfConnectedToDOM(parentJSObject);
-                if (childJSObject != null) DisposeIfConnectedToDOM(childJSObject);
+                childJSObject.Dispose();
+                childElem._ephemeralJSObject = null;
             }
+
+            return childElem;
         }
 
         public bool HasAttribute(string attrName)
@@ -323,18 +263,10 @@ public static partial class JSVapor
                 throw new JSVException($"attrName=\"{attrName}\" will not work because it is not lower case. JS converts them to lower case.");
             }
 
-            JSObject? jSObject = null;
-            try
-            {
-                jSObject = GetJSObject();
-                bool hasAttr = WasmElement.HasAttribute(jSObject, attrName);
+            JSObject jSObject = GetJSObject();
+            bool hasAttr = WasmElement.HasAttribute(jSObject, attrName);
 
-                return hasAttr;
-            }
-            finally
-            {
-                if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
-            }
+            return hasAttr;
         }
 
         public string? GetAttribute(string attrName)
@@ -344,18 +276,10 @@ public static partial class JSVapor
                 throw new JSVException($"attrName=\"{attrName}\" will not work because it is not lower case. JS converts them to lower case.");
             }
 
-            JSObject? jSObject = null;
-            try
-            {
-                jSObject = GetJSObject();
-                string? attrVal = WasmElement.GetAttribute(jSObject, attrName);
+            JSObject jSObject = GetJSObject();
+            string? attrVal = WasmElement.GetAttribute(jSObject, attrName);
 
-                return attrVal;
-            }
-            finally
-            {
-                if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
-            }
+            return attrVal;
         }
 
         public void SetAttribute(string attrName, string attrValue)
@@ -370,16 +294,8 @@ public static partial class JSVapor
                 throw new JSVException("FIXME: You shouldn't set \"id\" this way until bookkeeping is improved to handle it correctly.");
             }
 
-            JSObject? jSObject = null;
-            try
-            {
-                jSObject = GetJSObject();
-                WasmElement.SetAttribute(jSObject, attrName, attrValue); 
-            }
-            finally
-            {
-                if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
-            }
+            JSObject jSObject = GetJSObject();
+            WasmElement.SetAttribute(jSObject, attrName, attrValue); 
         }
 
         public IDisposable AddEventListener(string eventType, EventListenerCalledFromJS handler)
@@ -415,6 +331,8 @@ public static partial class JSVapor
 
         public void Dispose()
         {
+            if (_isDisposed) return;
+
             foreach (var set in _eventListenersByType.Values)
             {
                 foreach (var tok in set.ToArray())
@@ -422,8 +340,10 @@ public static partial class JSVapor
                     tok.Dispose();
                 }
             }
-
             _eventListenersByType.Clear();
+
+            JsObjectCache.Remove(Id);
+            _isDisposed = true;
         }
 
         // Returned by AddEventListener().

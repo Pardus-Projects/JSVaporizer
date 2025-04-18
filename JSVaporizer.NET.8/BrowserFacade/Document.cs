@@ -11,20 +11,6 @@ namespace JSVaporizer;
 public static partial class JSVapor
 {
     [SupportedOSPlatform("browser")]
-    public static bool DisposeIfConnectedToDOM(JSObject jSObject)
-    {
-        if (jSObject.GetPropertyAsBoolean("isConnected"))
-        {
-            jSObject.Dispose();
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    [SupportedOSPlatform("browser")]
     public static class Document
     {
         // This is used to detect whether a DOM element was created using JSVaporizer.
@@ -86,22 +72,14 @@ public static partial class JSVapor
                 throw new JSVException($"A element with id={id} already exists.");
             }
 
-            JSObject? jSObject = null;
-            try
-            {
-                jSObject = WasmDocument.CreateJSVaporizerElement(id, tagName, _createdByJSVaporizerAttributeName);
+            JSObject jSObject = WasmDocument.CreateJSVaporizerElement(id, tagName, _createdByJSVaporizerAttributeName);
 
-                Element elem = new Element(id, jSObject);
+            Element elem = new Element(id, jSObject);
 
-                // Now set the actual value in _jsvElements.
-                _jsvElements[id] = elem;
+            // Now set the actual value in _jsvElements.
+            _jsvElements[id] = elem;
 
-                return elem;
-            }
-            finally
-            {
-                if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
-            }
+            return elem;
         }
 
         public static Element? GetElementById(string id)
@@ -117,23 +95,19 @@ public static partial class JSVapor
             // so that different callers see the same exact Elememt object.
             // We need this behavior unles we rewrite things like event handlers,
             // which are (until changed so they are tracked inside Document!) tracked inside the incididual Element objects.
-            JSObject? jSObject = null;
-            try
+
+            JSObject? jSObject = WasmDocument.GetElementById(id);
+            if (jSObject != null)
             {
-                jSObject = WasmDocument.GetElementById(id);
-                if (jSObject != null)
-                {
-                    _jsvElements[id] = new Element(id);
-                    return _jsvElements[id];
-                }
-                else
-                {
-                    return null;
-                }
+                // It's not a JSVaporizer one yet, so dispose it.
+                jSObject.Dispose();
+
+                _jsvElements[id] = new Element(id);
+                return _jsvElements[id];
             }
-            finally
+            else
             {
-                if (jSObject != null) DisposeIfConnectedToDOM(jSObject);
+                return null;
             }
         }
 
@@ -206,8 +180,11 @@ public static partial class JSVapor
                     domNotJSVCounts[groupKey]++;
                 }
 
-                // Dispose JSObjects;
-                DisposeIfConnectedToDOM(jSObject);
+                // Dispose JSObjects which aren't from JSVaporizer.
+                if (! _jsvElements.ContainsKey(id))
+                {
+                    jSObject.Dispose();
+                }
             }
 
             // Reconcile
