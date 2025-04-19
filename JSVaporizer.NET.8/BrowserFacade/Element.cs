@@ -105,6 +105,14 @@ public static partial class JSVapor
             {
                 throw new JSVException("FIXME: You shouldn't set \"id\" this way until bookkeeping is improved to handle it correctly.");
             }
+            else if (propName == "innerHTML")
+            {
+                throw new JSVException($"Use Element.SetInnerHtml(...) instead of SetProperty(\"innerHTML\"). This prevents unsanitised HTML injection.");
+            }
+            else if (propName == "outerHTML")
+            {
+                throw new JSVException($"Use Element.SetOuterHtml(...) instead of SetProperty(\"outerHTML\"). This prevents unsanitised HTML injection.");
+            }
 
             JSObject jSObject = GetJSObject();
 
@@ -188,6 +196,20 @@ public static partial class JSVapor
             }
 
             return propInfo;
+        }
+
+        public void SetInnerHtml(string html, bool alreadySafe = false)
+        {
+            string safeHtml = alreadySafe ? html : HtmlSafety.Safe(html);
+            JSObject jSObject = GetJSObject();
+            jSObject.SetProperty("innerHTML", safeHtml);
+        }
+
+        public void SetOuterHtml(string html, bool alreadySafe = false)
+        {
+            string safeHtml = alreadySafe ? html : HtmlSafety.Safe(html);
+            JSObject jSObject = GetJSObject();
+            jSObject.SetProperty("outerHTML", safeHtml);
         }
 
         public List<string> GetPropertyNamesList()

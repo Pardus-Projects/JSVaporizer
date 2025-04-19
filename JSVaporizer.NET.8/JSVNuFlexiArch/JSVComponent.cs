@@ -55,10 +55,6 @@ public abstract class JSVComponent
 
         // Lightweight cache.
         // Much of the speed benefit of precompiling using source generation, but without complexity.
-        
-        // Unsafe
-        //HandlebarsTemplate<object, object> template = _tplCache.GetOrAdd(hTemplate, Handlebars.Compile);
-
         // Yell when "triple-stash" (raw) strings are not explicitly marked as "unsafe".
         HandlebarsTemplate<object, object> template = _tplCache.GetOrAdd(hTemplate, HandlebarsSafety.SafeCompile);
 

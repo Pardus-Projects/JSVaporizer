@@ -141,6 +141,7 @@ public static partial class JSVapor
         // ----- JSVaporizer ---------------------------------------------------- //
         // ---------------------------------------------------------------------- //
 
+#if DEBUG
         // Not sure exactly when/how we're going to need this,
         // but we'll probably need some version of this for something.
         public static string JSVToDomReconciliation()
@@ -215,6 +216,7 @@ public static partial class JSVapor
 
             return problems;
         }
+#endif
 
     }
 }

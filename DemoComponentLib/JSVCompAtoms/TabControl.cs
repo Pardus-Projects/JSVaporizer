@@ -10,8 +10,6 @@ namespace DemoComponentLib;
 
 public class TabControl : ContainerBase<TabItem>
 {
-    private IDisposable _clickToken;
-
     public TabControl(string uniqueName) : base(uniqueName) { }
 
     protected override string RenderInnerTemplate() => @"

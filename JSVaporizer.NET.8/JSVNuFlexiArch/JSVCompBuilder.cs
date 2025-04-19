@@ -49,7 +49,7 @@ public abstract class JSVCompBuilder
         JSVComponent comp = cBuilder.Build(uniqueName);
 
         Element referenceElem = Document.AssertGetElementById(placeholderElementId);
-        referenceElem.SetProperty("outerHTML", comp.Render());
+        referenceElem.SetOuterHtml(comp.Render(), alreadySafe: true);
 
         cBuilder.PostAttachToDOM();
     }

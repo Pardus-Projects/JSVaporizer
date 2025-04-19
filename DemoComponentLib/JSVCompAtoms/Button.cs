@@ -8,7 +8,7 @@ namespace DemoComponentLib;
 
 public class Button : JSVComponent
 {
-    private IDisposable _onClickToken;
+    private IDisposable? _onClickToken;
 
     public string ButtonId { get; }
     public string Text { get; set; } = "Click Me";
@@ -40,7 +40,10 @@ public class Button : JSVComponent
     [SupportedOSPlatform("browser")]
     public void RemoveOnClick(string funcKey)
     {
-        _onClickToken.Dispose();
+        if (_onClickToken != null)
+        {
+            _onClickToken.Dispose();
+        }
     }
 
     protected override string GetTemplate()
