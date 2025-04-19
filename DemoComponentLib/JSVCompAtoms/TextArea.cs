@@ -34,9 +34,9 @@ namespace DemoComponentLib
         protected override string GetTemplate()
         {
             string hTemplate = @"
-                <span id=""{{{UniqueName}}}"">
+                <span id=""{{UniqueName}}"">
                     <textarea 
-                        id=""{{{TextAreaId}}}"" 
+                        id=""{{TextAreaId}}"" 
                         rows=""{{Rows}}""
                         cols=""{{Cols}}"">
                     </textarea>

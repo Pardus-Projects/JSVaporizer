@@ -17,15 +17,15 @@ public class TabControl : ContainerBase<TabItem>
     protected override string RenderInnerTemplate() => @"
             <ul class=""tab-headers"">
               {{#each Items}}
-                <li id=""{{{HeaderId}}}"" data-content-id=""{{{ContentId}}}"" class=""tab-header"">
-                    {{{Title}}}
+                <li id=""{{HeaderId}}"" data-content-id=""{{ContentId}}"" class=""tab-header"">
+                    {{Title}}
                 </li>
               {{/each}}
             </ul>
             <div class=""tab-contents"">
               {{#each Items}}
-                <div id=""{{{ContentId}}}"" class=""tab-content"" style=""display:none;"">
-                    {{{ContentComponent}}}
+                <div id=""{{ContentId}}"" class=""tab-content"" style=""display:none;"">
+                    {{unescaped ContentComponent}}
                 </div>
               {{/each}}
             </div>

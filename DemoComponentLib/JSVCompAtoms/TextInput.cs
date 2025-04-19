@@ -32,8 +32,8 @@ public class TextInput : JSVComponent
     protected override string GetTemplate()
     {
         string hTemplate = @"
-            <span id=""{{{UniqueName}}}"">
-                <input id=""{{{InputId}}}"" type=""text""/>
+            <span id=""{{UniqueName}}"">
+                <input id=""{{InputId}}"" type=""text""/>
             </span>
         ";
 

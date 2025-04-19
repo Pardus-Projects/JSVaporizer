@@ -32,9 +32,8 @@ public class CheckBox : JSVComponent
     protected override string GetTemplate()
     {
         return @"
-            <span id=""{{{UniqueName}}}"">
-                <input id=""{{{CheckBoxId}}}"" type=""checkbox"" />
-                {{LabelText}}
+            <span id=""{{unescaped UniqueName}}"">
+                <input id=""{{unescaped CheckBoxId}}"" type=""checkbox"" />
             </span>
         ";
     }

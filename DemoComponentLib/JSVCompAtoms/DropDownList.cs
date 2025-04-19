@@ -40,7 +40,7 @@ public class DropDownList : JSVComponent
         }
 
         return @"
-                <span id=""{{{UniqueName}}}"">
+                <span id=""{{UniqueName}}"">
                     <select id=""" + DropDownId + @""">
                         " + optionHtml + @"
                     </select>

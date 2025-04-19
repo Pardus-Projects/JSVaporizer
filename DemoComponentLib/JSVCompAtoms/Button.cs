@@ -46,8 +46,8 @@ public class Button : JSVComponent
     protected override string GetTemplate()
     {
         return @"
-                <span id=""{{{UniqueName}}}"">
-                    <button id=""{{{ButtonId}}}"">{{{Text}}}</button>
+                <span id=""{{UniqueName}}"">
+                    <button id=""{{ButtonId}}"">{{Text}}</button>
                 </span>
             ";
     }

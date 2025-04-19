@@ -21,8 +21,8 @@ public class FormLabel : JSVComponent
     protected override string GetTemplate()
     {
         return @"
-                <label id=""{{{LabelId}}}"" for=""{{{ForInputId}}}"">
-                    {{{Text}}}
+                <label id=""{{unescaped LabelId}}"" for=""{{unescaped ForInputId}}"">
+                    {{Text}}
                 </label>
             ";
     }

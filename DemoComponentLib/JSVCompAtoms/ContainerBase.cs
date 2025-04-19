@@ -16,7 +16,7 @@ public abstract class ContainerBase<TItem> : JSVComponent where TItem : IContain
     protected abstract string RenderInnerTemplate();
 
     protected override string GetTemplate() => $@"
-            <div id=""{{{{UniqueName}}}}"" class=""container"">
+            <div id=""{{{UniqueName}}}"" class=""container"">
                 {RenderInnerTemplate()}
             </div>
         ";

@@ -32,12 +32,12 @@ public class RadioButton : JSVComponent
     protected override string GetTemplate()
     {
         return @"
-                <span id=""{{{UniqueName}}}"">
+                <span id=""{{UniqueName}}"">
                     <input
-                        id=""{{{RadioId}}}""
+                        id=""{{RadioId}}""
                         type=""radio""
-                        name=""{{{Name}}}""
-                        value=""{{{Value}}}""
+                        name=""{{Name}}""
+                        value=""{{Value}}""
                     />
                     {{LabelText}}
                 </span>

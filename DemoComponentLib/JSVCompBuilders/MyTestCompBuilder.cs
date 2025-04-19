@@ -116,40 +116,40 @@ public class MyTestComp : JSVComponent
     protected override string GetTemplate()
     {
         string template = @"
-            <div id="" {{{UniqueName}}} "">
+            <div id="" {{UniqueName}} "">
 
                 <div>
-                    TabControl: {{{MyTabControl}}}
+                    TabControl: {{unescaped MyTabControl}}
                 </div>
 
                 <div>
-                    {{{MyCheckBox}}} {{{MyCheckBox.Label}}}
+                    {{unescaped MyCheckBox}} {{unescaped MyCheckBox.Label}}
                 </div>
 
                 <div>
                     Radio group:
                     {{#each MyRadioButtonList}}
-                        <span>{{{this}}} {{{this.Label}}}</span>
+                        <span>{{unescaped this}} {{unescaped this.Label}}</span>
                     {{/each}}
                 </div>
 
                 <div>
-                    {{{MyDropDownList}}} {{{MyDropDownList.Label}}}
+                    {{unescaped MyDropDownList}} {{unescaped MyDropDownList.Label}}
                 </div>
 
                 <div>
-                    {{{MyTextInput}}}
-                    {{{MyTextInput.Label}}}
+                    {{unescaped MyTextInput}}
+                    {{unescaped MyTextInput.Label}}
                 </div>
 
                 <div>
-                    {{{MyTextArea.Label}}}
+                    {{unescaped MyTextArea.Label}}
                     <br/>
-                    {{{MyTextArea}}}
+                    {{unescaped MyTextArea}}
                 </div>
 
                 <div>
-                    MyButton: {{{MyButton}}}
+                    MyButton: {{unescaped MyButton}}
                 </div>
             </div>
         ";

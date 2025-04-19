@@ -93,30 +93,30 @@ public class RegistrationFormComp : JSVComponent
     {
         // Render each input plus its label. For radio buttons, we iterate the list.
         return @"
-                <div id=""{{{UniqueName}}}"">
+                <div id=""{{UniqueName}}"">
                     <h2>Registration Form</h2>
 
                     <div>
-                        {{{NameInput}}} {{{NameInput.Label}}}
+                        {{unescaped NameInput}} {{unescaped NameInput.Label}}
                     </div>
 
                     <div>
-                        {{{EmailInput}}} {{{EmailInput.Label}}}
+                        {{unescaped EmailInput}} {{unescaped EmailInput.Label}}
                     </div>
 
                     <div>
                         <h4>Gender</h4>
                         {{#each GenderRadioButtons}}
-                            <span>{{{this}}} {{{this.Label}}}</span>
+                            <span>{{unescaped this}} {{unescaped this.Label}}</span>
                         {{/each}}
                     </div>
 
                     <div>
-                        {{{TermsCheckbox}}} {{{TermsCheckbox.Label}}}
+                        {{unescaped TermsCheckbox}} {{unescaped TermsCheckbox.Label}}
                     </div>
 
                     <div>
-                        {{{RegisterButton}}}
+                        {{unescaped RegisterButton}}
                     </div>
                 </div>
             ";
