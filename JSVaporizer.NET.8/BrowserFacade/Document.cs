@@ -72,9 +72,9 @@ public static partial class JSVapor
                 throw new JSVException($"A element with id={id} already exists.");
             }
 
-            JSObject jSObject = WasmDocument.CreateJSVaporizerElement(id, tagName, _createdByJSVaporizerAttributeName);
+            JSObject jsObject = WasmDocument.CreateJSVaporizerElement(id, tagName, _createdByJSVaporizerAttributeName);
 
-            Element elem = new Element(id, jSObject);
+            Element elem = new Element(id, jsObject);
 
             // Now set the actual value in _jsvElements.
             _jsvElements[id] = elem;
@@ -96,11 +96,11 @@ public static partial class JSVapor
             // We need this behavior unles we rewrite things like event handlers,
             // which are (until changed so they are tracked inside Document!) tracked inside the incididual Element objects.
 
-            JSObject? jSObject = WasmDocument.GetElementById(id);
-            if (jSObject != null)
+            JSObject? jsObject = WasmDocument.GetElementById(id);
+            if (jsObject != null)
             {
                 // It's not a JSVaporizer one yet, so dispose it.
-                jSObject.Dispose();
+                jsObject.Dispose();
 
                 _jsvElements[id] = new Element(id);
                 return _jsvElements[id];
@@ -155,12 +155,12 @@ public static partial class JSVapor
             // Counts of DOM elements which are JSV, grouped by groupKey.
             Dictionary<string, int> domNotJSVCounts = new();
 
-            foreach (JSObject jSObject in jSObjectList)
+            foreach (JSObject jsObject in jSObjectList)
             {
-                string id = WasmElement.GetAttribute(jSObject, "id") ?? "<NO_ID>";
-                string tagName = jSObject.GetPropertyAsString("tagName") ?? "<NO_TAG>";
+                string id = WasmElement.GetAttribute(jsObject, "id") ?? "<NO_ID>";
+                string tagName = jsObject.GetPropertyAsString("tagName") ?? "<NO_TAG>";
 
-                if (WasmElement.HasAttribute(jSObject, CreatedByJSV))
+                if (WasmElement.HasAttribute(jsObject, CreatedByJSV))
                 {
                     string groupKey = $"{id}";                  // Not the same key as for domNotJSVCounts
 
@@ -184,7 +184,7 @@ public static partial class JSVapor
                 // Dispose JSObjects which aren't from JSVaporizer.
                 if (! _jsvElements.ContainsKey(id))
                 {
-                    jSObject.Dispose();
+                    jsObject.Dispose();
                 }
             }
 

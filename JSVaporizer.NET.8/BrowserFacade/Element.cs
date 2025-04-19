@@ -41,9 +41,9 @@ public static partial class JSVapor
 
         // Ctor
 
-        public Element(string id, JSObject? jSObject = null)
+        public Element(string id, JSObject? jsObject = null)
         {
-            _ephemeralJSObject = jSObject;
+            _ephemeralJSObject = jsObject;
             Id = id;
         }
 
@@ -114,31 +114,31 @@ public static partial class JSVapor
                 throw new JSVException($"Use Element.SetOuterHtml(...) instead of SetProperty(\"outerHTML\"). This prevents unsanitised HTML injection.");
             }
 
-            JSObject jSObject = GetJSObject();
+            JSObject jsObject = GetJSObject();
 
             if (propVal is bool)
             {
-                jSObject.SetProperty(propName, (bool)propVal);
+                jsObject.SetProperty(propName, (bool)propVal);
             }
             else if (propVal is byte[])
             {
-                jSObject.SetProperty(propName, (byte[])propVal);
+                jsObject.SetProperty(propName, (byte[])propVal);
             }
             else if (propVal is double)
             {
-                jSObject.SetProperty(propName, (double)propVal);
+                jsObject.SetProperty(propName, (double)propVal);
             }
             else if (propVal is int)
             {
-                jSObject.SetProperty(propName, (int)propVal);
+                jsObject.SetProperty(propName, (int)propVal);
             }
             else if (propVal is string)
             {
-                jSObject.SetProperty(propName, (string)propVal);
+                jsObject.SetProperty(propName, (string)propVal);
             }
             else if (propVal is JSObject)
             {
-                jSObject.SetProperty(propName, (JSObject)propVal);
+                jsObject.SetProperty(propName, (JSObject)propVal);
             }
             else
             {
@@ -148,9 +148,9 @@ public static partial class JSVapor
 
         public ElementPropInfo GetProperty(string propName)
         {
-            JSObject jSObject = GetJSObject();
+            JSObject jsObject = GetJSObject();
 
-            if (!jSObject.HasProperty(propName))
+            if (!jsObject.HasProperty(propName))
             {
                 throw new JSVException($"Property \"{propName}\" does not exist.");
             }
@@ -166,25 +166,25 @@ public static partial class JSVapor
             //      "symbol"        NOT HANDLED YET
             //      "function"      NOT HANDLED YET
 
-            string propType = jSObject.GetTypeOfProperty(propName);
+            string propType = jsObject.GetTypeOfProperty(propName);
 
             ElementPropInfo propInfo;
 
             if (propType == "object")
             {
-                propInfo = new(propName, propType, jSObject.GetPropertyAsJSObject(propName), false);
+                propInfo = new(propName, propType, jsObject.GetPropertyAsJSObject(propName), false);
             }
             else if (propType == "boolean")
             {
-                propInfo = new(propName, propType, jSObject.GetPropertyAsBoolean(propName), false);
+                propInfo = new(propName, propType, jsObject.GetPropertyAsBoolean(propName), false);
             }
             else if (propType == "number")
             {
-                propInfo = new(propName, propType, jSObject.GetPropertyAsDouble(propName), false);
+                propInfo = new(propName, propType, jsObject.GetPropertyAsDouble(propName), false);
             }
             else if (propType == "string")
             {
-                    propInfo = new(propName, propType, jSObject.GetPropertyAsString(propName), false);
+                    propInfo = new(propName, propType, jsObject.GetPropertyAsString(propName), false);
                 }
             else if (propType == "function")
             {
@@ -201,21 +201,21 @@ public static partial class JSVapor
         public void SetInnerHtml(string html, bool alreadySafe = false)
         {
             string safeHtml = alreadySafe ? html : HtmlSafety.Safe(html);
-            JSObject jSObject = GetJSObject();
-            jSObject.SetProperty("innerHTML", safeHtml);
+            JSObject jsObject = GetJSObject();
+            jsObject.SetProperty("innerHTML", safeHtml);
         }
 
         public void SetOuterHtml(string html, bool alreadySafe = false)
         {
             string safeHtml = alreadySafe ? html : HtmlSafety.Safe(html);
-            JSObject jSObject = GetJSObject();
-            jSObject.SetProperty("outerHTML", safeHtml);
+            JSObject jsObject = GetJSObject();
+            jsObject.SetProperty("outerHTML", safeHtml);
         }
 
         public List<string> GetPropertyNamesList()
         {
-            JSObject jSObject = GetJSObject();
-            List<string> propNames = WasmElement.GetPropertyNamesArray(jSObject).ToList();
+            JSObject jsObject = GetJSObject();
+            List<string> propNames = WasmElement.GetPropertyNamesArray(jsObject).ToList();
 
             return propNames;
         }
@@ -248,14 +248,14 @@ public static partial class JSVapor
                 args = [];
             }
 
-            JSObject jSObject = GetJSObject();
-            WasmElement.InvokeFunctionProperty(jSObject, funcPropName, args);
+            JSObject jsObject = GetJSObject();
+            WasmElement.InvokeFunctionProperty(jsObject, funcPropName, args);
         }
 
         public List<string> GetMultiSelectOptionValues()
         {
-            JSObject jSObject = GetJSObject();
-            return WasmElement.GetMultiSelectOptionValues(jSObject).ToList();
+            JSObject jsObject = GetJSObject();
+            return WasmElement.GetMultiSelectOptionValues(jsObject).ToList();
         }
 
 
@@ -285,8 +285,8 @@ public static partial class JSVapor
                 throw new JSVException($"attrName=\"{attrName}\" will not work because it is not lower case. JS converts them to lower case.");
             }
 
-            JSObject jSObject = GetJSObject();
-            bool hasAttr = WasmElement.HasAttribute(jSObject, attrName);
+            JSObject jsObject = GetJSObject();
+            bool hasAttr = WasmElement.HasAttribute(jsObject, attrName);
 
             return hasAttr;
         }
@@ -298,8 +298,8 @@ public static partial class JSVapor
                 throw new JSVException($"attrName=\"{attrName}\" will not work because it is not lower case. JS converts them to lower case.");
             }
 
-            JSObject jSObject = GetJSObject();
-            string? attrVal = WasmElement.GetAttribute(jSObject, attrName);
+            JSObject jsObject = GetJSObject();
+            string? attrVal = WasmElement.GetAttribute(jsObject, attrName);
 
             return attrVal;
         }
@@ -316,8 +316,8 @@ public static partial class JSVapor
                 throw new JSVException("FIXME: You shouldn't set \"id\" this way until bookkeeping is improved to handle it correctly.");
             }
 
-            JSObject jSObject = GetJSObject();
-            WasmElement.SetAttribute(jSObject, attrName, attrValue); 
+            JSObject jsObject = GetJSObject();
+            WasmElement.SetAttribute(jsObject, attrName, attrValue); 
         }
 
         public IDisposable AddEventListener(string eventType, EventListenerCalledFromJS handler)

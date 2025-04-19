@@ -7,11 +7,15 @@ public static partial class JSVapor
     [SupportedOSPlatform("browser")]
     public static class Window
     {
+
+#if DEBUG
+        // window.alert halts the JS event‑loop, breaks keyboard navigation, fails WCAG 2.2, and annoys users.
         public static string Alert(object? obj)
         {
             string text = obj?.ToString() ?? "";
             return WasmWindow.Alert(text);
         }
+#endif
 
         public static class Location
         {

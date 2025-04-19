@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
+using System.Threading;
 
 namespace JSVaporizer;
 
@@ -15,13 +16,25 @@ public static partial class JSVapor
         // WeakReference so GC can reclaim JSObject when browser drops it.
         private static readonly ConcurrentDictionary<string, WeakReference<JSObject>> _cache = new();
 
+        // Sweep  once every N calls
+        private const int SweepInterval = 100;
+        private static int _opCounter;
+
         public static JSObject GetOrCreate(string elemId)
         {
-            if (_cache.TryGetValue(elemId, out var wr) &&
-                wr.TryGetTarget(out var alive) &&
-                !alive.IsDisposed)
+            // Opportunistic sweep
+            if (Interlocked.Increment(ref _opCounter) >= SweepInterval)
             {
-                return alive;
+                Sweep();
+                Interlocked.Exchange(ref _opCounter, 0);
+            }
+
+            if (_cache.TryGetValue(elemId, out var weakRef)
+                && weakRef.TryGetTarget(out var jsObject)
+                && !jsObject.IsDisposed
+                && IsConnected(jsObject))
+            {
+                return jsObject;
             }
 
             // Proxy missing or disposed -> re‑hydrate from DOM
@@ -33,5 +46,29 @@ public static partial class JSVapor
 
         // Remove cache entry when Element is disposed.
         public static void Remove(string elemId) => _cache.TryRemove(elemId, out _);
+
+        private static void Sweep()
+        {
+            foreach (var kvp in _cache)
+            {
+                var weakRef = kvp.Value;
+                if (!weakRef.TryGetTarget(out var jsObject) || jsObject.IsDisposed || !IsConnected(jsObject))
+                {
+                    _cache.TryRemove(kvp.Key, out _);
+                }         
+            }
+        }
+
+        private static bool IsConnected(JSObject js)
+        {
+            try
+            {
+                return js.GetPropertyAsBoolean("isConnected");
+            }
+            catch
+            {
+                return false; // property missing or JSObject already gone
+            }
+        }
     }
 }

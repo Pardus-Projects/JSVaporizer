@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices.JavaScript;
+﻿using System;
+using System.Collections.Concurrent;
 
 namespace JSVaporizer;
 
@@ -15,43 +15,33 @@ public static partial class JSVapor
 {
     internal static partial class WasmJSVGenericFuncPool
     {
-        private static readonly object _mutexJSVFunctionPool = new();
-        private static Dictionary<string, JSVGenericFunction> _jsvFunctionPool = new();
+        private static readonly ConcurrentDictionary<string, JSVGenericFunction> _jsvFunctionPool = new(StringComparer.Ordinal);
 
         internal static void Add(string funcKey, JSVGenericFunction func)
         {
-            if (_jsvFunctionPool.ContainsKey(funcKey))
+            if (!_jsvFunctionPool.TryAdd(funcKey, func))
             {
-                throw new JSVException($"Key {funcKey} already exists. Remove first, and then add.");
-            }
-
-            // Use mutex. Is not thread safe.
-            lock (_mutexJSVFunctionPool)
-            {
-                _jsvFunctionPool.TryAdd(funcKey, func);
-            }
+                throw new JSVException($"Key \"{funcKey}\" already registered.");
+            }   
         }
 
-        internal static bool Remove(string funcKey)
+        internal static void Remove(string funcKey)
         {
-            if (!_jsvFunctionPool.ContainsKey(funcKey))
+            bool removed =  _jsvFunctionPool.TryRemove(funcKey, out _);
+            if (!removed)
             {
-                throw new JSVException($"Key {funcKey} does not exist.");
-            }
-
-            // Use mutex. Is not thread safe.
-            lock (_mutexJSVFunctionPool)
-            {
-                return _jsvFunctionPool.Remove(funcKey);
+                throw new JSVException($"Key \"{funcKey}\" is not present.");
             }
         }
 
         internal static object? CallJSVGenericFunction(string funcKey, object[] args)
         {
-            return _jsvFunctionPool[funcKey](args);
+            if (_jsvFunctionPool.TryGetValue(funcKey, out var del))
+            {
+                return del(args);
+            }    
+
+            throw new JSVException($"Key \"{funcKey}\" is not present.");
         }
     }
 }
-
-
-
