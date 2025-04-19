@@ -1,6 +1,9 @@
 ﻿using HandlebarsDotNet;
+using JSVaporizer;
 using Microsoft.AspNetCore.Html;
 using System;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace JSVNuFlexiArch;
 
@@ -35,7 +38,7 @@ public abstract class JSVComponent
         return aComp;
     }
 
-    // For Handlebars templates.
+    // So you can write {{{JSVComponent}}} in Handlebars templates
     public override string ToString()
     {
         return Render();
@@ -47,10 +50,15 @@ public abstract class JSVComponent
         return htmlStr;
     }
 
+    private static readonly ConcurrentDictionary<string, HandlebarsTemplate<object, object>> _tplCache = new();
     private string RenderFromTemplate()
     {
         string hTemplate = GetTemplate();
-        var template = Handlebars.Compile(hTemplate);
+
+        // Lightweight cache.
+        // Much of the speed benefit of precompiling using source generation, but without complexity.
+        var template = _tplCache.GetOrAdd(hTemplate, Handlebars.Compile);
+        
         return template(this);
     }
 
