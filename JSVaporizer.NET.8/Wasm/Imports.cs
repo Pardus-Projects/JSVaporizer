@@ -67,6 +67,9 @@ public static partial class JSVapor
         [return: JSMarshalAs<JSType.Array<JSType.Object>>]
         // Only finds elements connceted to the DOM.
         internal static partial JSObject[] GetElementsArrayByTagName(string tagName);
+
+        [JSImport("sameJSObject", "document")]
+        internal static partial bool SameJSObject(JSObject a, JSObject b);
     }
 
     [SupportedOSPlatform("browser")]

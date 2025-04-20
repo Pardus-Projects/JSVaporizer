@@ -40,27 +40,6 @@ const eventListenerFuncSpace = new Map();               // Map<int, Function>
 // element -> Set<ids>
 const eventListenerElementIds = new WeakMap();          // WeakMap<Element, Set<int>
 
-/* ---------- START automatic event listener cleanup ---------- */
-const mo = new MutationObserver(records => {
-    for (const rec of records) {
-        rec.removedNodes.forEach(detachSubtree);
-    }
-});
-mo.observe(document, { childList: true, subtree: true });
-
-function detachSubtree(node) {
-    if (node.nodeType !== Node.ELEMENT_NODE) return;
-
-    if (eventListenerElementIds.has(node)) {
-        const ids = Array.from(eventListenerElementIds.get(node));
-        eventListenerElementIds.delete(node);
-        ids.forEach(id => eventListenerFuncSpace.delete(id));
-        jsvExports.RemoveOrphanEventListeners(ids);
-    }
-    node.childNodes.forEach(detachSubtree);
-}
-/* ---------- END automatic event listener cleanup ---------- */
-
 function addEventListener(elem, eventType, listenerId) {
     if (eventListenerFuncSpace.has(listenerId))
         throw new Error(`Listener id ${listenerId} is already registered.`);

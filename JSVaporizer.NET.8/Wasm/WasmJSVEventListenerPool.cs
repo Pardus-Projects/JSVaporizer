@@ -7,10 +7,10 @@ namespace JSVaporizer;
 // See: https://learn.microsoft.com/en-us/aspnet/core/client-side/dotnet-interop/?view=aspnetcore-9.0
 
 // ============================================ //
-//              Event Handlers                  //
+//              Event Listeners                  //
 // ============================================ //
 
-public enum JSVEventHandlerBehavior {
+public enum JSVEventListenerBehavior {
     Default_Propagate,
     Default_NoPropagate,
     NoDefault_Propagate,
@@ -57,7 +57,7 @@ public static partial class JSVapor
             bool gotIt = _jsvEventListenerPool.TryGetValue(id, out var del);
             if (!gotIt)
             {
-                throw new ArgumentException($"EventHandlerId with id = {id} is not present in _jsvEventHandlerPool");
+                throw new ArgumentException($"EventListenerId with id = {id} is not present in _jsvEventListenerPool");
             }
             return del!(elem, type, evnt);
         }

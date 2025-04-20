@@ -32,9 +32,9 @@ public class Button : JSVComponent
     }
 
     [SupportedOSPlatform("browser")]
-    public void OnClick(EventListenerCalledFromJS handler)
+    public void OnClick(EventListenerCalledFromJS listener)
     {
-        _onClickToken = Document.AssertGetElementById(ButtonId).AddEventListener("click", handler);
+        _onClickToken = Document.AssertGetElementById(ButtonId).AddEventListener("click", listener);
     }
 
     [SupportedOSPlatform("browser")]

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices.JavaScript;
+﻿using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 
 namespace JSVaporizer;
@@ -15,6 +14,10 @@ public static partial class JSVapor
     [SupportedOSPlatform("browser")]
     internal partial class WasmExports
     {
+        // ======================================================================== //
+        //                  Event Listener and Generic Function pools               //
+        // ======================================================================== //
+
         [JSExport]
         internal static int CallJSVEventListener(int id, JSObject elem, string eventType, JSObject evnt)
         {
@@ -23,19 +26,15 @@ public static partial class JSVapor
         }
 
         [JSExport]
-        internal static void RemoveOrphanEventListeners(int[] listenerIds)
-        {
-            foreach (int listenerId in listenerIds)
-            {
-                WasmJSVEventListenerPool.Remove(new EventListenerId(listenerId));
-            }
-        }
-
-        [JSExport]
         internal static void CallJSVGenericFunction(string funcKey, [JSMarshalAs<JSType.Array<JSType.Any>>] object[] args)
         {
              WasmJSVGenericFuncPool.CallJSVGenericFunction(funcKey, args);
         }
 
+        // ======================================================================== //
+        //                          DOM Mutation Observer                           //
+        // ======================================================================== //
+
+        // TODO
     }
 }

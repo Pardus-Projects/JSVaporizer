@@ -1,4 +1,4 @@
-﻿// Interop/EventHandlerId.cs — NEW FILE
+﻿// Interop/EventListenerId.cs — NEW FILE
 using System;
 using System.Collections.Concurrent;
 
@@ -10,7 +10,7 @@ public readonly record struct EventListenerId(int Value)
     public override string ToString() => Value.ToString();
 }
 
-// Interop/EventHandlerDebugInfo.cs — NEW FILE (DEBUG‑only)
+// Interop/EventListenerDebugInfo.cs — NEW FILE (DEBUG‑only)
 #if DEBUG
 
 // Holds creation stack‑traces for listener ids (debug builds only).

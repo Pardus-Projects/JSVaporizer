@@ -14,12 +14,12 @@ A Lightweight .NET WASM Framework for Handcrafted UI Components
    - Manipulate DOM elements using typed C# classes (`Document`, `Element`, etc.) and low-level `[JSImport]`/`[JSExport]` interop.
 
 3. **Event-Handler Pooling**:  
-   - Attach .NET delegates to DOM events (e.g., “click,” “change”) through a function pool keyed by a unique string, eliminating extensive JavaScript boilerplate.
+   - Attach .NET delegates to DOM events (e.g., “click,” “change”) through a function pool, eliminating extensive JavaScript boilerplate.
 
 4. **Server + Client Rendering**:  
    - Render partial HTML on the server (Razor Pages or MVC) and then enhance or replace portions of the DOM at runtime on the client, purely in C#.
 
-By focusing on direct control and a straightforward lifecycle (“Build → Insert → Wire up events”), **JSVaporizer** offers a “do-it-yourself” style for developers who prefer minimal abstraction while still enjoying strongly-typed .NET code and tooling.
+By focusing on direct control and a straightforward lifecycle (“Build → Insert → Wire up events”), **JSVaporizer** offers a do-it-yourself style for developers who prefer minimal abstraction while still enjoying strongly-typed .NET code and tooling.
 
 ---
 
@@ -49,23 +49,12 @@ By focusing on direct control and a straightforward lifecycle (“Build → Inse
 - **Lightweight**: Only the minimal set of classes you need to interface with JS from .NET, manipulate DOM elements, and render HTML via templates.  
 - **Flexible Rendering**: Use the same component model for server-side generation (Razor) or client-side dynamic insertion.  
 - **Typed DOM Access**: `Element` and `Document` classes mimic common web APIs but in a strictly typed C# manner, letting you do things like `element.SetAttribute("class", "my-class")` or `document.AssertGetElementById("someId")`.  
-- **No Heavy Dependencies**: Relies on the new .NET 7/8 `[JSExport]` / `[JSImport]` attributes for WASM interop—no bulky frameworks.  
-- **Event Delegation in C#**: Add or remove event listeners in the browser with a one-liner in .NET code, thanks to the event-handler pool.
+- **No Heavy Dependencies**: Relies on the new .NET 8 `[JSExport]` / `[JSImport]` attributes for WASM interop—no bulky frameworks.  
+- **Event Delegation in C#**: Add or remove event listeners in the browser in .NET code.
 
 ---
 
 ## Getting Started
-
-### Installation
-
-1. **Clone or Add Reference**  
-   - Copy the source files into your project, or reference the compiled library (if you’ve built a NuGet package, install it via `dotnet add package JSVaporizer`).
-   
-2. **Ensure .NET 7+**  
-   - JSVaporizer heavily relies on the .NET WASM interop features introduced in .NET 7. Make sure your project targets `.NET 7` or `.NET 8`.
-
-3. **Use a Supported Browser**  
-   - WebAssembly with JavaScript interop is widely supported in modern browsers. No special polyfills should be required beyond typical .NET WASM support.
 
 ### Basic Usage
 
@@ -83,29 +72,15 @@ By focusing on direct control and a straightforward lifecycle (“Build → Inse
        protected override string GetTemplate()
        {
            return $@"
-               <span id=""{{{UniqueName}}}"">
-                   <label id=""{{{LabelId}}}"">Hello from JSVaporizer</label>
+               <span id=""{{UniqueName}}"">
+                   <label id=""{{LabelId}}"">Hello from JSVaporizer</label>
                </span>
            ";
        }
    }
    ```
 
-2. **Render on the Server**  
-   In a Razor Page:
-   ```csharp
-   @page
-   @model IndexModel
-
-   @{
-       var labelComp = new MyLabel("myUniqueLabel");
-   }
-
-   <h1>Hello World with JSVaporizer</h1>
-   @labelComp.RenderBuilder()
-   ```
-
-3. **Replace or Insert on the Client**  
+2. **Replace or Insert on the Client**  
    If you have a placeholder `<div id="myPlaceholder"></div>` in the HTML, you can call:
    ```csharp
    JSVCompBuilder.Invoke(
@@ -133,8 +108,8 @@ By focusing on direct control and a straightforward lifecycle (“Build → Inse
   protected override string GetTemplate()
   {
       return @"
-          <span id=""{{{UniqueName}}}"">
-              <input type=""checkbox"" id=""{{{CheckBoxId}}}"" />
+          <span id=""{{UniqueName}}"">
+              <input type=""checkbox"" id=""{{CheckBoxId}}"" />
           </span>
       ";
   }
@@ -164,14 +139,14 @@ By focusing on direct control and a straightforward lifecycle (“Build → Inse
 
 - **AddEventListener**: 
   ```csharp
-  myButton.AddEventListener("click", "myClickKey", (elem, eventType, evnt) =>
+  myButton.AddEventListener("click", (elem, eventType, evnt) =>
   {
       // C# logic for click
       Console.Log("Button was clicked!");
       return (int)JSVEventHandlerBehavior.NoDefault_NoPropagate;
   });
   ```
-- This automatically registers an event handler in the `WasmJSVEventHandlerPool`, letting the browser route the “click” to your C# method.
+- This automatically registers an event handler in the `WasmJSVEventHandlerPool`, letting the browser route the click to your C# method.
 
 ---
 
@@ -186,7 +161,7 @@ By focusing on direct control and a straightforward lifecycle (“Build → Inse
        protected override string GetTemplate()
        {
            return @"
-               <p id=""{{{UniqueName}}}"">A fancy paragraph!</p>
+               <p id=""{{UniqueName}}"">A fancy paragraph!</p>
            ";
        }
    }
@@ -200,10 +175,6 @@ By focusing on direct control and a straightforward lifecycle (“Build → Inse
        Document.AssertGetElementById(UniqueName).SetProperty("textContent", newText);
    }
    ```
-
-3. **Use the New Component**  
-   - Server side with `@myParagraph.RenderBuilder()`.  
-   - Client side with a `JSVCompBuilder` subclass or direct creation, then inserting via `outerHTML`.
 
 ---
 
@@ -253,23 +224,132 @@ This project is provided under the [MIT License](./LICENSE), meaning it’s free
 
 ---
 
-**Enjoy building .NET-based UIs** with direct DOM control using **JSVaporizer**! If you have questions or want to showcase a project that uses it, we’d love to hear from you.
+## TODO
+
+## DOM‑Component Guardrails
+
+### Purpose
+Provide a minimal policy that protects JSVaporizer from destructive DOM mutations **without** introducing a heavyweight virtual DOM.
+
+* Keep the framework lightweight (no diff engine or per‑element `MutationObserver`s by default).
+* Allow benign DOM edits (browser autofill, analytics attributes, A11y extensions).
+* Fail‑fast only on mutations that break JSVaporizer’s bookkeeping (root removal, `id` corruption).
+* Offer opt‑in strictness & extensibility for power users.
 
 ---
 
-## TODO
+### Guardrail Principles
+| ID | Principle | Default Action | Opt‑In Strict Action |
+|----|-----------|----------------|---------------------|
+| **P‑1** | Component **root element must remain connected** to the document. | **Log & dispose** wrapper if root permanently detached. | **Throw `DomRootRemovedException`** immediately. |
+| **P‑2** | Each managed element must have a **stable, unique `id`**. | **Update** wrapper on `id` change; log on duplicate. | **Throw `DuplicateIdException`** or `IdClearedException`. |
+| **P‑3** | All other mutations (class, style, children, text) are **allowed**. | No action. | Throw if any external mutation touches the subtree. |
+| **P‑4** | Components may override and reconcile via **`OnDomMutated` hook**. | No‑op by default. | Same. |
 
-### Weaknesses & Possible Mitigations
+---
 
-| # | Severity | Weakness (recap) | Mitigation strategy |
-|---|:---:|---|---|
-| **W‑5** | 7 | **`SetProperty` relies on runtime type‑switch.** | *Introduce generics & converters.* <br>```SetProperty<T>(string name, T value) where T: unmanaged | string | JSObject\n```<br>• Use a `switch` on `typeof(T)` in *one* place; other overloads fan‑in to the generic method. <br>• For uncommon types, allow users to register a custom `IJSVTypeConverter<T>`. |
-| **W‑6** | 6 | **Caller must lowercase attribute names.** | *Normalize internally.* <br>• In `SetAttribute` / `HasAttribute` / `GetAttribute`, convert `attrName = attrName.ToLowerInvariant()` before use. <br>• Keep the runtime exception only in DEBUG builds as a developer hint. |
-| **W‑8** | 5 | **Global dictionaries grow indefinitely.** | *Weak refs + periodic sweep.* <br>• Store `WeakReference<Element>` / `WeakReference<Delegate>` in the pools. <br>• Run a lightweight sweep every N seconds (or on pool size > X) to drop dead entries. |
-| **W‑9** | 5 | **Blocking `alert()` freezes the WASM thread.** | *Non‑blocking UI helpers.* <br>• Ship a tiny JS toast/snackbar helper exposed as `Window.Notify(string, int ms=3000)`. <br>• Mark the old `Alert` API as `[Obsolete]` with a doc comment explaining the perf issue. |
-| **W‑10** | 4 | **Hidden‑input plumbing couples views to internals.** | *Decouple host markup.* <br>• Replace hidden `<input>` tags with a single `<script type=\"text/jsv-metadata\">{ JSON }</script>` block that lists builder name + placeholder mapping; parse it at bootstrap. <br>• Or use `data-jsv-*` attributes directly on the placeholder span. |
-| ~~**W‑1**~~ FIXED | 9 | ~~**String‑key pools are brittle.**~~ | *Eliminate manual keys.* <br>• Generate a GUID (or incrementing int) on `AddEventListener`/`RegisterFunction`; return that handle to the caller. <br>• Store a `WeakReference` to the delegate so GC can reclaim it. <br>• Wrap the handle in a tiny `struct ListenerId` to regain type‑safety. |
-| ~~**W‑2**~~ | 8 | ~~**`JSObject` lifetime is fragile.**~~ | *Centralise proxy handling.* <br>• Introduce an **object cache** that maps element‑ID → live `JSObject`. <br>• Use `using`/`await using` so disposal is deterministic. <br>• Provide an `Element.Dispose()` that nulls the cache entry and detaches listeners. |
-| ~~**W‑3**~~ FIXED from W-1| 8 | ~~**Manual listener clean‑up causes leaks.**~~ | *Auto‑detach.* <br>• Make `Element` implement `IDisposable`; in its `Dispose` iterate `_eventListenersByType` and call `RemoveEventListener`. <br>• In browser JS shim, register a `MutationObserver` that detects node removal and notifies WASM to dispose the matching element. |
-| ~~**W‑4**~~ | 7 | ~~**Stringly‑typed Handlebars allows unescaped strings by default.**~~ | Disallow unescaping using triple braces, but whitelist inside double braces using "unescaped" helper.|
-| ~~**W‑7**~~ | 6 | ~~**`WasmJSVGenericFuncPool.Remove` signature mismatch.**~~ | *API tidy‑up.* <br>• Change signature to `bool Remove(string funcKey)` to mirror `Add`. <br>• Provide an `[Obsolete]` overload for one release cycle to avoid breaking existing callers. |
+### Feature Matrix
+| Feature | Lightweight Mode *(default)* | Strict Mode | Notes |
+|---------|------------------------------|-------------|-------|
+| Global `MutationObserver` | ✔ | ✔ | Single observer on `document.documentElement`. |
+| Per‑element observers | ✖ | ✖ | Kept internal for debugging. |
+| `OnDomMutated` hook | Available | Available | Fires after global observer batching. |
+| Dispose on root removal | Automatic | Automatic | Plus exception in strict mode. |
+| `id` duplicate detection | Debug assert | Exception | Uses `_jsvElements` dictionary. |
+| Config toggle | `JSVapor.Config.StrictDom = false` | `true` | Can also be set via environment variable. |
+
+---
+
+### Coding Roadmap (high‑level)
+1. **JS – Refactor Observer**
+   * *`mutation.js`* exports `raiseDomRemovedById` & `raiseDomIdChanged` with batching and move‑detection.
+   * Load once during bootstrap; no per‑component observers.
+
+2. **Imports.cs**
+   ```csharp
+   [JSImport("raiseDomRemovedById", "document")]  internal static partial void RaiseDomRemovedById(string[] ids);
+   [JSImport("raiseDomIdChanged",   "document")]  internal static partial void RaiseDomIdChanged(string?[] oldIds, string?[] newIds);
+   ```
+
+3. **Document.cs** – new helpers
+   ```csharp
+   internal static bool TryGetWrapper(string id, out Element e) => _jsvElements.TryGetValue(id, out e);
+
+   internal static void RemoveWrapper(string id) => _jsvElements.Remove(id);
+   ```
+
+4. **Exports.cs** - new helpers
+   ```csharp
+   [JSExport("raiseDomRemovedById")]
+   public static void RaiseDomRemovedById(string[] ids)
+   {
+       foreach (var id in ids)
+       {
+           if (TryGetWrapper(id, out var elem))
+               elem.DisposeInternal();                        // detaches listeners etc.
+       }
+   }
+
+   [JSExport("raiseDomIdChanged")]
+   public static void RaiseDomIdChanged(string?[] oldIds, string?[] newIds)
+   {
+       for (int i = 0; i < oldIds.Length; i++)
+       {
+           var oldId = oldIds[i];
+           var newId = newIds[i];
+           if (oldId is null) continue;                      // newly added id
+           if (TryGetWrapper(oldId, out var elem))
+           {
+               elem.UpdateId(oldId, newId);
+               elem.OnIdChanged(oldId, newId);
+           }
+       }
+   }
+   ```
+
+5. **Element.cs** – new APIs
+   ```csharp
+   internal void UpdateId(string oldId, string? newId)
+   {
+       Document.RemoveWrapper(oldId);
+       if (!string.IsNullOrEmpty(newId))
+           Document.RegisterWrapper(newId!, this);
+       Id = newId ?? string.Empty;
+   }
+
+   protected virtual void OnDomElementRemoved() { }
+   protected virtual void OnIdChanged(string oldId, string? newId) { }
+   ```
+
+6. **Strict Mode Toggle**
+   ```csharp
+   public static class Config
+   {
+       public static bool StrictDom { get; set; } =
+           bool.TryParse(Environment.GetEnvironmentVariable("JSVAPOR_STRICT_DOM"), out var b) && b;
+   }
+   ```
+   *Throw exceptions instead of logging based on `Config.StrictDom`.*
+
+7. **Debug Assertions (DEBUG builds only)**
+   ```csharp
+   Debug.Assert(!Document._jsvElements.ContainsKey(newId!), "Duplicate id detected: " + newId);
+   ```
+
+8. **JSVComponent hook** (optional for devs)
+   ```csharp
+   protected virtual void OnDomMutated(DomMutationRecord rec) { }
+   ```
+
+---
+
+### Next Steps
+* **Implement code steps 1‑4**
+* Validate with test matrix:
+  1. Remove component → wrapper disposed.
+  2. Move component → no disposal/log.
+  3. Change id → wrapper map updates.
+  4. Duplicate id in strict mode → exception.
+* Document `StrictDom` flag and `OnDomMutated` hook in README.
+
+

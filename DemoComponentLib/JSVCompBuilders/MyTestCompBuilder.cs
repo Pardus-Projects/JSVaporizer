@@ -45,10 +45,10 @@ public class MyTestCompBuilder : JSVCompBuilder
 
         PostAttachToDOMSetup = () =>
         {
-            myTestComp.MyButton.OnClick(MyButtonClickHandler(myTestComp.MyButton));
+            myTestComp.MyButton.OnClick(MyButtonClickListener(myTestComp.MyButton));
 
-            newButton.OnClick(AnotherClickHandler(newButton));
-            anotherNewButton.OnClick(AnotherClickHandler(anotherNewButton));
+            newButton.OnClick(AnotherClickListener(newButton));
+            anotherNewButton.OnClick(AnotherClickListener(anotherNewButton));
 
             myTestComp.MyTabControl.AfterChildrenAttached();
         };
@@ -56,9 +56,9 @@ public class MyTestCompBuilder : JSVCompBuilder
         return myTestComp;
     }
 
-    private EventListenerCalledFromJS MyButtonClickHandler(Button btn)
+    private EventListenerCalledFromJS MyButtonClickListener(Button btn)
     {
-        EventListenerCalledFromJS clickHandler = (JSObject elem, string eventType, JSObject evnt) =>
+        EventListenerCalledFromJS clickListener = (JSObject elem, string eventType, JSObject evnt) =>
         {
             Window.Alert("You clicked me! But you can't do it anymore.");
 
@@ -72,21 +72,21 @@ public class MyTestCompBuilder : JSVCompBuilder
             Window.Alert("Global listener count AFTER: " + EventListenerDebugInfo.MapKeyCount());
 #endif
 
-            return (int)JSVEventHandlerBehavior.NoDefault_NoPropagate;
+            return (int)JSVEventListenerBehavior.NoDefault_NoPropagate;
         };
 
-        return clickHandler;
+        return clickListener;
     }
 
-    private EventListenerCalledFromJS AnotherClickHandler(Button btn)
+    private EventListenerCalledFromJS AnotherClickListener(Button btn)
     {
-        EventListenerCalledFromJS clickHandler = (JSObject elem, string eventType, JSObject evnt) =>
+        EventListenerCalledFromJS clickListener = (JSObject elem, string eventType, JSObject evnt) =>
         {
             Window.Alert(btn.Text);
-            return (int)JSVEventHandlerBehavior.NoDefault_NoPropagate;
+            return (int)JSVEventListenerBehavior.NoDefault_NoPropagate;
         };
 
-        return clickHandler;
+        return clickListener;
     }
 }
 

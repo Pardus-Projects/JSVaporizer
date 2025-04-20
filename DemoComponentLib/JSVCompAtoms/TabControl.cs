@@ -43,7 +43,7 @@ public class TabControl : ContainerBase<TabItem>
     [SupportedOSPlatform("browser")]
     public override void AfterChildrenAttached()
     {
-        // 1) click handler on every header
+        // 1) click listener on every header
         foreach (var it in Items)
         {
             Document.AssertGetElementById(it.HeaderId)
@@ -64,7 +64,7 @@ public class TabControl : ContainerBase<TabItem>
                         Document.AssertGetElementById(it.ContentId)
                                 .SetAttribute("style", "display:block;");
 
-                        return (int)JSVEventHandlerBehavior.NoDefault_NoPropagate;
+                        return (int)JSVEventListenerBehavior.NoDefault_NoPropagate;
                     });
         }
 

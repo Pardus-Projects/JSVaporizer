@@ -34,17 +34,17 @@ public static partial class JSVapor
 
         // Props
 
-        // ---------------------------------------------------------------------- //
-        // ----- Document standard ---------------------------------------------- //
-        // ---------------------------------------------------------------------- //
+        // ------------------------------------------------------------------------ //
+        //          Document standard                                               //
+        // ------------------------------------------------------------------------ //
 
         //public static List<Element> Children { get; } = new();
 
         // Methods
 
-        // ---------------------------------------------------------------------- //
-        // ----- JSVaporizer ---------------------------------------------------- //
-        // ---------------------------------------------------------------------- //
+        // ------------------------------------------------------------------------ //
+        //          JSVaporizer                                                     //
+        // ------------------------------------------------------------------------ //
 
         public static string CreatedByJSV { get { return _createdByJSVaporizerAttributeName; } }
 
@@ -58,9 +58,14 @@ public static partial class JSVapor
             return elem;
         }
 
-        // ---------------------------------------------------------------------- //
-        // ----- Standard ------------------------------------------------------- //
-        // ---------------------------------------------------------------------- //
+        public static bool SameJSObject(JSObject a, JSObject b)
+        {
+            return WasmDocument.SameJSObject(a, b);
+        }
+
+        // ------------------------------------------------------------------------ //
+        //          Standard                                                        //
+        // ------------------------------------------------------------------------ //
 
         public static Element CreateElement(string id, string tagName)
         {
@@ -93,7 +98,7 @@ public static partial class JSVapor
             // Otherwise return whatever the DOM says we have.
             // Used existing copy if there is one,
             // so that different callers see the same exact Elememt object.
-            // We need this behavior unles we rewrite things like event handlers,
+            // We need this behavior unles we rewrite things like event listeners,
             // which are (until changed so they are tracked inside Document!) tracked inside the incididual Element objects.
 
             JSObject? jsObject = WasmDocument.GetElementById(id);

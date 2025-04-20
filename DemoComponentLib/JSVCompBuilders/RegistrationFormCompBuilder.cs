@@ -45,7 +45,7 @@ public class RegistrationFormCompBuilder : JSVCompBuilder
                     Window.Alert($"Registration successful!\nName: {nameVal}\nEmail: {emailVal}\nGender: {gender}");
                 }
 
-                return (int)JSVEventHandlerBehavior.NoDefault_NoPropagate;
+                return (int)JSVEventListenerBehavior.NoDefault_NoPropagate;
             });
         };
 

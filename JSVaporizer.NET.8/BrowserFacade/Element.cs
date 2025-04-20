@@ -23,20 +23,20 @@ public static partial class JSVapor
         private JSObject? _ephemeralJSObject = null;
 
         // Keep track of eveant listeners assigned to element.
-        private readonly Dictionary<string, HashSet<EventHandlerToken>> _eventListenersByType = new();
+        private readonly Dictionary<string, HashSet<EventListenerToken>> _eventListenersByType = new();
 
         // Props
 
-        // ---------------------------------------------------------------------- //
-        // ----- JSVaporizer ---------------------------------------------------- //
-        // ---------------------------------------------------------------------- //
+        // ------------------------------------------------------------------------ //
+        //          JSVaporizer                                                     //
+        // ------------------------------------------------------------------------ //
 
         public bool IsJSV { get { return HasAttribute(Document.CreatedByJSV); } }
 
-        // ---------------------------------------------------------------------- //
-        // ----- Element standard ----------------------------------------------- //
-        // ---------------------------------------------------------------------- //
-
+        // ------------------------------------------------------------------------ //
+        //          Element standard                                                //
+        // ------------------------------------------------------------------------ //
+        
         public string Id { get; }
 
         // Ctor
@@ -49,9 +49,9 @@ public static partial class JSVapor
 
         // Methods
 
-        // ---------------------------------------------------------------------- //
-        // ----- JSVaporizer ---------------------------------------------------- //
-        // ---------------------------------------------------------------------- //
+        // ------------------------------------------------------------------------ //
+        //          JSVaporizer                                                     //
+        // ------------------------------------------------------------------------ //
 
         //      NOTE: The following come built into JSObject:
         //          1) JSObject.SetProperty()
@@ -258,10 +258,9 @@ public static partial class JSVapor
             return WasmElement.GetMultiSelectOptionValues(jsObject).ToList();
         }
 
-
-        // ---------------------------------------------------------------------- //
-        // ----- Standard ------------------------------------------------------- //
-        // ---------------------------------------------------------------------- //
+        // ------------------------------------------------------------------------ //
+        //          Standard                                                        //
+        // ------------------------------------------------------------------------ //
 
         public Element AppendChild(Element childElem)
         {
@@ -320,10 +319,10 @@ public static partial class JSVapor
             WasmElement.SetAttribute(jsObject, attrName, attrValue); 
         }
 
-        public IDisposable AddEventListener(string eventType, EventListenerCalledFromJS handler)
+        public IDisposable AddEventListener(string eventType, EventListenerCalledFromJS listener)
         {
-            EventListenerId id = WasmJSVEventListenerPool.Add(handler);
-            EventHandlerToken token = new EventHandlerToken(this, eventType, id);
+            EventListenerId id = WasmJSVEventListenerPool.Add(listener);
+            EventListenerToken token = new EventListenerToken(this, eventType, id);
 
             using var js = GetJSObject();
             int listenerCountFromJS = WasmElement.AddEventListener(js, eventType, id.Value);
@@ -369,8 +368,8 @@ public static partial class JSVapor
         }
 
         // Returned by AddEventListener().
-        // Call Dispose() to detach the DOM handler.
-        private sealed record EventHandlerToken(Element Owner, string EventType, EventListenerId Id) : IDisposable
+        // Call Dispose() to detach the DOM listener.
+        private sealed record EventListenerToken(Element Owner, string EventType, EventListenerId Id) : IDisposable
         {
             public void Dispose()
             {
